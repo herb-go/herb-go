@@ -8,5 +8,9 @@ import (
 )
 
 func main() {
-	app.Run(app.Config, os.Args, os.Environ())
+	App := app.NewApplication(app.Config)
+	App.Args = os.Args
+	App.Envs = os.Environ()
+	App.Modules = app.RegisteredModules
+	App.Run()
 }

@@ -6,6 +6,8 @@ type Help struct {
 	app.BasicModule
 }
 
+var Module = &Help{}
+
 func init() {
-	app.AddModule(&Help{})
+	app.Register(Module)
 }

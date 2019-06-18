@@ -30,24 +30,35 @@ func (m BasicModule) Exec(*Application) error {
 	return nil
 }
 
-var Modules = []Module{}
+type Modules []Module
 
-var AddModule = func(m Module) {
+func (modules *Modules) Add(m Module) {
 	cmd := m.Cmd()
-	for k := range Modules {
-		if cmd == Modules[k].Cmd() {
-			Modules[k] = m
+	for k := range *modules {
+		if cmd == (*modules)[k].Cmd() {
+			(*modules)[k] = m
 			return
 		}
 	}
-	Modules = append(Modules, m)
+	*modules = append(*modules, m)
+
 }
 
-var GetModule = func(cmd string) Module {
-	for k := range Modules {
-		if Modules[k].Cmd() == cmd {
-			return Modules[k]
+func (modules *Modules) Get(cmd string) Module {
+	for k := range *modules {
+		if (*modules)[k].Cmd() == cmd {
+			return (*modules)[k]
 		}
 	}
 	return nil
+
+}
+func NewModules() *Modules {
+	return &Modules{}
+}
+
+var RegisteredModules = NewModules()
+
+func Register(m Module) {
+	RegisteredModules.Add(m)
 }

@@ -1,5 +1,10 @@
 package app
 
+import (
+	"io"
+	"os"
+)
+
 type ApplicationConfig struct {
 	Name          string
 	Cmd           string
@@ -7,13 +12,31 @@ type ApplicationConfig struct {
 	IntroTemplate string
 }
 type Application struct {
-	Config *ApplicationConfig
-	Args   []string
-	Envs   []string
+	Config  *ApplicationConfig
+	Args    []string
+	Envs    []string
+	Cwd     string
+	Modules *Modules
+	Stdout  io.Writer
+	Stdin   io.Reader
 }
 
 func (a *Application) Run() {
 
+}
+
+func NewApplication(config *ApplicationConfig) *Application {
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	return &Application{
+		Config:  config,
+		Cwd:     cwd,
+		Modules: NewModules(),
+		Stdout:  os.Stdout,
+		Stdin:   os.Stdin,
+	}
 }
 
 var Config = &ApplicationConfig{
@@ -21,13 +44,4 @@ var Config = &ApplicationConfig{
 	Cmd:           "herb-go",
 	Version:       "0.1",
 	IntroTemplate: "",
-}
-
-func Run(config *ApplicationConfig, args []string, envs []string) {
-	var app = &Application{
-		Config: config,
-		Args:   args,
-		Envs:   envs,
-	}
-	app.Run()
 }
