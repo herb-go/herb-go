@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"reflect"
@@ -60,7 +61,7 @@ func (q *Question) Exec(a *app.Application, conditon bool, result interface{}) e
 	if len(q.Answers) == 0 {
 		return nil
 	}
-	fmt.Println("Please choose.")
+	fmt.Fprintf(a.Stdout, "Please choose.")
 	if q.DefaultKey != "" {
 		fmt.Fprintf(a.Stdout, "Default choice is %s .\r\n", q.DefaultKey)
 	}
@@ -68,10 +69,13 @@ func (q *Question) Exec(a *app.Application, conditon bool, result interface{}) e
 		v.Println(a.Stdout, q.DefaultKey)
 	}
 	var s string
-	_, err := fmt.Fscanln(a.Stdin, &s)
+	scanner := bufio.NewScanner(a.Stdin)
+	scanner.Scan()
+	err := scanner.Err()
 	if err != nil {
-		return (err)
+		return err
 	}
+	s = scanner.Text()
 	s = strings.TrimSpace(s)
 	s = strings.ToLower(s)
 	var key = s
