@@ -13,7 +13,7 @@ func ReplaceLine(path string, from string, to string) (bool, error) {
 		if os.IsNotExist(err) {
 			return false, nil
 		}
-		return false, (err)
+		return false, err
 	}
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
