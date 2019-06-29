@@ -2,7 +2,6 @@ package name
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"regexp"
 	"strings"
@@ -30,48 +29,45 @@ func fieldsep(r rune) bool {
 	return r == ' ' || r == '_' || r == '-'
 }
 
-func MustNewOrExitWithoutParents(s ...string) *Name {
-	n, r := MustNew(true, s...)
-	if r == false {
-		os.Exit(2)
+var regWithParent, _ = regexp.Compile("^[a-zA-Z][/0-9a-zA-Z\\s\\_\\-]*$")
+var regWithoutParent, _ = regexp.Compile("^[a-zA-Z][0-9a-zA-Z\\s\\_\\-]*$")
+
+func listToPascal(values ...string) string {
+	var result string
+	for _, v := range values {
+		if commonInitialisms[strings.ToUpper(v)] {
+			result = result + strings.ToUpper(v)
+		} else {
+			result = result + strings.ToUpper(v[0:1]) + v[1:]
+		}
 	}
-	return n
+	return result
 }
-func MustNewOrExit(s ...string) *Name {
-	n, r := MustNew(true, s...)
-	if r == false {
-		os.Exit(2)
-	}
-	return n
-}
-func MustNew(withparents bool, s ...string) (*Name, bool) {
+func New(withparents bool, s ...string) (*Name, error) {
 	all := strings.Join(s, " ")
 	if all == "" {
-		return &Name{}, true
+		return &Name{}, nil
 	}
 	list := strings.Split(all, "/")
 	plist := list[0 : len(list)-1]
 	parentsList := []string{}
+	parentsPascalList := []string{}
 	for _, v := range plist {
 		if v != "" {
 			parentsList = append(parentsList, v)
+			parentsPascalList = append(parentsPascalList, listToPascal(strings.FieldsFunc(v, fieldsep)...))
 		}
 	}
 	r := list[len(list)-1]
 	s = strings.FieldsFunc(r, fieldsep)
 	var match bool
-	var err error
 	if withparents {
-		match, err = regexp.MatchString("^[a-zA-Z][/0-9a-zA-Z\\s\\_\\-]*$", r)
+		match = regWithParent.MatchString(r)
 	} else {
-		match, err = regexp.MatchString("^[a-zA-Z][0-9a-zA-Z\\s\\_\\-]*$", r)
-	}
-	if err != nil {
-		panic(err)
+		match = regWithoutParent.MatchString(r)
 	}
 	if !match {
-		fmt.Printf("Name \"%s\" is not available.\nOnly alphanumeric character (0-9,a-z,A-Z) \"-\"_\"and space are allowed in name.\n", r)
-		return nil, false
+		return nil, fmt.Errorf("name \"%s\" is not available.\nOnly alphanumeric character (0-9,a-z,A-Z) \"-\"_\"and space are allowed in name", r)
 	}
 	n := &Name{
 		Raw:         r,
@@ -81,32 +77,18 @@ func MustNew(withparents bool, s ...string) (*Name, bool) {
 
 	n.Title = strings.ToUpper(n.Raw[0:1]) + n.Raw[1:]
 	if len(s) == 0 {
-		return n, true
+		return n, nil
 	}
-	if len(n.ParentsList) > 0 {
-		for _, v := range n.ParentsList {
-			if commonInitialisms[strings.ToUpper(v)] {
-				n.PascalWithParents = n.PascalWithParents + strings.ToUpper(v)
-			} else {
-				n.PascalWithParents = n.PascalWithParents + strings.ToUpper(v[0:1]) + v[1:]
-			}
-		}
-	}
-	for _, v := range s {
-		if commonInitialisms[strings.ToUpper(v)] {
-			n.Pascal = n.Pascal + strings.ToUpper(v)
-		} else {
-			n.Pascal = n.Pascal + strings.ToUpper(v[0:1]) + v[1:]
-		}
-	}
+	n.PascalWithParents = strings.Join(parentsPascalList, "")
+	n.Pascal = listToPascal(s...)
 	n.PascalWithParents = n.PascalWithParents + n.Pascal
 	n.Camel = s[0][0:1] + n.Pascal[1:]
 	n.Lower = strings.ToLower(n.Camel)
 	n.LowerWithParentDotSeparated = n.Lower
 	n.LowerWithParent = n.Lower
 	if len(n.ParentsList) > 0 {
-		n.LowerWithParentDotSeparated = strings.Join(n.ParentsList, ".") + "." + n.LowerWithParentDotSeparated
-		n.LowerWithParent = strings.Join(n.ParentsList, "/") + "/" + n.LowerWithParent
+		n.LowerWithParentDotSeparated = strings.ToLower(strings.Join(parentsPascalList, ".")) + "." + n.LowerWithParentDotSeparated
+		n.LowerWithParent = strings.ToLower(strings.Join(parentsPascalList, "/")) + "/" + n.LowerWithParent
 	}
-	return n, true
+	return n, nil
 }
