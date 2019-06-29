@@ -22,8 +22,8 @@ func TestName(t *testing.T) {
 	if n.LowerPath("123.txt") != "test/123.txt" {
 		t.Fatal(n.LowerPath("123.txt"))
 	}
-	if n.LowerWithParent != "test" {
-		t.Fatal(n.LowerWithParent)
+	if n.LowerWithParentPath != "test" {
+		t.Fatal(n.LowerWithParentPath)
 	}
 	if n.LowerWithParentDotSeparated != "test" {
 		t.Fatal(n.LowerWithParentDotSeparated)
@@ -61,8 +61,8 @@ func TestName(t *testing.T) {
 	if n.LowerPath("123.txt") != "testtest2test3id/123.txt" {
 		t.Fatal(n.LowerPath("123.txt"))
 	}
-	if n.LowerWithParent != "testtest2test3id" {
-		t.Fatal(n.LowerWithParent)
+	if n.LowerWithParentPath != "testtest2test3id" {
+		t.Fatal(n.LowerWithParentPath)
 	}
 	if n.LowerWithParentDotSeparated != "testtest2test3id" {
 		t.Fatal(n.LowerWithParentDotSeparated)
@@ -100,8 +100,8 @@ func TestName(t *testing.T) {
 	if n.LowerPath("123.txt") != "testtest2test3id/123.txt" {
 		t.Fatal(n.LowerPath("123.txt"))
 	}
-	if n.LowerWithParent != "testtest2test3id" {
-		t.Fatal(n.LowerWithParent)
+	if n.LowerWithParentPath != "testtest2test3id" {
+		t.Fatal(n.LowerWithParentPath)
 	}
 	if n.LowerWithParentDotSeparated != "testtest2test3id" {
 		t.Fatal(n.LowerWithParentDotSeparated)
@@ -137,10 +137,10 @@ func TestName(t *testing.T) {
 	if n.LowerPath("123.txt") != "my folder-1_Id/folder2/testtest2test3id/123.txt" {
 		t.Fatal(n.LowerPath("123.txt"))
 	}
-	if n.LowerWithParent != "myfolder1id/folder2/testtest2test3id" {
-		t.Fatal(n.LowerWithParent)
+	if n.LowerWithParentPath != "my folder-1_Id/folder2/testtest2test3id" {
+		t.Fatal(n.LowerWithParentPath)
 	}
-	if n.LowerWithParentDotSeparated != "my folder-1_Id.folder2.testtest2test3id" {
+	if n.LowerWithParentDotSeparated != "myfolder1id.folder2.testtest2test3id" {
 		t.Fatal(n.LowerWithParentDotSeparated)
 	}
 	if n.Parents != "my folder-1_Id/folder2" {
@@ -152,7 +152,7 @@ func TestName(t *testing.T) {
 	if n.Pascal != "TestTest2Test3ID" {
 		t.Fatal(n.Pascal)
 	}
-	if n.PascalWithParents != "My folder-1_IdFolder2TestTest2Test3ID" {
+	if n.PascalWithParents != "MyFolder1IDFolder2TestTest2Test3ID" {
 		t.Fatal(n.PascalWithParents)
 	}
 	if n.Raw != "test Test2-test3_id" {
@@ -160,5 +160,10 @@ func TestName(t *testing.T) {
 	}
 	if n.Title != "Test Test2-test3_id" {
 		t.Fatal(n.Title)
+	}
+
+	n, err = New(false, "my folder-1_Id/folder2/test Test2-test3_id")
+	if err == nil {
+		t.Fatal(err)
 	}
 }

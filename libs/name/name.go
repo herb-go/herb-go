@@ -3,6 +3,7 @@ package name
 import (
 	"fmt"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -16,7 +17,7 @@ type Name struct {
 	Camel                       string
 	Pascal                      string
 	LowerWithParentDotSeparated string
-	LowerWithParent             string
+	LowerWithParentPath         string
 	PascalWithParents           string
 }
 
@@ -48,6 +49,16 @@ func New(withparents bool, s ...string) (*Name, error) {
 	if all == "" {
 		return &Name{}, nil
 	}
+	var match bool
+	if withparents {
+		match = regWithParent.MatchString(all)
+	} else {
+		match = regWithoutParent.MatchString(all)
+	}
+	if !match {
+		return nil, fmt.Errorf("name \"%s\" is not available.\nOnly alphanumeric character (0-9,a-z,A-Z) \"-\"_\"and space are allowed in name", all)
+	}
+
 	list := strings.Split(all, "/")
 	plist := list[0 : len(list)-1]
 	parentsList := []string{}
@@ -60,15 +71,7 @@ func New(withparents bool, s ...string) (*Name, error) {
 	}
 	r := list[len(list)-1]
 	s = strings.FieldsFunc(r, fieldsep)
-	var match bool
-	if withparents {
-		match = regWithParent.MatchString(r)
-	} else {
-		match = regWithoutParent.MatchString(r)
-	}
-	if !match {
-		return nil, fmt.Errorf("name \"%s\" is not available.\nOnly alphanumeric character (0-9,a-z,A-Z) \"-\"_\"and space are allowed in name", r)
-	}
+
 	n := &Name{
 		Raw:         r,
 		ParentsList: parentsList,
@@ -85,10 +88,10 @@ func New(withparents bool, s ...string) (*Name, error) {
 	n.Camel = s[0][0:1] + n.Pascal[1:]
 	n.Lower = strings.ToLower(n.Camel)
 	n.LowerWithParentDotSeparated = n.Lower
-	n.LowerWithParent = n.Lower
+	n.LowerWithParentPath = n.Lower
 	if len(n.ParentsList) > 0 {
 		n.LowerWithParentDotSeparated = strings.ToLower(strings.Join(parentsPascalList, ".")) + "." + n.LowerWithParentDotSeparated
-		n.LowerWithParent = strings.ToLower(strings.Join(parentsPascalList, "/")) + "/" + n.LowerWithParent
+		n.LowerWithParentPath = filepath.Join(n.Parents, n.LowerWithParentPath)
 	}
 	return n, nil
 }
