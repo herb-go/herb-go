@@ -28,7 +28,7 @@ func (t *Task) Copy(src string, target string) error {
 	if err != nil {
 		return err
 	}
-	t.Files[path.Join(t.TargetFolder, target)] = bs
+	t.Files[target] = bs
 	return nil
 }
 
@@ -37,12 +37,16 @@ func (t *Task) Render(src string, target string, data interface{}) error {
 	if err != nil {
 		return err
 	}
-	bs := []byte{}
-	err = tmpl.Execute(bytes.NewBuffer(bs), data)
+	buf := bytes.NewBuffer([]byte{})
+	err = tmpl.Execute(buf, data)
 	if err != nil {
 		return err
 	}
-	t.Files[path.Join(t.TargetFolder, target)] = bs
+	bs, err := ioutil.ReadAll(buf)
+	if err != nil {
+		return err
+	}
+	t.Files[target] = bs
 	return nil
 }
 func (t *Task) ListFiles() []string {
