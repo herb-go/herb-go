@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"path"
 	"text/template"
+
+	"github.com/herb-go/util"
 )
 
 func NewTask(srcfolder string, targetfolder string) *Task {
@@ -41,5 +43,22 @@ func (t *Task) Render(src string, target string, data interface{}) error {
 		return err
 	}
 	t.Files[path.Join(t.TargetFolder, target)] = bs
+	return nil
+}
+func (t *Task) ListFiles() []string {
+	result := []string{}
+	for k := range t.Files {
+		result = append(result, k)
+	}
+	return result
+}
+func (t *Task) Exec() error {
+	for k := range t.Files {
+		target := path.Join(t.TargetFolder, k)
+		err := ioutil.WriteFile(target, t.Files[k], util.DefaultFileMode)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
