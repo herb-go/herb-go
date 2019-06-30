@@ -3,7 +3,10 @@ package tools
 import (
 	"bytes"
 	"io/ioutil"
+	"os"
 	"path"
+	"path/filepath"
+	"sort"
 	"text/template"
 
 	"github.com/herb-go/util"
@@ -54,11 +57,16 @@ func (t *Task) ListFiles() []string {
 	for k := range t.Files {
 		result = append(result, k)
 	}
+	sort.Strings(result)
 	return result
 }
 func (t *Task) Exec() error {
 	for k := range t.Files {
-		target := path.Join(t.TargetFolder, k)
+		target := filepath.Join(t.TargetFolder, k)
+		targetdir := filepath.Dir(target)
+		if targetdir != "" {
+			os.MkdirAll(targetdir, util.DefaultFolderMode)
+		}
 		err := ioutil.WriteFile(target, t.Files[k], util.DefaultFileMode)
 		if err != nil {
 			return err

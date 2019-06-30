@@ -23,9 +23,13 @@ func TestTask(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = task.Render("/demo1.tmpl", "demo1.txt", renderdata)
+	err = task.Render("/demo1.tmpl", "/output/demo1.txt", renderdata)
 	if err != nil {
 		t.Fatal(err)
+	}
+	files := task.ListFiles()
+	if len(files) != 2 || files[0] != "/demo.txt" || files[1] != "/output/demo1.txt" {
+		t.Fatal(files)
 	}
 	err = task.Exec()
 	if err != nil {
@@ -38,7 +42,7 @@ func TestTask(t *testing.T) {
 	if string(bytes) != "123" {
 		t.Fatal(string(bytes))
 	}
-	bytes, err = ioutil.ReadFile(path.Join(tmpdir, "/demo1.txt"))
+	bytes, err = ioutil.ReadFile(path.Join(tmpdir, "/output/demo1.txt"))
 	if err != nil {
 		t.Fatal(err)
 	}
