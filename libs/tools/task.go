@@ -34,7 +34,15 @@ func (t *Task) Copy(src string, target string) error {
 	t.Files[target] = bs
 	return nil
 }
-
+func (t *Task) CopyFiles(files map[string]string) error {
+	for k := range files {
+		err := t.Copy(k, files[k])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 func (t *Task) Render(src string, target string, data interface{}) error {
 	tmpl, err := template.ParseFiles(path.Join(t.SrcFolder, src))
 	if err != nil {
@@ -52,6 +60,17 @@ func (t *Task) Render(src string, target string, data interface{}) error {
 	t.Files[target] = bs
 	return nil
 }
+
+func (t *Task) RenderFiles(files map[string]string, data interface{}) error {
+	for k := range files {
+		err := t.Render(k, files[k], data)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (t *Task) ListFiles() []string {
 	result := []string{}
 	for k := range t.Files {
