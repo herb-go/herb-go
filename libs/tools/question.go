@@ -53,17 +53,17 @@ func (q *Question) AddAnswer(key string, label string, value interface{}) *Quest
 	return q
 }
 
-func (q *Question) Exec(a *app.Application, conditon bool, result interface{}) error {
+func (q *Question) ExecIf(a *app.Application, conditon bool, result interface{}) error {
 	if conditon == false {
 		return nil
 	}
-	fmt.Fprintln(a.Stdout, q.Description)
+	a.Println(q.Description)
 	if len(q.Answers) == 0 {
 		return nil
 	}
-	fmt.Fprintf(a.Stdout, "Please choose.")
+	a.Printf("Please choose.\r\n")
 	if q.DefaultKey != "" {
-		fmt.Fprintf(a.Stdout, "Default choice is %s .\r\n", q.DefaultKey)
+		a.Printf("Default choice is %s .\r\n", q.DefaultKey)
 	}
 	for _, v := range q.Answers {
 		v.Println(a.Stdout, q.DefaultKey)

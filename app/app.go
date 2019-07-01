@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"os"
 )
@@ -21,6 +22,17 @@ type Application struct {
 	Stdin   io.Reader
 }
 
+func (a *Application) Print(args ...interface{}) (n int, err error) {
+	return fmt.Fprint(a.Stdout, args...)
+}
+
+func (a *Application) Println(args ...interface{}) (n int, err error) {
+	return fmt.Fprintln(a.Stdout, args...)
+}
+
+func (a *Application) Printf(format string, args ...interface{}) (n int, err error) {
+	return fmt.Fprintf(a.Stdout, format, args...)
+}
 func (a *Application) Run() {
 
 }

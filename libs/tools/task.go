@@ -9,6 +9,7 @@ import (
 	"sort"
 	"text/template"
 
+	"github.com/herb-go/herb-go/app"
 	"github.com/herb-go/util"
 )
 
@@ -92,4 +93,28 @@ func (t *Task) Exec() error {
 		}
 	}
 	return nil
+}
+
+func (t *Task) ConfirmIf(a *app.Application, conditon bool) (bool, error) {
+	if !conditon {
+		return true, nil
+	}
+	var result bool
+	files := t.ListFiles()
+	if len(files) == 0 {
+		return true, nil
+	}
+	a.Println("Below files will be installed:")
+	for _, v := range files {
+		a.Println(v)
+	}
+	q := NewQuestion().
+		SetDescription("Install all files?").
+		AddAnswer("y", "Yes", true).
+		AddAnswer("n", "No", false)
+	err := q.ExecIf(a, true, &result)
+	if err != nil {
+		return false, err
+	}
+	return result, nil
 }

@@ -1,10 +1,14 @@
 package tools
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"testing"
+
+	"github.com/herb-go/herb-go/app"
 )
 
 func TestTask(t *testing.T) {
@@ -52,6 +56,12 @@ func TestTask(t *testing.T) {
 }
 
 func TestTaskFiles(t *testing.T) {
+	App := app.NewApplication(app.Config)
+	inputr, inputw, _ := os.Pipe()
+	outputw := bytes.NewBuffer([]byte{})
+	App.Stdin = inputr
+	App.Stdout = outputw
+
 	tmpdir, err := ioutil.TempDir("", "herb-go-test")
 	if err != nil {
 		t.Fatal(err)
@@ -75,6 +85,49 @@ func TestTaskFiles(t *testing.T) {
 	files := task.ListFiles()
 	if len(files) != 4 || files[0] != "/demo.txt" || files[1] != "/demo2.txt" || files[2] != "/output/demo1.txt" || files[3] != "/output/demo3.txt" {
 		t.Fatal(files)
+	}
+
+	result, err := task.ConfirmIf(App, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result != true {
+		t.Fatal(result)
+	}
+	go func() {
+		_, err = inputw.Write([]byte("n\n"))
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+	result, err = task.ConfirmIf(App, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result != false {
+		t.Fatal(result)
+	}
+	go func() {
+		_, err = inputw.Write([]byte("y\n"))
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	bs, err := ioutil.ReadAll(outputw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	output := string(bs)
+	if !strings.Contains(output, "/demo.txt") || !strings.Contains(output, "/demo2.txt") || !strings.Contains(output, "/output/demo1.txt") || !strings.Contains(output, "/output/demo3.txt") {
+		t.Fatal(output)
+	}
+	result, err = task.ConfirmIf(App, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result != true {
+		t.Fatal(result)
 	}
 	err = task.Exec()
 	if err != nil {

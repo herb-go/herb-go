@@ -18,7 +18,7 @@ func TestQuestion(t *testing.T) {
 	App.Stdin = inputr
 	App.Stdout = outputw
 	question := NewQuestion()
-	err := question.Exec(App, true, &result)
+	err := question.ExecIf(App, true, &result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestQuestion(t *testing.T) {
 		AddAnswer("0", "select0", "result0").
 		AddAnswer("1", "select1", "result1").
 		SetDefaultKey("0")
-	err = question.Exec(App, false, nil)
+	err = question.ExecIf(App, false, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func TestQuestion(t *testing.T) {
 		}
 	}()
 
-	err = question.Exec(App, true, &result)
+	err = question.ExecIf(App, true, &result)
 	outputs, err := ioutil.ReadAll(outputw)
 	if err != nil {
 		t.Fatal(err)
@@ -68,7 +68,7 @@ func TestQuestion(t *testing.T) {
 		}
 	}()
 
-	err = question.Exec(App, true, &result)
+	err = question.ExecIf(App, true, &result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func TestQuestion(t *testing.T) {
 		}
 	}()
 
-	err = question.Exec(App, true, &result)
+	err = question.ExecIf(App, true, &result)
 	if err == nil {
 		t.Fatal(err)
 	}
