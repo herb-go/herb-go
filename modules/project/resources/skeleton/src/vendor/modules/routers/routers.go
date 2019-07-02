@@ -2,7 +2,7 @@ package routers
 
 import (
 	"modules/app"
-
+	//"modules/actions"
 	"github.com/herb-go/herb/file/simplehttpserver"
 	"github.com/herb-go/herb/middleware/router"
 	"github.com/herb-go/herb/middleware/router/httprouter"
@@ -19,7 +19,7 @@ func New() router.Router {
 	if app.Assets.URLPrefix != "" {
 		Router.StripPrefix(app.Assets.URLPrefix).
 			Use(AssestsMiddlewares()...).
-			HandleFunc(simplehttpserver.ServeFolder(util.Resource(app.Assets.Location)))
+			HandleFunc(simplehttpserver.ServeFolder(util.Resources(app.Assets.Location)))
 	}
 	var RouterAPI = newAPIRouter()
 	Router.StripPrefix("/api").

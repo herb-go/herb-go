@@ -13,9 +13,9 @@ import (
 var initJetViews = func() {
 	oc := render.NewOptionCommon()
 	oc.Engine = jet.Engine
-	oc.ViewRoot = util.Resource("/template.jet")
+	oc.ViewRoot = util.Resources("/template.jet")
 	Render.Init(oc)
-	config.RegisterLoaderAndWatch(util.Resource("/template.jet/views.toml"), func(path string) {
+	config.RegisterLoaderAndWatch(util.ResourcesFile("/template.jet/views.toml"), func(path util.FileObject) {
 		option := render.ViewsOptionCommon{}
 		tomlconfig.MustLoad(path, &option)
 		if app.Development.Debug {

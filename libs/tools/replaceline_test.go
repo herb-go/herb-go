@@ -7,7 +7,7 @@ import (
 )
 
 func TestReplaceLine(t *testing.T) {
-	data := "test\r\n    test\r\n      test2"
+	data := "test\r\n\t    test\r\n      test2"
 	data1 := "    test1\r\n    test1\r\n      test2"
 	data2 := "    test1\r\n    test1\r\ntest2!"
 	file, err := ioutil.TempFile("", "herbtest*")

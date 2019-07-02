@@ -13,9 +13,9 @@ import (
 var initTmplViews = func() {
 	oc := render.NewOptionCommon()
 	oc.Engine = gotemplate.Engine
-	oc.ViewRoot = util.Resource("/template.tmpl")
+	oc.ViewRoot = util.Resources("/template.tmpl")
 	Render.Init(oc)
-	config.RegisterLoaderAndWatch(util.Resource("/template.tmpl/views.toml"), func(path string) {
+	config.RegisterLoaderAndWatch(util.ResourcesFile("/template.tmpl/views.toml"), func(path util.FileObject) {
 		option := render.ViewsOptionCommon{}
 		tomlconfig.MustLoad(path, &option)
 		if app.Development.Debug {

@@ -10,7 +10,7 @@ import (
 var Website = commonconfig.WebsiteConfig{}
 
 func init() {
-	config.RegisterLoader(util.Constants("/website.toml"), func(configpath string) {
+	config.RegisterLoader(util.ConstantsFile("/website.toml"), func(configpath util.FileObject) {
 		util.Must(tomlconfig.Load(configpath, &Website))
 	})
 }

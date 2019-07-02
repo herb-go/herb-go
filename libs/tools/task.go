@@ -18,6 +18,7 @@ func NewTask(srcfolder string, targetfolder string) *Task {
 		SrcFolder:    srcfolder,
 		TargetFolder: targetfolder,
 		Files:        map[string][]byte{},
+		Jobs:         []func() error{},
 	}
 }
 
@@ -25,6 +26,7 @@ type Task struct {
 	SrcFolder    string
 	TargetFolder string
 	Files        map[string][]byte
+	Jobs         []func() error
 }
 
 func (t *Task) Copy(src string, target string) error {
@@ -37,7 +39,7 @@ func (t *Task) Copy(src string, target string) error {
 }
 func (t *Task) CopyFiles(files map[string]string) error {
 	for k := range files {
-		err := t.Copy(k, files[k])
+		err := t.Copy(files[k], k)
 		if err != nil {
 			return err
 		}
@@ -64,7 +66,7 @@ func (t *Task) Render(src string, target string, data interface{}) error {
 
 func (t *Task) RenderFiles(files map[string]string, data interface{}) error {
 	for k := range files {
-		err := t.Render(k, files[k], data)
+		err := t.Render(files[k], k, data)
 		if err != nil {
 			return err
 		}
@@ -88,6 +90,12 @@ func (t *Task) Exec() error {
 			os.MkdirAll(targetdir, util.DefaultFolderMode)
 		}
 		err := ioutil.WriteFile(target, t.Files[k], util.DefaultFileMode)
+		if err != nil {
+			return err
+		}
+	}
+	for _, v := range t.Jobs {
+		err := v()
 		if err != nil {
 			return err
 		}
@@ -117,4 +125,8 @@ func (t *Task) ConfirmIf(a *app.Application, conditon bool) (bool, error) {
 		return false, err
 	}
 	return result, nil
+}
+
+func (t *Task) AddJob(jobs ...func() error) {
+	t.Jobs = append(t.Jobs, jobs...)
 }

@@ -9,10 +9,10 @@ import (
 
 func initMiddlewareErrorPage() {
 	MiddlewareErrorPage.OnStatus(404, func(w http.ResponseWriter, r *http.Request, status int) {
-		views.Render.MustHTMLFile(w, util.Resource("errorpages", "404.html"), 404)
+		views.Render.MustHTMLFile(w, util.Resources("errorpages", "404.html"), 404)
 	})
 	MiddlewareErrorPage.OnError(func(w http.ResponseWriter, r *http.Request, status int) {
-		views.Render.MustHTMLFile(w, util.Resource("errorpages", "500.html"), status)
+		views.Render.MustHTMLFile(w, util.Resources("errorpages", "500.html"), status)
 	})
 	MiddlewareErrorPage.IgnoreStatus(422)
 	if util.Debug {

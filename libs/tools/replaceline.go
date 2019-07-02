@@ -19,17 +19,18 @@ func ReplaceLine(path string, from string, to string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	lines := strings.Split(string(data), "\r\n")
+	lines := strings.Split(string(data), "\n")
 	var line string
 	for k := range lines {
 		line = lines[k]
+		if len(line) > 0 && line[len(line)-1] == '\r' {
+			line = line[:len(line)-1]
+		}
 		if strings.TrimSpace(line) == from {
 			found = true
-			if line != "" {
-				lines[k] = to
-			}
+			line = to
 		}
-
+		lines[k] = line
 	}
 	if found {
 		output := strings.Join(lines, "\r\n")

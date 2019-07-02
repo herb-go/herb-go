@@ -12,6 +12,7 @@ import (
 )
 
 func TestTask(t *testing.T) {
+	var jobsoutput = ""
 	tmpdir, err := ioutil.TempDir("", "herb-go-test")
 	if err != nil {
 		t.Fatal(err)
@@ -35,6 +36,14 @@ func TestTask(t *testing.T) {
 	if len(files) != 2 || files[0] != "/demo.txt" || files[1] != "/output/demo1.txt" {
 		t.Fatal(files)
 	}
+	task.AddJob(func() error {
+		jobsoutput = jobsoutput + "job1"
+		return nil
+	})
+	task.AddJob(func() error {
+		jobsoutput = jobsoutput + "job2"
+		return nil
+	})
 	err = task.Exec()
 	if err != nil {
 		t.Fatal(err)
@@ -52,6 +61,9 @@ func TestTask(t *testing.T) {
 	}
 	if string(bytes) != "data" {
 		t.Fatal(string(bytes))
+	}
+	if jobsoutput != "job1job2" {
+		t.Fatal(jobsoutput)
 	}
 }
 
@@ -74,11 +86,19 @@ func TestTaskFiles(t *testing.T) {
 		"data2": "data2",
 	}
 	task := NewTask(path.Join("./", "testdata"), tmpdir)
+	result, err := task.ConfirmIf(App, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result != true {
+		t.Fatal(result)
+	}
+
 	err = task.CopyFiles(map[string]string{"/demo.txt": "/demo.txt", "/demo2.txt": "/demo2.txt"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = task.RenderFiles(map[string]string{"/demo1.tmpl": "/output/demo1.txt", "/demo3.tmpl": "/output/demo3.txt"}, renderdata)
+	err = task.RenderFiles(map[string]string{"/output/demo1.txt": "/demo1.tmpl", "/output/demo3.txt": "/demo3.tmpl"}, renderdata)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +107,7 @@ func TestTaskFiles(t *testing.T) {
 		t.Fatal(files)
 	}
 
-	result, err := task.ConfirmIf(App, false)
+	result, err = task.ConfirmIf(App, false)
 	if err != nil {
 		t.Fatal(err)
 	}

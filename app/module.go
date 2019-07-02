@@ -5,7 +5,7 @@ type Module interface {
 	Cmd() string
 	Help() string
 	Desc() string
-	Exec(*Application) error
+	Exec(a *Application, args []string) error
 }
 
 type BasicModule struct {
@@ -26,7 +26,7 @@ func (m BasicModule) Help() string {
 func (m BasicModule) Desc() string {
 	return ""
 }
-func (m BasicModule) Exec(*Application) error {
+func (m BasicModule) Exec(a *Application, args []string) error {
 	return nil
 }
 

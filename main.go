@@ -10,7 +10,7 @@ import (
 func main() {
 	App := app.NewApplication(app.Config)
 	App.Args = os.Args
-	App.Envs = os.Environ()
+	App.Env = app.OsEnv
 	App.Modules = app.RegisteredModules
 	App.Run()
 }
