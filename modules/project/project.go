@@ -5,8 +5,8 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/herb-go/herb-go/app"
-	"github.com/herb-go/herb-go/libs/tools"
+	"github.com/herb-go/util/cli/app"
+	"github.com/herb-go/util/cli/app/tools"
 )
 
 type Project struct {

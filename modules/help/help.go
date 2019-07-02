@@ -1,6 +1,6 @@
 package help
 
-import "github.com/herb-go/herb-go/app"
+import "github.com/herb-go/util/cli/app"
 
 type Help struct {
 	app.BasicModule
