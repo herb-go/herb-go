@@ -1,7 +1,6 @@
 package project
 
 import (
-	"flag"
 	"fmt"
 	"path"
 	"path/filepath"
@@ -31,11 +30,15 @@ func (m *Project) Cmd() string {
 	return "new"
 }
 
-func (m *Project) Help() string {
-	return ""
+func (m *Project) Help(a *app.Application) string {
+	m.Init(a, &[]string{})
+	help := `Usage %s new <options> [path] .
+Create new app in given path.
+`
+	return fmt.Sprintf(help, a.Config.Cmd)
 }
 
-func (m *Project) Desc() string {
+func (m *Project) Desc(a *app.Application) string {
 	return ""
 }
 
@@ -46,20 +49,22 @@ var projectTypeQuestion = tools.NewQuestion().
 	AddAnswer("2", "website", ProjectTypeWebsite).
 	SetDefaultKey("1")
 var TemplateEngineQuestion = tools.NewQuestion().
-	SetDescription("Project type of app").
+	SetDescription("Project engine of website").
 	AddAnswer("0", "GO template", TemplateEngineGoTemple).
 	AddAnswer("1", "Jet template", TemplateEngineJet).
 	SetDefaultKey("0")
 
 func (m *Project) Init(a *app.Application, args *[]string) error {
-	flg := &flag.FlagSet{}
-	flg.StringVar(&m.ProjectType, "type", "", "project type.\"app\",\"api\" or \"website\"")
-	flg.StringVar(&m.TemplateEngine, "template", "", "website template.\"tmpl\" or \"jet\"")
-	err := flg.Parse(*args)
+	if m.FlagSet().Parsed() {
+		return nil
+	}
+	m.FlagSet().StringVar(&m.ProjectType, "type", "", "project type.\"app\",\"api\" or \"website\"")
+	m.FlagSet().StringVar(&m.TemplateEngine, "template", "", "website template.\"tmpl\" or \"jet\"")
+	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
 	}
-	*args = flg.Args()
+	*args = m.FlagSet().Args()
 	return nil
 }
 func (m *Project) Question(a *app.Application) error {
@@ -78,6 +83,10 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	if len(args) == 0 {
+		a.PrintModuleHelp(m)
+		return nil
+	}
 	appPath := path.Join(a.Cwd, args[0])
 	result, err := tools.FileExists(appPath)
 	if err != nil {
@@ -86,10 +95,19 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
 	}
+	err = tools.ErrorIfStringFieldNotInList("type", m.ProjectType, "", ProjectTypeAPI, ProjectTypeApp, ProjectTypeWebsite)
+	if err != nil {
+		return err
+	}
+	err = tools.ErrorIfStringFieldNotInList("template", m.TemplateEngine, "", TemplateEngineGoTemple, TemplateEngineGoTemple)
+	if err != nil {
+		return err
+	}
 	err = m.Question(a)
 	if err != nil {
 		return err
 	}
+
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
