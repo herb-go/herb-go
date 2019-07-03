@@ -1,6 +1,7 @@
 package project
 
 import (
+	"flag"
 	"fmt"
 	"path"
 	"path/filepath"
@@ -9,8 +10,17 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
+const ProjectTypeApp = "app"
+const ProjectTypeAPI = "api"
+const ProjectTypeWebsite = "website"
+
+const TemplateEngineGoTemple = "tmpl"
+const TemplateEngineJet = "jet"
+
 type Project struct {
 	app.BasicModule
+	ProjectType    string
+	TemplateEngine string
 }
 
 func (m *Project) ID() string {
@@ -28,7 +38,46 @@ func (m *Project) Help() string {
 func (m *Project) Desc() string {
 	return ""
 }
+
+var projectTypeQuestion = tools.NewQuestion().
+	SetDescription("Project type of app").
+	AddAnswer("0", "app", ProjectTypeApp).
+	AddAnswer("1", "api", ProjectTypeAPI).
+	AddAnswer("2", "website", ProjectTypeWebsite).
+	SetDefaultKey("1")
+var TemplateEngineQuestion = tools.NewQuestion().
+	SetDescription("Project type of app").
+	AddAnswer("0", "GO template", TemplateEngineGoTemple).
+	AddAnswer("1", "Jet template", TemplateEngineJet).
+	SetDefaultKey("0")
+
+func (m *Project) Init(a *app.Application, args *[]string) error {
+	flg := &flag.FlagSet{}
+	flg.StringVar(&m.ProjectType, "type", "", "project type.\"app\",\"api\" or \"website\"")
+	flg.StringVar(&m.TemplateEngine, "template", "", "website template.\"tmpl\" or \"jet\"")
+	err := flg.Parse(*args)
+	if err != nil {
+		return err
+	}
+	*args = flg.Args()
+	return nil
+}
+func (m *Project) Question(a *app.Application) error {
+	err := projectTypeQuestion.ExecIf(a, m.ProjectType == "", &m.ProjectType)
+	if err != nil {
+		return err
+	}
+	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "", &m.TemplateEngine)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func (m *Project) Exec(a *app.Application, args []string) error {
+	err := m.Init(a, &args)
+	if err != nil {
+		return err
+	}
 	appPath := path.Join(a.Cwd, args[0])
 	result, err := tools.FileExists(appPath)
 	if err != nil {
@@ -36,6 +85,10 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	}
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
+	}
+	err = m.Question(a)
+	if err != nil {
+		return err
 	}
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
@@ -46,28 +99,35 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = createHTTP(a, appPath, task)
-	if err != nil {
-		return err
+	if m.ProjectType == ProjectTypeAPI || m.ProjectType == ProjectTypeWebsite {
+		err = createHTTP(a, appPath, task)
+		if err != nil {
+			return err
+		}
 	}
-	err = createWebsite(a, appPath, task)
-	if err != nil {
-		return err
+	if m.ProjectType == ProjectTypeWebsite {
+		err = createWebsite(a, appPath, task)
+		if err != nil {
+			return err
+		}
 	}
-	// err = createJetEngine(a, appPath, task)
-	// if err != nil {
-	// 	return err
-	// }
-	err = createTmplEngine(a, appPath, task)
-	if err != nil {
-		return err
+	if m.TemplateEngine == TemplateEngineJet {
+		err = createJetEngine(a, appPath, task)
+		if err != nil {
+			return err
+		}
 	}
-	err = task.Exec()
-	if err != nil {
-		return err
+	if m.TemplateEngine == TemplateEngineGoTemple {
+		err = createTmplEngine(a, appPath, task)
+		if err != nil {
+			return err
+		}
 	}
-	a.Printf("App installed in \"%s\"\n", appPath)
-	return nil
+	task.AddJob(func() error {
+		a.Printf("App installed in \"%s\"\n", appPath)
+		return nil
+	})
+	return task.Exec()
 
 }
 
