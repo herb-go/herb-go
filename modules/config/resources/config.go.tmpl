@@ -19,7 +19,7 @@ func init() {
 	//Register loader which will be execute when Config.LoadAll func be called.
 	//You can put your init code after load.
 	//You must panic if any error rasied when init.
-	config.RegisterLoader(util.Configfile("/{{.LowerWithParentDotSeparated}}.toml"),func(configpath util.FileObject) {
+	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"),func(configpath util.FileObject) {
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
 	})
 }
