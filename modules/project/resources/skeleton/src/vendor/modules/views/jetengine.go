@@ -24,5 +24,4 @@ var initJetViews = func() {
 		Render.MustInitViews(option)
 	}).Load()
 	// jet.Engine.RegisterFunc("date", dateFormat)
-
 }

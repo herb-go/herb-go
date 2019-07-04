@@ -24,5 +24,4 @@ var initTmplViews = func() {
 		Render.MustInitViews(option)
 	}).Load()
 	// gotemplate.Engine.RegisterFunc("date", dateFormat)
-
 }

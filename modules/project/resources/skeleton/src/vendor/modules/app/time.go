@@ -7,7 +7,7 @@ import (
 	"github.com/herb-go/util/config/tomlconfig"
 )
 
-//Time app time settigs
+//Time app time settings
 var Time = commonconfig.TimeConfig{}
 
 func init() {

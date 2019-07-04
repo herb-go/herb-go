@@ -6,9 +6,12 @@ import (
 	"github.com/herb-go/herb/render"
 )
 
+//SkinPath website skin path
 func SkinPath() string {
 	return app.Assets.URLPrefix + "/skin/"
 }
+
+//NewRenderData create new render data
 func NewRenderData(title string, additionalRenderData ...render.Data) render.Data {
 	data := render.Data{}
 	data.Set("Name", app.Website.Name)
@@ -23,4 +26,5 @@ func NewRenderData(title string, additionalRenderData ...render.Data) render.Dat
 	return data
 }
 
+//ViewIndex index view
 var ViewIndex = Render.GetView("index")

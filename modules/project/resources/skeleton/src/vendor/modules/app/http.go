@@ -9,12 +9,14 @@ import (
 	"github.com/herb-go/util/httpserver"
 )
 
+//HTTPConfig app http config struct
 type HTTPConfig struct {
 	Forwarded forwarded.Middleware
 	Config    httpserver.Config
 	Headers   misc.Headers
 }
 
+//HTTP app http config
 var HTTP = &HTTPConfig{
 	Forwarded: forwarded.Middleware{},
 	Config:    httpserver.Config{},

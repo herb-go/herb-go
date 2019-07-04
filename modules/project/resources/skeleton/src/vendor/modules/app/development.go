@@ -7,6 +7,7 @@ import (
 	"github.com/herb-go/util/config/tomlconfig"
 )
 
+//Development app development settings.
 var Development = commonconfig.DevelopmentConfig{}
 
 func init() {

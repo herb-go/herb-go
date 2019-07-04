@@ -3,6 +3,7 @@ package actions
 import "net/http"
 import "modules/views"
 
+//IndexAction website index action
 var IndexAction = func(w http.ResponseWriter, r *http.Request) {
 	data := views.NewRenderData("Index")
 	data["Data"] = "data"

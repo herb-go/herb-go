@@ -7,10 +7,11 @@ import (
 	"github.com/herb-go/util/config/tomlconfig"
 )
 
-var Assets = store.Assets{}
+//Assets assets file store.
+var Assets = &store.Assets{}
 
 func init() {
 	config.RegisterLoader(util.ConstantsFile("/assets.toml"), func(configpath util.FileObject) {
-		util.Must(tomlconfig.Load(configpath, &Assets))
+		util.Must(tomlconfig.Load(configpath, Assets))
 	})
 }

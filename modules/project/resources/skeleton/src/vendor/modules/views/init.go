@@ -12,6 +12,7 @@ const Modulename = "200View"
 //Render html templete render
 var Render = render.New()
 
+//ViewsInitiator views initiator
 var ViewsInitiator func()
 
 func init() {

@@ -3,6 +3,7 @@ package project
 var AppSkeleton = map[string]string{
 	"/.gitignore":                                       "/skeleton/.gitignore",
 	"/appdata/readme.md":                                "/skeleton/appdata/readme.md",
+	"/config/readme.md":                                 "/skeleton/config/readme.md",
 	"/config/development.toml":                          "/skeleton/config/development.toml",
 	"/resources/data/readme.md":                         "/skeleton/resources/data/readme.md",
 	"/src/test/config/readme.md":                        "/skeleton/src/test/config/readme.md",

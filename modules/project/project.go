@@ -39,7 +39,7 @@ Create new app in given path.
 }
 
 func (m *Project) Desc(a *app.Application) string {
-	return ""
+	return "Create new app in given path"
 }
 
 var projectTypeQuestion = tools.NewQuestion().
@@ -72,7 +72,7 @@ func (m *Project) Question(a *app.Application) error {
 	if err != nil {
 		return err
 	}
-	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "", &m.TemplateEngine)
+	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "" && m.ProjectType == ProjectTypeWebsite, &m.TemplateEngine)
 	if err != nil {
 		return err
 	}
@@ -128,19 +128,20 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		if err != nil {
 			return err
 		}
-	}
-	if m.TemplateEngine == TemplateEngineJet {
-		err = createJetEngine(a, appPath, task)
-		if err != nil {
-			return err
+		if m.TemplateEngine == TemplateEngineJet {
+			err = createJetEngine(a, appPath, task)
+			if err != nil {
+				return err
+			}
+		}
+		if m.TemplateEngine == TemplateEngineGoTemple {
+			err = createTmplEngine(a, appPath, task)
+			if err != nil {
+				return err
+			}
 		}
 	}
-	if m.TemplateEngine == TemplateEngineGoTemple {
-		err = createTmplEngine(a, appPath, task)
-		if err != nil {
-			return err
-		}
-	}
+
 	task.AddJob(func() error {
 		a.Printf("App installed in \"%s\"\n", appPath)
 		return nil
