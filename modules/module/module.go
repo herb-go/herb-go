@@ -110,8 +110,8 @@ func (m *Module) Render(a *app.Application, appPath string, task *tools.Task, n 
 	return task.Render("module.go.tmpl", filepath.Join("src", "vendor", "modules", n.LowerPath("init.go")), map[string]interface{}{"Name": n, "Level": m.Level})
 }
 
-var ModuelModule = &Module{}
+var ModuleModule = &Module{}
 
 func init() {
-	app.Register(ModuelModule)
+	app.Register(ModuleModule)
 }
