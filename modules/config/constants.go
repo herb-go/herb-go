@@ -12,21 +12,21 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-type Constant struct {
+type Constants struct {
 	app.BasicModule
 	Watch       bool
 	AutoConfirm bool
 }
 
-func (m *Constant) ID() string {
+func (m *Constants) ID() string {
 	return "github.com/herb-go/herb-go/modules/config.constants"
 }
 
-func (m *Constant) Cmd() string {
+func (m *Constants) Cmd() string {
 	return "constants"
 }
 
-func (m *Constant) Help(a *app.Application) string {
+func (m *Constants) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
 	help := `Usage %s constants [name].
 Create new constant file and code.
@@ -37,11 +37,11 @@ File below will be created:
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
 
-func (m *Constant) Desc(a *app.Application) string {
+func (m *Constants) Desc(a *app.Application) string {
 	return "Create new constants file and code"
 }
 
-func (m *Constant) Init(a *app.Application, args *[]string) error {
+func (m *Constants) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
@@ -55,10 +55,10 @@ func (m *Constant) Init(a *app.Application, args *[]string) error {
 	*args = m.FlagSet().Args()
 	return nil
 }
-func (m *Constant) Question(a *app.Application) error {
+func (m *Constants) Question(a *app.Application) error {
 	return nil
 }
-func (m *Constant) Exec(a *app.Application, args []string) error {
+func (m *Constants) Exec(a *app.Application, args []string) error {
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (m *Constant) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Constant) Render(a *app.Application, appPath string, task *tools.Task, n *name.Name) error {
+func (m *Constants) Render(a *app.Application, appPath string, task *tools.Task, n *name.Name) error {
 	var configgopath string
 	if m.Watch {
 		configgopath = "constantswatch.go.tmpl"
@@ -119,8 +119,8 @@ func (m *Constant) Render(a *app.Application, appPath string, task *tools.Task, 
 	return task.RenderFiles(filesToRender, n)
 }
 
-var ConstantModule = &Constant{}
+var ConstantsModule = &Constants{}
 
 func init() {
-	app.Register(ConstantModule)
+	app.Register(ConstantsModule)
 }
