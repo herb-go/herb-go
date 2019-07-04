@@ -6,8 +6,7 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
-	"github.com/herb-go/herb-go/config"
-
+	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
 )
@@ -71,7 +70,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = config.ErrorIfNotInAppFolder(a.Cwd)
+	err = project.ErrorIfNotInAppFolder(a.Cwd)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package config
+package project
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 
 var ErrNotInHerbGoAPPFolder = errors.New("current folder is not a herb-go app folder")
 
-func ErrorIfNotInAppFolder(path string) error {
+var ErrorIfNotInAppFolder = func(path string) error {
 	var FilesMustExists = [][]string{
 		[]string{path, "src", "main.go"},
 	}
