@@ -40,7 +40,9 @@ File below will be created:
 func (m *Config) Desc(a *app.Application) string {
 	return "Create new config file and code"
 }
-
+func (m *Config) Group(a *app.Application) string {
+	return "Config"
+}
 func (m *Config) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil

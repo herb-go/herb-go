@@ -39,7 +39,9 @@ File below will be created:
 func (m *Constants) Desc(a *app.Application) string {
 	return "Create new constants file and code"
 }
-
+func (m *Constants) Group(a *app.Application) string {
+	return "Config"
+}
 func (m *Constants) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil

@@ -1,10 +1,57 @@
 package help
 
 import (
+	"sort"
 	"fmt"
 
 	"github.com/herb-go/util/cli/app"
 )
+
+type helpGroup struct{
+	Group string
+	Value string
+}
+
+type helpGroups []*helpGroup
+
+func (g *helpGroups)        Len() int{
+	return len(*g)
+}
+func (g *helpGroups)        Less(i, j int) bool{
+	return (*g)[i].Group<(*g)[j].Group
+}
+func (g *helpGroups)        Swap(i, j int){
+	t:=(*g)[i]
+	(*g)[i]=(*g)[j]
+	(*g)[j]=t
+}
+func (g *helpGroups) Add(group,value string){
+	for k:=range *g{
+		if (*g)[k].Group==group{
+		 	(*g)[k].Value = (*g)[k].Value  +  value
+		 	return
+		}
+	}
+	(*g)=append(*g,&helpGroup{Group:group,Value:value})
+}
+
+
+func (g *helpGroups) String() string{
+	var result string
+	sort.Sort(g)
+
+	for _,v:=range (*g){
+		if v.Group!=""{
+			result += fmt.Sprintf("[%s]\r\n",v.Group)
+		}
+		result+=v.Value
+	}
+	return result
+}
+
+func newHelpGroups()*helpGroups{
+	return &helpGroups{}
+}
 
 type Help struct {
 	app.BasicModule
@@ -18,13 +65,16 @@ func (m *Help) ID() string {
 	return "github.com/herb-go/herb-go/modules/help"
 }
 
+
 func (m *Help) Help(a *app.Application) string {
-	help := "Usage %s help [command]\r\n"
+	help := fmt.Sprintf("Usage %s help [command]\r\n",a.Config.Cmd)
 	help += "Command list:\r\n"
+	groups:=newHelpGroups()
 	for _, v := range *a.Modules {
-		help += fmt.Sprintf("  %s - %s\r\n", v.Cmd(), v.Desc(a))
+		groups.Add(v.Group(a),fmt.Sprintf("  %s - %s\r\n", v.Cmd(), v.Desc(a)))
 	}
-	return fmt.Sprintf(help, a.Config.Cmd)
+	help+=groups.String()
+	return help
 }
 
 func (m *Help) Desc(a *app.Application) string {

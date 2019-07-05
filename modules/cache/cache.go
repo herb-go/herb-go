@@ -42,6 +42,11 @@ func (m *Cache) Desc(a *app.Application) string {
 	return "Create new cache code and config"
 }
 
+func (m *Cache) Group(a *app.Application) string {
+	return "Data"
+}
+
+
 func (m *Cache) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
