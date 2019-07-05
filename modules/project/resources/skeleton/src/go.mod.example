@@ -1,7 +1,5 @@
 module {{.Raw}}
 
-//go 1.13
-
 replace modules => ./modules
 
 require (
