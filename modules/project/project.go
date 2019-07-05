@@ -34,10 +34,14 @@ func (m *Project) Cmd() string {
 
 func (m *Project) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
-	help := `Usage %s new <options> [path] .
-Create new app in given path.
+	help := `Usage %s new <options> [projectname] .
+Create new app with given projectname in current folder.
+
+Folder name will filter all host and dir in porject name.
+For example,command "%s new github.com/herb-go/newapp" will create folder ./newapp.
+
 `
-	return fmt.Sprintf(help, a.Config.Cmd)
+	return fmt.Sprintf(help, a.Config.Cmd,a.Config.Cmd)
 }
 
 func (m *Project) Desc(a *app.Application) string {
