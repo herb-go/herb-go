@@ -72,7 +72,7 @@ func (m *Cache) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = project.ErrorIfNotInAppFolder(a.Cwd)
+	mp,err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (m *Cache) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/cache/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, task, n)
+	err = m.Render(a, a.Cwd, mp,task, n)
 	if err != nil {
 		return err
 	}
@@ -106,13 +106,13 @@ func (m *Cache) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Cache) Render(a *app.Application, appPath string, task *tools.Task, n *name.Name) error {
+func (m *Cache) Render(a *app.Application, appPath string, mp string,task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                        "cache.toml.tmpl",
 		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):     "cache.go.tmpl",
-		filepath.Join("src", "vendor", "modules", n.LowerPath("init.go")):                     "cache.modules.go.tmpl",
-		filepath.Join("src", "vendor", "modules", "app", n.LowerWithParentDotSeparated+".go"): "cache.go.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                     "cache.modules.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"): "cache.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

@@ -70,7 +70,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = project.ErrorIfNotInAppFolder(a.Cwd)
+	mp,err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/config/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, task, n)
+	err = m.Render(a, a.Cwd,mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Constants) Render(a *app.Application, appPath string, task *tools.Task, n *name.Name) error {
+func (m *Constants) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
 	var configgopath string
 	if m.Watch {
 		configgopath = "constantswatch.go.tmpl"
@@ -113,7 +113,7 @@ func (m *Constants) Render(a *app.Application, appPath string, task *tools.Task,
 	}
 	filesToRender := map[string]string{
 		filepath.Join("system", "constants", n.LowerWithParentDotSeparated+".toml"):           "config.toml.tmpl",
-		filepath.Join("src", "vendor", "modules", "app", n.LowerWithParentDotSeparated+".go"): configgopath,
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"): configgopath,
 	}
 	return task.RenderFiles(filesToRender, n)
 }

@@ -20,6 +20,7 @@ type Project struct {
 	app.BasicModule
 	ProjectType    string
 	TemplateEngine string
+	GoMod bool
 }
 
 func (m *Project) ID() string {
@@ -60,6 +61,7 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	}
 	m.FlagSet().StringVar(&m.ProjectType, "type", "", "project type.\"app\",\"api\" or \"website\"")
 	m.FlagSet().StringVar(&m.TemplateEngine, "template", "", "website template.\"tmpl\" or \"jet\"")
+	m.FlagSet().BoolVar(&m.GoMod, "gomod",false, "use go mod folder struct")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -79,6 +81,7 @@ func (m *Project) Question(a *app.Application) error {
 	return nil
 }
 func (m *Project) Exec(a *app.Application, args []string) error {
+	mp:="src/vendor/modules"
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
@@ -113,29 +116,29 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	task := tools.NewTask(filepath.Join(app, "/modules/project/resources"), appPath)
-	err = createApp(a, appPath, task)
+	err = m.createApp(a, appPath, mp,task)
 	if err != nil {
 		return err
 	}
 	if m.ProjectType == ProjectTypeAPI || m.ProjectType == ProjectTypeWebsite {
-		err = createHTTP(a, appPath, task)
+		err = m.createHTTP(a, appPath,mp, task)
 		if err != nil {
 			return err
 		}
 	}
 	if m.ProjectType == ProjectTypeWebsite {
-		err = createWebsite(a, appPath, task)
+		err = m.createWebsite(a, appPath,mp, task)
 		if err != nil {
 			return err
 		}
 		if m.TemplateEngine == TemplateEngineJet {
-			err = createJetEngine(a, appPath, task)
+			err = m.createJetEngine(a, appPath,mp, task)
 			if err != nil {
 				return err
 			}
 		}
 		if m.TemplateEngine == TemplateEngineGoTemple {
-			err = createTmplEngine(a, appPath, task)
+			err = m.createTmplEngine(a, appPath, mp,task)
 			if err != nil {
 				return err
 			}
@@ -150,16 +153,16 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 
 }
 
-func createApp(a *app.Application, appPath string, task *tools.Task) error {
-	err := task.CopyFiles(AppSkeleton)
+func (m *Project)  createApp(a *app.Application, appPath string, mp string,task *tools.Task) error {
+	err := task.CopyFiles(AppSkeleton(mp))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func createHTTP(a *app.Application, appPath string, task *tools.Task) error {
-	err := task.CopyFiles(HTTPSkeleton)
+func (m *Project)  createHTTP(a *app.Application, appPath string,mp string, task *tools.Task) error {
+	err := task.CopyFiles(HTTPSkeleton(mp))
 	if err != nil {
 		return err
 	}
@@ -179,8 +182,8 @@ func createHTTP(a *app.Application, appPath string, task *tools.Task) error {
 	})
 	return nil
 }
-func createWebsite(a *app.Application, appPath string, task *tools.Task) error {
-	err := task.CopyFiles(WebsiteSkeleton)
+func (m *Project)  createWebsite(a *app.Application, appPath string, mp string,task *tools.Task) error {
+	err := task.CopyFiles(WebsiteSkeleton(mp))
 	if err != nil {
 		return err
 	}
@@ -209,8 +212,8 @@ func createWebsite(a *app.Application, appPath string, task *tools.Task) error {
 	return nil
 }
 
-func createJetEngine(a *app.Application, appPath string, task *tools.Task) error {
-	err := task.CopyFiles(JetEngineSkeleton)
+func (m *Project)  createJetEngine(a *app.Application, appPath string, mp string,task *tools.Task) error {
+	err := task.CopyFiles(JetEngineSkeleton(mp))
 	if err != nil {
 		return err
 	}
@@ -232,8 +235,8 @@ func createJetEngine(a *app.Application, appPath string, task *tools.Task) error
 	return nil
 }
 
-func createTmplEngine(a *app.Application, appPath string, task *tools.Task) error {
-	err := task.CopyFiles(TmplEngineSkeleton)
+func (m *Project)  createTmplEngine(a *app.Application, appPath string, mp string,task *tools.Task) error {
+	err := task.CopyFiles(TmplEngineSkeleton(mp))
 	if err != nil {
 		return err
 	}
