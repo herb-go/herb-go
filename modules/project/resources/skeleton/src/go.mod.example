@@ -1,6 +1,6 @@
-module {{.Name}}
+module {{.Raw}}
 
-{{.GoVersion}}
+//go 1.13
 
 replace modules => ./modules
 

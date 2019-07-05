@@ -1,6 +1,7 @@
 package project
 
 import (
+	"github.com/herb-go/util/cli/name"
 	"fmt"
 	"path"
 	"path/filepath"
@@ -90,11 +91,15 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		a.PrintModuleHelp(m)
 		return nil
 	}
-	appPath := path.Join(a.Cwd, args[0])
+	n,err:=name.New(true,args...)
+		if err != nil {
+		return err
+	}
+	appPath := path.Join(a.Cwd, n.Lower)
 	result, err := tools.FileExists(appPath)
 	if err != nil {
 		return err
-	}
+	} 
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
 	}
@@ -116,10 +121,18 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	task := tools.NewTask(filepath.Join(app, "/modules/project/resources"), appPath)
+	if m.GoMod {
+		mp="src/modules"
+		err=task.Render("/skeleton/src/go.mod.example","/src/go.mod",n)
+		if err != nil {
+			return err
+		}
+	}
 	err = m.createApp(a, appPath, mp,task)
 	if err != nil {
 		return err
 	}
+
 	if m.ProjectType == ProjectTypeAPI || m.ProjectType == ProjectTypeWebsite {
 		err = m.createHTTP(a, appPath,mp, task)
 		if err != nil {
