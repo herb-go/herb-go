@@ -7,3 +7,4 @@ import _ "github.com/herb-go/herb-go/modules/module"  //custom module module
 import _ "github.com/herb-go/herb-go/modules/cache"   //cache module
 
 import _ "github.com/herb-go/herb-go/modules/router"   //router module
+import _ "github.com/herb-go/herb-go/modules/event"   //router module

@@ -47,7 +47,9 @@ For example,command "%s new github.com/herb-go/newapp" will create folder ./newa
 func (m *Project) Desc(a *app.Application) string {
 	return "Create new app in given path"
 }
-
+func (m *Project) Group(a *app.Application) string {
+	return "Application"
+}
 var projectTypeQuestion = tools.NewQuestion().
 	SetDescription("Project type of app").
 	AddAnswer("0", "app", ProjectTypeApp).
