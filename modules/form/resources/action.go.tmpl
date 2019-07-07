@@ -1,0 +1,20 @@
+package actions
+
+import (
+	"net/http"
+	
+	"github.com/herb-go/herb/model/formdata"
+	"github.com/herb-go/herb/render"
+
+	"modules/{{.LowerWithParentPath}}/forms"
+)
+
+//Action{{.Pascal}} action that verify {{.Raw}} form in json format.
+func Action{{.Pascal}}(w http.ResponseWriter, r *http.Request) {
+	form := forms.New{{.Pascal}}Form()
+	if formdata.MustValidateJSONRequest(r, form) {
+		render.MustJSON(w, form, 200)
+	} else {
+		formdata.MustRenderErrorsJSON(w, form)
+	}
+}
