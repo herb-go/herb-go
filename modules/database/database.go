@@ -18,7 +18,7 @@ type Database struct {
 }
 
 func (m *Database) ID() string {
-	return "github.com/herb-go/herb-go/modules/router"
+	return "github.com/herb-go/herb-go/modules/database"
 }
 
 func (m *Database) Cmd() string {
@@ -27,7 +27,7 @@ func (m *Database) Cmd() string {
 
 func (m *Database) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
-	help := `Usage %s databse <name>.
+	help := `Usage %s database <name>.
 Create sql database module and config files.
 Default name is "database".
 File below will be created:
