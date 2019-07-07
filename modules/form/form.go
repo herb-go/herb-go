@@ -13,8 +13,8 @@ import (
 var WithActionQuestion = tools.NewQuestion().
 	SetDescription("Do you want to create form validating action").
 	AddAnswer("y", "Yes", true).
-	AddAnswer("m", "No", false).
-	SetDefaultKey("0")
+	AddAnswer("n", "No", false)
+
 
 type Form struct {
 	app.BasicModule
