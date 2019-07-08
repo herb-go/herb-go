@@ -21,7 +21,7 @@ type Member struct {
 	InstallSQLUser    bool
 	InstallCache      bool
 	InstallDatabase bool
-
+	DatabaseInstalled bool
 	AutoConfirm bool
 }
 
@@ -73,7 +73,7 @@ func (m *Member) Init(a *app.Application, args *[]string) error {
 	*args = m.FlagSet().Args()
 	return nil
 }
-func (m *Member) Question(a *app.Application) error {
+func (m *Member) Question(a *app.Application,mp string) error {
 	err:=tools.NewTrueOrFalseQuestion("Do you want to install session module").ExecIf(a,!m.InstallSession,&m.InstallSession)
 	if err!=nil{
 		return err
@@ -87,10 +87,18 @@ func (m *Member) Question(a *app.Application) error {
 		return err
 	}
 	if m.InstallSQLUser{
-	err=tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install user modules manually.").ExecIf(a,!m.InstallDatabase,&m.InstallDatabase)
-	if err!=nil{
-		return err
-	}
+		result,err:=tools.FileExists(filepath.Join(mp,"database", "database.go")) 
+		if err!=nil{
+			return err
+		}
+		if result{
+				m.DatabaseInstalled = true
+		}else{
+			err=tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install user modules manually.").ExecIf(a,!m.InstallDatabase,&m.InstallDatabase)
+			if err!=nil{
+				return err
+			}
+		}
 	}
 	return nil
 }
@@ -119,7 +127,7 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err=m.Question(a)
+	err=m.Question(a,mp)
 	if err!=nil{
 		return err
 	}
@@ -169,6 +177,7 @@ func (m *Member) Render(a *app.Application, appPath string,mp string, task *tool
 		if err!=nil{
 			return err
 		}
+		m.DatabaseInstalled = true
 	}
 	filesToRender := map[string]string{
 		filepath.Join(mp,n.LowerPath(n.Lower+".go")):"member.modules.go.tmpl",
@@ -179,7 +188,7 @@ func (m *Member) Render(a *app.Application, appPath string,mp string, task *tool
 	InstallSession :m.InstallSession,
 	InstallSQLUser :m.InstallSQLUser,
 	InstallCache:m.InstallCache,
-	DatabaseInstalled:m.InstallDatabase,
+	DatabaseInstalled:m.DatabaseInstalled,
 	}
 	return task.RenderFiles(filesToRender, data)
 }
