@@ -7,6 +7,10 @@ import (
 	"github.com/herb-go/util/cli/name"
 
 	"github.com/herb-go/herb-go/modules/project"
+	"github.com/herb-go/herb-go/modules/session"
+	"github.com/herb-go/herb-go/modules/cache"
+	"github.com/herb-go/herb-go/modules/database"
+
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
 )
@@ -17,11 +21,18 @@ type Member struct {
 	InstallSQLUser    bool
 	InstallCache      bool
 	InstallDatabase bool
-	DatabaseInstalled bool
 
 	AutoConfirm bool
 }
 
+type renderData struct {
+	Name *name.Name
+	InstallSession    bool
+	InstallSQLUser    bool
+	InstallCache      bool
+	DatabaseInstalled bool
+
+}
 func (m *Member) ID() string {
 	return "github.com/herb-go/herb-go/modules/member"
 }
@@ -108,8 +119,11 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-
-	task := tools.NewTask(filepath.Join(app, "/modules/database/resources"), a.Cwd)
+	err=m.Question(a)
+	if err!=nil{
+		return err
+	}
+	task := tools.NewTask(filepath.Join(app, "/modules/member/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd,mp, task, n)
 	if err != nil {
@@ -135,14 +149,39 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 }
 
 func (m *Member) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
-
-	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):"database.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):"database.toml.tmpl",
-		filepath.Join(mp,n.LowerPath(n.Lower+".go")):           "database.modules.go.tmpl",
-		filepath.Join(mp,"app", n.LowerWithParentDotSeparated+".go"):           "database.go.tmpl",
+	if m.InstallSession{
+		session.SessionModule.AutoConfirm=true
+		err:=session.SessionModule.Exec(a,[]string{filepath.Join(n.Parents,n.Lower ,"/session")})
+		if err!=nil{
+			return err
+		}
 	}
-	return task.RenderFiles(filesToRender, n)
+    if m.InstallCache{
+		cache.Module.AutoConfirm=true
+		err:=cache.Module.Exec(a,[]string{filepath.Join(n.Parents,n.Lower ,"/cache")})
+		if err!=nil{
+			return err
+		}
+	}
+	if m.InstallDatabase{
+		database.DatabaseModule.AutoConfirm=true
+		err:=database.DatabaseModule.Exec(a,[]string{})
+		if err!=nil{
+			return err
+		}
+	}
+	filesToRender := map[string]string{
+		filepath.Join(mp,n.LowerPath(n.Lower+".go")):"member.modules.go.tmpl",
+		filepath.Join(mp,"middlewares", n.LowerWithParentDotSeparated+".go"):"middleware.go.tmpl",
+	}
+	data:=renderData{
+		Name:n,
+	InstallSession :m.InstallSession,
+	InstallSQLUser :m.InstallSQLUser,
+	InstallCache:m.InstallCache,
+	DatabaseInstalled:m.InstallDatabase,
+	}
+	return task.RenderFiles(filesToRender, data)
 }
 
 var MemberModule = &Member{}

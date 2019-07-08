@@ -14,3 +14,5 @@ import _ "github.com/herb-go/herb-go/modules/session"   //session module
 import _ "github.com/herb-go/herb-go/modules/api"   //api module
 
 import _ "github.com/herb-go/herb-go/modules/form"   //form module
+
+import _ "github.com/herb-go/herb-go/modules/member"   //form module

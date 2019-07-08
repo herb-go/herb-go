@@ -122,8 +122,8 @@ func (m *Cache) Render(a *app.Application, appPath string, mp string,task *tools
 	return task.RenderFiles(filesToRender, n)
 }
 
-var ModuelCache = &Cache{}
+var Module = &Cache{}
 
 func init() {
-	app.Register(ModuelCache)
+	app.Register(Module)
 }
