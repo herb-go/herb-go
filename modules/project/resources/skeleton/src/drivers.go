@@ -4,8 +4,7 @@ package main
 import _ "github.com/herb-go/herb/cache/marshalers/msgpackmarshaler"
 
 import _ "github.com/herb-go/herb/cache/drivers/freecache"
-
-// import _ "github.com/herb-go/herb/cache/drivers/syncmapcache"
+import _ "github.com/herb-go/herb/cache/drivers/syncmapcache"
 // import _ "github.com/herb-go/herb/cache/drivers/versioncache"
 // import _ "github.com/herb-go/providers/redis/rediscache"
 // import _ "github.com/herb-go/providers/sql/sqlcache"

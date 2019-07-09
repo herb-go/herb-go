@@ -78,11 +78,11 @@ func (m *Member) Question(a *app.Application,mp string) error {
 	if err!=nil{
 		return err
 	}
-	err=tools.NewTrueOrFalseQuestion("Do you want to add member cache code?Otherwise you have to install member cache manually").ExecIf(a,!m.InstallCache,&m.InstallCache)
+	err=tools.NewTrueOrFalseQuestion("Do you want to add member cache code?\nOtherwise you have to install member cache manually.").ExecIf(a,!m.InstallCache,&m.InstallCache)
 	if err!=nil{
 		return err
 	}
-		err=tools.NewTrueOrFalseQuestion("Do you want to install sqluser?Otherwise you have to install user modules manually.").ExecIf(a,!m.InstallSQLUser,&m.InstallSQLUser)
+		err=tools.NewTrueOrFalseQuestion("Do you want to install sqluser?\nOtherwise you have to install user modules manually.").ExecIf(a,!m.InstallSQLUser,&m.InstallSQLUser)
 	if err!=nil{
 		return err
 	}
@@ -158,22 +158,19 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 
 func (m *Member) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
 	if m.InstallSession{
-		session.SessionModule.AutoConfirm=true
-		err:=session.SessionModule.Exec(a,[]string{filepath.Join(n.Parents,n.Lower ,"/session")})
+		err:=session.SessionModule.Exec(a,[]string{"-y",filepath.Join(n.Parents,n.Lower ,"/session")})
 		if err!=nil{
 			return err
 		}
 	}
     if m.InstallCache{
-		cache.Module.AutoConfirm=true
-		err:=cache.Module.Exec(a,[]string{filepath.Join(n.Parents,n.Lower ,"/cache")})
+		err:=cache.Module.Exec(a,[]string{"-y",filepath.Join(n.Parents,n.Lower ,"/cache")})
 		if err!=nil{
 			return err
 		}
 	}
 	if m.InstallDatabase{
-		database.DatabaseModule.AutoConfirm=true
-		err:=database.DatabaseModule.Exec(a,[]string{})
+		err:=database.DatabaseModule.Exec(a,[]string{"-y"})
 		if err!=nil{
 			return err
 		}

@@ -14,6 +14,6 @@ var {{.Pascal}} = cache.New()
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must({{.Pascal}}.Init(&app.{{.PascalWithParents}}))
+		util.Must({{.Pascal}}.Init(app.{{.PascalWithParents}}))
 	})
 }
