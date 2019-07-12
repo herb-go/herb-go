@@ -11,6 +11,17 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
+var QuestionCRUD = tools.NewTrueOrFalseQuestion("Do you want to install standard \"CRUD\" components")
+var QuestionWithCreate = tools.NewTrueOrFalseQuestion("Do you want to create model \"Create\" component?")
+var QuestionWithRead = tools.NewTrueOrFalseQuestion("Do you want to create model \"Read\" component?")
+var QuestionWithUpdate = tools.NewTrueOrFalseQuestion("Do you want to create model \"Update\" component?")
+var QuestionWithDelete = tools.NewTrueOrFalseQuestion("Do you want to create model \"Delete\" component?")
+var QuestionWithList = tools.NewTrueOrFalseQuestion("Do you want to create model \"List\" component?")
+var QuestionWithPager = tools.NewTrueOrFalseQuestion("Do you want to use pager for  \"List\" component?")
+var QuestionCreateForm = tools.NewTrueOrFalseQuestion("Do you want to create model forms?")
+var QuestionCreateAction = tools.NewTrueOrFalseQuestion("Do you want to create model actions?")
+var QuestionCreateOutput = tools.NewTrueOrFalseQuestion("Do you want to create model output class")
+
 type ModelMapper struct {
 	app.BasicModule
 	CreateForm   bool
