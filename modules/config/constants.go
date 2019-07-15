@@ -14,7 +14,7 @@ import (
 type Constants struct {
 	app.BasicModule
 	Watch       bool
-	AutoConfirm bool
+	SlienceMode bool
 }
 
 func (m *Constants) ID() string {
@@ -46,7 +46,7 @@ func (m *Constants) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
-	m.FlagSet().BoolVar(&m.AutoConfirm, "y", false, "Whether auto confirm")
+	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
 
 	m.FlagSet().BoolVar(&m.Watch, "watch", false, "Whether auto reload constants  after file changed")
 	err := m.FlagSet().Parse(*args)
@@ -95,7 +95,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	ok, err := task.ConfirmIf(a, !m.AutoConfirm)
+	ok, err := task.ConfirmIf(a, !m.SlienceMode)
 	if err != nil {
 		return err
 	}

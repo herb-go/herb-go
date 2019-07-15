@@ -14,7 +14,7 @@ import (
 
 type Database struct {
 	app.BasicModule
-	AutoConfirm bool
+	SlienceMode bool
 }
 
 func (m *Database) ID() string {
@@ -49,7 +49,7 @@ func (m *Database) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
-	m.FlagSet().BoolVar(&m.AutoConfirm, "y", false, "Whether auto confirm")
+	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (m *Database) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	ok, err := task.ConfirmIf(a, !m.AutoConfirm)
+	ok, err := task.ConfirmIf(a, !m.SlienceMode)
 	if err != nil {
 		return err
 	}
