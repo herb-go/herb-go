@@ -209,14 +209,14 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 		return err
 	}
 
-	task := tools.NewTask(filepath.Join(app, "/modules/config/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/modelmapper/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n, mc)
 	if err != nil {
 		return err
 	}
 	task.AddJob(func() error {
-		a.Printf("Config  \"%s\" created.\n", n.LowerWithParentDotSeparated)
+		a.Printf("ModelMapper  \"%s\" created.\n", n.LowerWithParentDotSeparated)
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()
@@ -234,14 +234,31 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
-	var configgopath string
+func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, mc *ModelColumns) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("system", "constants", n.LowerWithParentDotSeparated+".toml"): "config.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):               configgopath,
+		filepath.Join(mp, n.LowerPath("models"), n.Lower+"queries.go"): "modelqueries.go.tmpl",
+		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
+		filepath.Join(mp, n.LowerPath("models"), n.Lower+".go"):        "model.go.tmpl",
 	}
-	return task.RenderFiles(filesToRender, n)
+	if len(mc.PrimaryKeys) == 1 && mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int" {
+		if m.CreateForm {
+			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
+		}
+		if m.CreateAction {
+			filesToRender[filepath.Join(mp, n.LowerPath("actopms"), n.Lower+"action.go")] = "modelaction.go.tmpl"
+		}
+		if m.CreateOutput {
+			filesToRender[filepath.Join(mp, n.LowerPath("outputs"), n.Lower+"output.go")] = "modeloutput.go.tmpl"
+		}
+	}
+	data := map[string]interface{}{
+		"Name":      n,
+		"Columns":   mc,
+		"Module":    n.LowerWithParentPath,
+		"Confirmed": m,
+	}
+	return task.RenderFiles(filesToRender, data)
 }
 
 var ModelMapperModule = &ModelMapper{}
