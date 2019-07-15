@@ -59,7 +59,7 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *Form) Question(a *app.Application) error {
-	return WithActionQuestion.ExecIf(a,!m.WithAction,&m.WithAction)
+	return WithActionQuestion.ExecIf(a,!m.WithAction && !m.SlienceMode,&m.WithAction)
 }
 func (m *Form) Exec(a *app.Application, args []string) error {
 	err := m.Init(a, &args)

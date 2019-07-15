@@ -77,11 +77,11 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *Project) Question(a *app.Application) error {
-	err := projectTypeQuestion.ExecIf(a, m.ProjectType == "", &m.ProjectType)
+	err := projectTypeQuestion.ExecIf(a, m.ProjectType == ""  && !m.SlienceMode, &m.ProjectType)
 	if err != nil {
 		return err
 	}
-	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "" && m.ProjectType == ProjectTypeWebsite, &m.TemplateEngine)
+	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "" && m.ProjectType == ProjectTypeWebsite  && !m.SlienceMode, &m.TemplateEngine)
 	if err != nil {
 		return err
 	}
@@ -109,6 +109,10 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
 	}
+	err = m.Question(a)
+	if err != nil {
+		return err
+	}
 	err = tools.ErrorIfStringFieldNotInList("type", m.ProjectType, "", ProjectTypeAPI, ProjectTypeApp, ProjectTypeWebsite)
 	if err != nil {
 		return err
@@ -117,10 +121,7 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = m.Question(a)
-	if err != nil {
-		return err
-	}
+
 
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
