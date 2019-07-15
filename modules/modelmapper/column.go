@@ -199,7 +199,7 @@ func getLoaderFormDB(conn db.Database) (columns.Loader, error) {
 	return driver, nil
 }
 
-func New(conn db.Database, database string, table string) (*ModelColumns, error) {
+func NewModelCulumns(conn db.Database, database string, table string) (*ModelColumns, error) {
 	loader, err := getLoaderFormDB(conn)
 	if err != nil {
 		return nil, err

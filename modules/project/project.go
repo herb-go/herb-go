@@ -1,10 +1,11 @@
 package project
 
 import (
-	"github.com/herb-go/util/cli/name"
 	"fmt"
 	"path"
 	"path/filepath"
+
+	"github.com/herb-go/util/cli/name"
 
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -21,7 +22,7 @@ type Project struct {
 	app.BasicModule
 	ProjectType    string
 	TemplateEngine string
-	GoMod bool
+	GoMod          bool
 }
 
 func (m *Project) ID() string {
@@ -41,7 +42,7 @@ Folder name will filter all host and dir in porject name.
 For example,command "%s new github.com/herb-go/newapp" will create folder ./newapp.
 
 `
-	return fmt.Sprintf(help, a.Config.Cmd,a.Config.Cmd)
+	return fmt.Sprintf(help, a.Config.Cmd, a.Config.Cmd)
 }
 
 func (m *Project) Desc(a *app.Application) string {
@@ -50,6 +51,7 @@ func (m *Project) Desc(a *app.Application) string {
 func (m *Project) Group(a *app.Application) string {
 	return "Application"
 }
+
 var projectTypeQuestion = tools.NewQuestion().
 	SetDescription("Project type of app").
 	AddAnswer("0", "app", ProjectTypeApp).
@@ -68,7 +70,7 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	}
 	m.FlagSet().StringVar(&m.ProjectType, "type", "", "project type.\"app\",\"api\" or \"website\"")
 	m.FlagSet().StringVar(&m.TemplateEngine, "template", "", "website template.\"tmpl\" or \"jet\"")
-	m.FlagSet().BoolVar(&m.GoMod, "gomod",false, "use go mod folder struct")
+	m.FlagSet().BoolVar(&m.GoMod, "gomod", false, "use go mod folder struct")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -77,18 +79,18 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *Project) Question(a *app.Application) error {
-	err := projectTypeQuestion.ExecIf(a, m.ProjectType == ""  && !m.SlienceMode, &m.ProjectType)
+	err := projectTypeQuestion.ExecIf(a, m.ProjectType == "", &m.ProjectType)
 	if err != nil {
 		return err
 	}
-	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "" && m.ProjectType == ProjectTypeWebsite  && !m.SlienceMode, &m.TemplateEngine)
+	err = TemplateEngineQuestion.ExecIf(a, m.TemplateEngine == "" && m.ProjectType == ProjectTypeWebsite, &m.TemplateEngine)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (m *Project) Exec(a *app.Application, args []string) error {
-	mp:="src/vendor/modules"
+	mp := "src/vendor/modules"
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
@@ -97,15 +99,15 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		a.PrintModuleHelp(m)
 		return nil
 	}
-	n,err:=name.New(true,args...)
-		if err != nil {
+	n, err := name.New(true, args...)
+	if err != nil {
 		return err
 	}
 	appPath := path.Join(a.Cwd, n.Lower)
 	result, err := tools.FileExists(appPath)
 	if err != nil {
 		return err
-	} 
+	}
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
 	}
@@ -122,43 +124,42 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		return err
 	}
 
-
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
 	}
 	task := tools.NewTask(filepath.Join(app, "/modules/project/resources"), appPath)
 	if m.GoMod {
-		mp="src/modules"
-		err=task.Render("/skeleton/src/go.mod.example","/src/go.mod",n)
+		mp = "src/modules"
+		err = task.Render("/skeleton/src/go.mod.example", "/src/go.mod", n)
 		if err != nil {
 			return err
 		}
 	}
-	err = m.createApp(a, appPath, mp,task)
+	err = m.createApp(a, appPath, mp, task)
 	if err != nil {
 		return err
 	}
 
 	if m.ProjectType == ProjectTypeAPI || m.ProjectType == ProjectTypeWebsite {
-		err = m.createHTTP(a, appPath,mp, task)
+		err = m.createHTTP(a, appPath, mp, task)
 		if err != nil {
 			return err
 		}
 	}
 	if m.ProjectType == ProjectTypeWebsite {
-		err = m.createWebsite(a, appPath,mp, task)
+		err = m.createWebsite(a, appPath, mp, task)
 		if err != nil {
 			return err
 		}
 		if m.TemplateEngine == TemplateEngineJet {
-			err = m.createJetEngine(a, appPath,mp, task)
+			err = m.createJetEngine(a, appPath, mp, task)
 			if err != nil {
 				return err
 			}
 		}
 		if m.TemplateEngine == TemplateEngineGoTemple {
-			err = m.createTmplEngine(a, appPath, mp,task)
+			err = m.createTmplEngine(a, appPath, mp, task)
 			if err != nil {
 				return err
 			}
@@ -173,7 +174,7 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Project)  createApp(a *app.Application, appPath string, mp string,task *tools.Task) error {
+func (m *Project) createApp(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := task.CopyFiles(AppSkeleton(mp))
 	if err != nil {
 		return err
@@ -181,7 +182,7 @@ func (m *Project)  createApp(a *app.Application, appPath string, mp string,task 
 	return nil
 }
 
-func (m *Project)  createHTTP(a *app.Application, appPath string,mp string, task *tools.Task) error {
+func (m *Project) createHTTP(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := task.CopyFiles(HTTPSkeleton(mp))
 	if err != nil {
 		return err
@@ -202,7 +203,7 @@ func (m *Project)  createHTTP(a *app.Application, appPath string,mp string, task
 	})
 	return nil
 }
-func (m *Project)  createWebsite(a *app.Application, appPath string, mp string,task *tools.Task) error {
+func (m *Project) createWebsite(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := task.CopyFiles(WebsiteSkeleton(mp))
 	if err != nil {
 		return err
@@ -232,7 +233,7 @@ func (m *Project)  createWebsite(a *app.Application, appPath string, mp string,t
 	return nil
 }
 
-func (m *Project)  createJetEngine(a *app.Application, appPath string, mp string,task *tools.Task) error {
+func (m *Project) createJetEngine(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := task.CopyFiles(JetEngineSkeleton(mp))
 	if err != nil {
 		return err
@@ -255,7 +256,7 @@ func (m *Project)  createJetEngine(a *app.Application, appPath string, mp string
 	return nil
 }
 
-func (m *Project)  createTmplEngine(a *app.Application, appPath string, mp string,task *tools.Task) error {
+func (m *Project) createTmplEngine(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := task.CopyFiles(TmplEngineSkeleton(mp))
 	if err != nil {
 		return err
