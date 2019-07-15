@@ -3,6 +3,8 @@ package modelmapper
 import (
 	"github.com/herb-go/herb/model/sql/db"
 	"github.com/herb-go/herb/model/sql/db/columns"
+	_ "github.com/herb-go/herb/model/sql/db/columns/mysqlcolumns"  //mysql driver
+	_ "github.com/herb-go/herb/model/sql/db/columns/sqlitecolumns" //sqlite driver
 	"github.com/herb-go/util/cli/name"
 )
 
