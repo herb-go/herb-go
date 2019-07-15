@@ -16,7 +16,8 @@ type {{.Name.Pascal}}ModelFields struct {
 	{{- end}}
 }
 
-
+//BuildFields build given columns to querybuilder.Fields.
+//Columns will prefixed by alias if withAlias is true.
 func (f *{{.Name.Pascal}}ModelFields) BuildFields(withAlias bool, columns ...string) *querybuilder.Fields {
 	var field string
 	fields := querybuilder.NewFields()

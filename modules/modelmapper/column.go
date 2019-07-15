@@ -8,11 +8,19 @@ import (
 	"github.com/herb-go/util/cli/name"
 )
 
+type Column struct {
+	*columns.Column
+}
+
+func (c *Column) Name() string {
+	return MustGetColumnName(c.Column)
+}
+
 type ModelColumns struct {
-	Columns     []*columns.Column
+	Columns     []*Column
 	Name        *name.Name
 	Database    string
-	PrimaryKeys []*columns.Column
+	PrimaryKeys []*Column
 	HasTime     bool
 }
 
@@ -23,7 +31,7 @@ func MustGetColumnName(c *columns.Column) string {
 	}
 	return n.Pascal
 }
-func (m *ModelColumns) FirstPrimayKey() *columns.Column {
+func (m *ModelColumns) FirstPrimayKey() *Column {
 	return m.Columns[0]
 }
 
@@ -57,7 +65,7 @@ func (m *ModelColumns) PrimaryKeyType() string {
 	default:
 		output = output + "type " + m.Name.Pascal + "PrimaryKey struct{\n"
 		for _, v := range m.PrimaryKeys {
-			output = output + "    " + MustGetColumnName(v) + " "
+			output = output + "    " + v.Name() + " "
 			if !v.NotNull {
 				output = output + "*"
 			}
@@ -79,10 +87,10 @@ func (m *ModelColumns) BuildByPKQuery() string {
 		output = output + " q.And(query.Equal( " + m.Name.Pascal + ".FieldAlias(k),v))\n"
 		output = output + "    }"
 	case 1:
-		output = output + "    q.And(query.Equal(" + m.Name.Pascal + "FieldAlias" + MustGetColumnName(m.Columns[0]) + ",pk))\n"
+		output = output + "    q.And(query.Equal(" + m.Name.Pascal + "FieldAlias" + m.Columns[0].Name() + ",pk))\n"
 	default:
 		for _, v := range m.PrimaryKeys {
-			output = output + "    q.And(query.Equal(" + m.Name.Pascal + "FieldAlias" + MustGetColumnName(v) + ",pk." + MustGetColumnName(v) + "))\n"
+			output = output + "    q.And(query.Equal(" + m.Name.Pascal + "FieldAlias" + v.Name() + ",pk." + v.Name() + "))\n"
 		}
 	}
 	output = output + "    return q\n}\n"
@@ -96,12 +104,12 @@ func (m *ModelColumns) ModelPrimaryKey() string {
 		output = output + "    return nil\n"
 	case 1:
 		output = output + "    var pk " + m.Name.Pascal + "PrimaryKey\n"
-		output = output + "    pk=" + m.Name.Pascal + "PrimaryKey(model." + MustGetColumnName(m.Columns[0]) + ")\n"
+		output = output + "    pk=" + m.Name.Pascal + "PrimaryKey(model." + m.Columns[0].Name() + ")\n"
 		output = output + "    return &pk\n"
 	default:
 		output = output + "    pk:=" + m.Name.Pascal + "PrimaryKey{}\n"
 		for _, v := range m.PrimaryKeys {
-			output = output + "    pk." + MustGetColumnName(v) + " = model." + MustGetColumnName(v) + "\n"
+			output = output + "    pk." + v.Name() + " = model." + v.Name() + "\n"
 		}
 		output = output + "    return &pk\n"
 	}
@@ -112,7 +120,7 @@ func (m *ModelColumns) ColumnsToModelStruct() string {
 	output := "//" + m.Name.Pascal + "Model :" + m.Name.Raw + " model.\n"
 	output = output + "type " + m.Name.Pascal + "Model struct{\n"
 	for _, v := range m.Columns {
-		output = output + "    " + MustGetColumnName(v) + " "
+		output = output + "    " + v.Name() + " "
 		if !v.NotNull {
 			output = output + "*"
 		}
@@ -135,7 +143,7 @@ func (m *ModelColumns) ColumnsToFieldsMethod(query string) string {
 	output = output + "    return model.BuildFields(true,\n"
 	for _, v := range m.Columns {
 
-		output = output + "	//Field \"" + m.Name.Raw + "." + v.Field + "\"\n	" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+		output = output + "	//Field \"" + m.Name.Raw + "." + v.Field + "\"\n	" + m.Name.Pascal + "Field" + v.Name() + ","
 		output = output + "\n"
 	}
 	output = output + "    )\n"
@@ -156,9 +164,9 @@ func (m *ModelColumns) ColumnsToFieldsInsertMethod(query string) string {
 	for _, v := range m.Columns {
 		if v.AutoValue {
 			skiped = skiped + "\n		//Skip field \"" + v.Field + "\" which should be set by database"
-			skiped = skiped + "\n		 //Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+			skiped = skiped + "\n		 //Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + v.Name() + ","
 		} else {
-			fields = fields + "\n		 //Field \"" + m.Name.Raw + "." + v.Field + "\"\n		" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+			fields = fields + "\n		 //Field \"" + m.Name.Raw + "." + v.Field + "\"\n		" + m.Name.Pascal + "Field" + v.Name() + ","
 		}
 	}
 
@@ -179,13 +187,13 @@ func (m *ModelColumns) ColumnsToFieldsUpdateMethod(query string) string {
 	for _, v := range m.Columns {
 		if v.AutoValue {
 			skiped = skiped + "\n		//Skip field \"" + v.Field + "\" which should be set by database"
-			skiped = skiped + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+			skiped = skiped + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + v.Name() + ","
 		} else if v.PrimayKey {
 			primaryKey = primaryKey + "\n		//Skip primary key field \"" + v.Field + "\""
-			primaryKey = primaryKey + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+			primaryKey = primaryKey + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		//" + m.Name.Pascal + "Field" + v.Name() + ","
 
 		} else {
-			fields = fields + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		" + m.Name.Pascal + "Field" + MustGetColumnName(v) + ","
+			fields = fields + "\n		//Field \"" + m.Name.Raw + "." + v.Field + "\"\n		" + m.Name.Pascal + "Field" + v.Name() + ","
 		}
 	}
 
@@ -210,11 +218,15 @@ func NewModelCulumns(conn db.Database, database string, table string) (*ModelCol
 	if err != nil {
 		return nil, err
 	}
-	c, err := loader.Columns()
+	columns, err := loader.Columns()
 	if err != nil {
 		return nil, err
 	}
-	pks := []*columns.Column{}
+	c := make([]*Column, len(columns))
+	for k := range columns {
+		c[k] = &Column{columns[k]}
+	}
+	pks := []*Column{}
 	var hasTime bool
 	for _, v := range c {
 		if v.PrimayKey {

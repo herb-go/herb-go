@@ -9,6 +9,7 @@ import (
 	"github.com/herb-go/util/cli/name"
 	"github.com/herb-go/util/config/tomlconfig"
 
+	"github.com/herb-go/herb-go/modules/module"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -235,7 +236,18 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 }
 
 func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, mc *ModelColumns) error {
-
+	modelmodule := n.LowerWithParentPath
+	modulepath := filepath.Join(mp, modelmodule)
+	exists, err := tools.FileExists(modulepath)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		err = module.ModuleModule.Exec(a, []string{modelmodule})
+		if err != nil {
+			return err
+		}
+	}
 	filesToRender := map[string]string{
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"queries.go"): "modelqueries.go.tmpl",
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
@@ -246,7 +258,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
 		}
 		if m.CreateAction {
-			filesToRender[filepath.Join(mp, n.LowerPath("actopms"), n.Lower+"action.go")] = "modelaction.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")] = "modelaction.go.tmpl"
 		}
 		if m.CreateOutput {
 			filesToRender[filepath.Join(mp, n.LowerPath("outputs"), n.Lower+"output.go")] = "modeloutput.go.tmpl"
@@ -255,7 +267,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 	data := map[string]interface{}{
 		"Name":      n,
 		"Columns":   mc,
-		"Module":    n.LowerWithParentPath,
+		"Module":    modelmodule,
 		"Confirmed": m,
 	}
 	return task.RenderFiles(filesToRender, data)
