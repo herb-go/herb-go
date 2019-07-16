@@ -49,13 +49,57 @@ var(
 	{{- end}}
 )
 
-{{.Columns.PrimaryKeyType}}
+
+//{{.Name.Pascal}}PrimaryKey : table {{.Name.Raw}} primary key type
+{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+type {{.Name.Pascal}}PrimaryKey map[string]interface{}
+{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
+type {{.Name.Pascal}}PrimaryKey {{ if not (index .Columns.PrimaryKeys 0 ).NotNull }}*{{ end }}{{(index .Columns.PrimaryKeys 0).ColumnType}}
+{{- else }}
+type {{.Name.Pascal}}PrimaryKey struct{
+{{- range .Columns.PrimaryKeys}}
+    {{.Name}} {{ if not .NotNull }}*{{ end }}{{.ColumnType}}
+{{- end}}
+}
+{{- end}}
+
+
+//ModelPrimaryKey :  get primary key from model.
+func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Model ) *{{.Name.Pascal}}PrimaryKey {
+{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+	return nil
+{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
+    var pk {{.Name.Pascal}}PrimaryKey
+	pk={{.Name.Pascal}}PrimaryKey(model.{{(index .Columns.PrimaryKeys 0).Name}})
+	return &pk
+{{- else }}
+    pk:={{.Name.Pascal}}PrimaryKey{}
+{{- range .Columns.PrimaryKeys}}
+    pk.{{.Name}} = model.{{.Name}}
+{{- end}}
+    return &pk
+{{- end}}
+}
 
 
 
-{{.Columns.ModelPrimaryKey}}
-{{.Columns.BuildByPKQuery}}
-
+//BuildByPKQuery : build by pk query for table {{.Name.Raw}}
+func (mapper *{{.Name.Pascal}}Mapper) BuildByPKQuery(pk interface{}) *querybuilder.PlainQuery {
+    var query= mapper.QueryBuilder()
+    var q = query.New("")
+{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+    for k,v :=range pk {
+       q.And(query.Equal( {{.Name.Pascal}}.FieldAlias(k),v))
+    }
+{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
+    q.And(query.Equal({{.Name.Pascal}}FieldAlias{{(index .Columns.PrimaryKeys 0).Name}},pk))
+{{- else }}
+{{- range .Columns.PrimaryKeys}}
+    q.And(query.Equal({{$Name.Pascal}}FieldAlias{{.Name}},pk.{{.Name}}))
+{{- end}}
+{{- end}}
+	return q
+}
 
 //PrimaryKeyFields : primary key fields of table {{.Name.Raw}} 
 func (mapper *{{.Name.Pascal}}Mapper) PrimaryKeyFields() []string{

@@ -118,7 +118,8 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	if m.SlienceMode {
 		return nil
 	}
-	if len(mc.PrimaryKeys) == 1 && mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int" {
+	fmt.Println(mc.PrimaryKeys)
+	if len(mc.PrimaryKeys) == 1 && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
 		crud := m.WithCreate && m.WithRead && m.WithUpdate && m.WithDelete
 		err := QuestionCRUD.ExecIf(a, !crud, &crud)
 		if err != nil {
@@ -254,7 +255,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+".go"):        "model.go.tmpl",
 	}
-	if len(mc.PrimaryKeys) == 1 && mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int" {
+	if len(mc.PrimaryKeys) == 1 && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
 		if m.CreateForm {
 			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
 		}
