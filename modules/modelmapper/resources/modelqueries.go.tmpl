@@ -105,7 +105,7 @@ func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model) (sql.
 	return result, model.AfterInsert()
 }
 
-//Update : update {{.Name.Raw}}  model in database;
+//Update : update {{.Name.Raw}}  model by given pk in database;
 func (mapper *{{.Name.Pascal}}Mapper) Update(pk interface{} ,model *{{.Name.Pascal}}Model) (sql.Result,error){
 	Update,err := mapper.BuildUpdateWithPrimaryKey(pk, model)
 	if err != nil {
@@ -118,6 +118,14 @@ func (mapper *{{.Name.Pascal}}Mapper) Update(pk interface{} ,model *{{.Name.Pasc
 	return result, model.AfterUpdate()
 }
 
+//ExecUpdate : update {{.Name.Raw}}  model in database;
+func (mapper *{{.Name.Pascal}}Mapper) ExecUpdate(query *querybuilder.Update ,model *{{.Name.Pascal}}Model) (sql.Result,error){
+	result, err := query.Query().Exec(mapper)
+	if err != nil {
+		return nil, err
+	}
+	return result, model.AfterUpdate()
+}
 //Delete : delete {{.Name.Raw}}  model in database;
 func (mapper *{{.Name.Pascal}}Mapper) Delete(pk interface{}) (sql.Result,error){
 	model, err := mapper.FindByPrimaryKey(pk)
