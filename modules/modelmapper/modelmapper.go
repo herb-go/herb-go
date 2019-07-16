@@ -250,6 +250,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 	}
 	filesToRender := map[string]string{
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"queries.go"): "modelqueries.go.tmpl",
+		filepath.Join(mp, n.LowerPath("models"), n.Lower+"columns.go"): "modelcolumns.go.tmpl",
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+".go"):        "model.go.tmpl",
 	}
