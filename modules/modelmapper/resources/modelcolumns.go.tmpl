@@ -51,10 +51,10 @@ var(
 
 
 //{{.Name.Pascal}}PrimaryKey : table {{.Name.Raw}} primary key type
-{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+{{- if not .Columns.HasPrimayKey }}
 type {{.Name.Pascal}}PrimaryKey map[string]interface{}
-{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
-type {{.Name.Pascal}}PrimaryKey {{ if not (index .Columns.PrimaryKeys 0 ).NotNull }}*{{ end }}{{(index .Columns.PrimaryKeys 0).ColumnType}}
+{{- else if .Columns.IsSinglePrimayKey }}
+type {{.Name.Pascal}}PrimaryKey {{ if not .Columns.FirstPrimayKey.NotNull }}*{{ end }}{{.Columns.FirstPrimayKey.ColumnType}}
 {{- else }}
 type {{.Name.Pascal}}PrimaryKey struct{
 {{- range .Columns.PrimaryKeys}}
@@ -66,11 +66,11 @@ type {{.Name.Pascal}}PrimaryKey struct{
 
 //ModelPrimaryKey :  get primary key from model.
 func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Model ) *{{.Name.Pascal}}PrimaryKey {
-{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+{{- if not .Columns.HasPrimayKey }}
 	return nil
-{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
+{{- else if .Columns.IsSinglePrimayKey }}
     var pk {{.Name.Pascal}}PrimaryKey
-	pk={{.Name.Pascal}}PrimaryKey(model.{{(index .Columns.PrimaryKeys 0).Name}})
+	pk={{.Name.Pascal}}PrimaryKey(model.{{.Columns.FirstPrimayKey.Name}})
 	return &pk
 {{- else }}
     pk:={{.Name.Pascal}}PrimaryKey{}
@@ -84,15 +84,15 @@ func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Mo
 
 
 //BuildByPKQuery : build by pk query for table {{.Name.Raw}}
-func (mapper *{{.Name.Pascal}}Mapper) BuildByPKQuery(pk interface{}) *querybuilder.PlainQuery {
+func (mapper *{{.Name.Pascal}}Mapper) BuildByPKQuery(pk {{.Columns.PrimayKeyField}}) *querybuilder.PlainQuery {
     var query= mapper.QueryBuilder()
     var q = query.New("")
-{{- if eq ( len .Columns.PrimaryKeys ) (0) }}
+{{- if not .Columns.HasPrimayKey }}
     for k,v :=range pk {
        q.And(query.Equal( {{.Name.Pascal}}.FieldAlias(k),v))
     }
-{{- else if eq ( len .Columns.PrimaryKeys )  (1) }}
-    q.And(query.Equal({{.Name.Pascal}}FieldAlias{{(index .Columns.PrimaryKeys 0).Name}},pk))
+{{- else if .Columns.IsSinglePrimayKey }}
+    q.And(query.Equal({{.Name.Pascal}}FieldAlias{{.Columns.FirstPrimayKey.Name}},pk))
 {{- else }}
 {{- range .Columns.PrimaryKeys}}
     q.And(query.Equal({{$Name.Pascal}}FieldAlias{{.Name}},pk.{{.Name}}))

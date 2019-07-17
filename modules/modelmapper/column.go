@@ -48,7 +48,22 @@ func (m *ModelColumns) CanCreate() bool {
 }
 
 func (m *ModelColumns) HasPrimayKey() bool {
-	return len(m.Columns) > 0
+	return len(m.PrimaryKeys) > 0
+}
+
+func (m *ModelColumns) IsSinglePrimayKey() bool {
+	return len(m.PrimaryKeys) == 1
+}
+
+func (m *ModelColumns) IsMultiPrimayKey() bool {
+	return len(m.PrimaryKeys) > 1
+}
+
+func (m *ModelColumns) PrimayKeyField() string {
+	if m.IsSinglePrimayKey() {
+		return "interface{}"
+	}
+	return "*" + m.Name.Pascal + "PrimaryKey"
 }
 
 // func (m *ModelColumns) PrimaryKeyType() string {

@@ -57,7 +57,7 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildInsert(model *{{.Name.Pascal}}Model,f
 }
 
 //BuildUpdateWithPrimaryKey : build update query and bind model for table {{.Name.Raw}}  with given primary 
-func (mapper *{{.Name.Pascal}}Mapper) BuildUpdateWithPrimaryKey(pk interface{} ,model *{{.Name.Pascal}}Model,fields ...string) (*querybuilder.Update,error){
+func (mapper *{{.Name.Pascal}}Mapper) BuildUpdateWithPrimaryKey(pk {{.Columns.PrimayKeyField}} ,model *{{.Name.Pascal}}Model,fields ...string) (*querybuilder.Update,error){
 	Update,err:=mapper.BuildUpdate(model,fields...)
 	if err!=nil{
 		return nil,err
@@ -86,7 +86,7 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildUpdateWithoutEvent(model *{{.Name.Pas
 	return Update
 }
 //BuildDelete : build delete query for table {{.Name.Raw}} with given primary key. 
-func (mapper *{{.Name.Pascal}}Mapper) BuildDelete(pk interface{}) *querybuilder.Delete{
+func (mapper *{{.Name.Pascal}}Mapper) BuildDelete(pk {{.Columns.PrimayKeyField}}) *querybuilder.Delete{
 	Delete:=mapper.NewDelete()
 	Delete.Where.Condition = mapper.BuildByPKQuery(pk)
 	return Delete
@@ -106,7 +106,8 @@ func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model) (sql.
 }
 
 //Update : update {{.Name.Raw}}  model by given pk in database;
-func (mapper *{{.Name.Pascal}}Mapper) Update(pk interface{} ,model *{{.Name.Pascal}}Model) (sql.Result,error){
+//Event AfterUpdate will be called.
+func (mapper *{{.Name.Pascal}}Mapper) Update(pk {{.Columns.PrimayKeyField}} ,model *{{.Name.Pascal}}Model) (sql.Result,error){
 	Update,err := mapper.BuildUpdateWithPrimaryKey(pk, model)
 	if err != nil {
 		return nil, err
@@ -119,6 +120,7 @@ func (mapper *{{.Name.Pascal}}Mapper) Update(pk interface{} ,model *{{.Name.Pasc
 }
 
 //ExecUpdate : update {{.Name.Raw}}  model in database;
+//Event AfterUpdate will be called.
 func (mapper *{{.Name.Pascal}}Mapper) ExecUpdate(query *querybuilder.Update ,model *{{.Name.Pascal}}Model) (sql.Result,error){
 	result, err := query.Query().Exec(mapper)
 	if err != nil {
@@ -127,7 +129,7 @@ func (mapper *{{.Name.Pascal}}Mapper) ExecUpdate(query *querybuilder.Update ,mod
 	return result, model.AfterUpdate()
 }
 //Delete : delete {{.Name.Raw}}  model in database;
-func (mapper *{{.Name.Pascal}}Mapper) Delete(pk interface{}) (sql.Result,error){
+func (mapper *{{.Name.Pascal}}Mapper) Delete(pk {{.Columns.PrimayKeyField}}) (sql.Result,error){
 	model, err := mapper.FindByPrimaryKey(pk)
 	if err != nil {
 		return nil, err
@@ -163,7 +165,7 @@ func (mapper *{{.Name.Pascal}}Mapper) Find(Select *querybuilder.Select,fields ..
 }
 
 //FindByPrimaryKey find {{.Name.Pascal}}Model from table {{.Name.Raw}} by primary key.
-func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk interface{},fields ...string) (*{{.Name.Pascal}}Model,error){
+func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) (*{{.Name.Pascal}}Model,error){
     Select:=mapper.BuildSelect()
 	Select.Where.Condition = mapper.BuildByPKQuery(pk)
     model:=New{{.Name.Pascal}}Model()
