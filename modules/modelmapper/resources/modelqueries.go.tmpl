@@ -23,11 +23,77 @@ const {{$Name.Pascal}}TableAlias="{{.Name.Raw}}"
 
 //{{.Name.Pascal}}Mapper : table {{.Name.Raw}}  mapper struct
 type {{.Name.Pascal}}Mapper struct{
-   	*modelmapper.Mapper
+   	*modelmapper.ModelMapper
 }
 
-//BuildSelect : build select query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *modelmapper.SelectTask{
+//InsertModelWithoutEvent build insert task and bind model for table {{.Name.Raw}} .
+//Event BeforeInsert will not be called.
+func (mapper *{{.Name.Pascal}}Mapper) InsertModelWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
+	Insert:=mapper.Insert()
+	if len(fields)==0{
+		fields=Default{{.Name.Pascal}}FieldsInsert
+	}
+	Insert.Insert.Insert.AddFields(model.BuildFields(false,fields...))
+    return Insert
+}
+
+//InsertModel : build insert task and bind model for table {{.Name.Raw}} 
+func (mapper *{{.Name.Pascal}}Mapper) InsertModel(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
+	t:=mapper.InsertModelWithoutEvent(model,fields...)
+	t.OnPrepare(model.BeforeInsert)
+	t.OnSuccess(model.AfterInsert)
+	return t
+}
+
+//UpdateModelWithPrimaryKey : build update query and bind model for table {{.Name.Raw}}  with given primary 
+func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithPrimaryKey(pk {{.Columns.PrimayKeyField}} ,model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
+	Update:=mapper.UpdateModelWithoutPrimaryKey(model,fields...)
+	Update.Where.Condition=mapper.BuildByPKQuery(pk)
+	return Update
+}
+
+//UpdateModelWithoutPrimaryKey  build update query and bind model for table {{.Name.Raw}} 
+func (mapper *{{.Name.Pascal}}Mapper)UpdateModelWithoutPrimaryKey(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
+	u:=mapper.UpdateModelWithoutPrimaryKeyAndEvent(model,fields...)
+	u.OnPrepare(model.BeforeUpdate)
+	u.OnSuccess(model.AfterUpdate)
+	return u
+}
+
+//UpdateModelWithoutPrimaryKeyAndEvent  build update query and bind model for table {{.Name.Raw}}.
+//Event BeforeUpdate will not be called.
+func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithoutPrimaryKeyAndEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
+	Update:=mapper.Update()
+	if len(fields)==0{
+		fields=Default{{.Name.Pascal}}FieldsUpdate
+	}
+	Update.Update.Update.AddFields(model.BuildFields(false,fields...))
+	return Update
+}
+
+
+
+//DeleteByPrimaryKey : build delete query for table {{.Name.Raw}} with given primary key. 
+func (mapper *{{.Name.Pascal}}Mapper) DeleteByPrimaryKey(pk {{.Columns.PrimayKeyField}}) *modelmapper.DeleteTask{
+	Delete:=mapper.Delete()
+	Delete.Where.Condition = mapper.BuildByPKQuery(pk)
+	return Delete
+}
+
+//DeleteModelByPrimayKey : delete {{.Name.Raw}}  model in database;
+//func (mapper *{{.Name.Pascal}}Mapper) DeleteModelByPrimayKey(pk {{.Columns.PrimayKeyField}}) (sql.Result,error){
+//	model, err := mapper.FindByPrimaryKey(pk)
+//	if err != nil {
+//		return nil, err
+//	}
+//	Delete := mapper.DeleteByPrimaryKey(pk)
+//	Delete.OnSuccess(model.AfterDelete)
+//	return Delete.Exec()
+//}
+
+
+//SelectModel : build select query and bind model for table {{.Name.Raw}} 
+func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper.SelectTask{
 	Select:=mapper.NewSelect()
 	model:=New{{.Name.Pascal}}Model()
 	if len(fields)==0{
@@ -37,214 +103,76 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *modelmapper
 	return modelmapper.NewSelectTask(Select,mapper)
 }
 
-//BuildInsertWithoutEvent build insert query and bind model for table {{.Name.Raw}} .
-//Event BeforeInsert will not be called.
-func (mapper *{{.Name.Pascal}}Mapper) BuildInsertWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
-	Insert:=mapper.NewInsert()
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsInsert
-	}
-	Insert.Insert.AddFields(model.BuildFields(false,fields...))
-    return modelmapper.NewInsertTask(Insert,mapper)
-}
-
-//BuildInsert : build insert query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
-	t:=mapper.BuildInsertWithoutEvent(model,fields...)
-	t.OnPrepare(model.BeforeInsert)
-	t.OnSuccess(model.AfterInsert)
-	return t
-}
-
-//BuildUpdateWithPrimaryKey : build update query and bind model for table {{.Name.Raw}}  with given primary 
-func (mapper *{{.Name.Pascal}}Mapper) BuildUpdateWithPrimaryKey(pk {{.Columns.PrimayKeyField}} ,model *{{.Name.Pascal}}Model,fields ...string) (*querybuilder.Update,error){
-	Update,err:=mapper.BuildUpdate(model,fields...)
-	if err!=nil{
-		return nil,err
-	}
-	Update.Where.Condition=mapper.BuildByPKQuery(pk)
-	return Update,nil
-}
-
-//BuildUpdate : build update query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) BuildUpdate(model *{{.Name.Pascal}}Model,fields ...string) (*querybuilder.Update,error){
-	err := model.BeforeUpdate()
-	if err != nil {
-		return nil, err
-	}
-	return mapper.BuildUpdateWithoutEvent(model,fields...),nil
-}
-
-//BuildUpdateWithoutEvent : build update query and bind model for table {{.Name.Raw}}.
-//Event BeforeUpdate will not be called.
-func (mapper *{{.Name.Pascal}}Mapper) BuildUpdateWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.Update{
-	Update:=mapper.NewUpdate()
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsUpdate
-	}
-	Update.Update.AddFields(model.BuildFields(false,fields...))
-	return Update
-}
-//BuildDelete : build delete query for table {{.Name.Raw}} with given primary key. 
-func (mapper *{{.Name.Pascal}}Mapper) BuildDelete(pk {{.Columns.PrimayKeyField}}) *querybuilder.Delete{
-	Delete:=mapper.NewDelete()
-	Delete.Where.Condition = mapper.BuildByPKQuery(pk)
-	return Delete
-}
-
-
-
-//Update : update {{.Name.Raw}}  model by given pk in database;
-//Event AfterUpdate will be called.
-func (mapper *{{.Name.Pascal}}Mapper) Update(pk {{.Columns.PrimayKeyField}} ,model *{{.Name.Pascal}}Model) (sql.Result,error){
-	Update,err := mapper.BuildUpdateWithPrimaryKey(pk, model)
-	if err != nil {
-		return nil, err
-	}
-	result, err := Update.Query().Exec(mapper)
-	if err != nil {
-		return nil, err
-	}
-	return result, model.AfterUpdate()
-}
-
-//ExecUpdate : update {{.Name.Raw}}  model in database;
-//Event AfterUpdate will be called.
-func (mapper *{{.Name.Pascal}}Mapper) ExecUpdate(query *querybuilder.Update ,model *{{.Name.Pascal}}Model) (sql.Result,error){
-	result, err := query.Query().Exec(mapper)
-	if err != nil {
-		return nil, err
-	}
-	return result, model.AfterUpdate()
-}
-//Delete : delete {{.Name.Raw}}  model in database;
-func (mapper *{{.Name.Pascal}}Mapper) Delete(pk {{.Columns.PrimayKeyField}}) (sql.Result,error){
-	model, err := mapper.FindByPrimaryKey(pk)
-	if err != nil {
-		return nil, err
-	}
-	Delete := mapper.BuildDelete(pk)
-	r, err := Delete.Query().Exec(mapper)
-	if err != nil {
-		return r, err
-	}
-	err = model.AfterDelete()
-	if err != nil {
-		return nil, err
-	}
-	return r, nil}
 
 //Find : find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
-func (mapper *{{.Name.Pascal}}Mapper) Find(Select *querybuilder.Select,fields ...string) (*{{.Name.Pascal}}Model,error){
-    model:=New{{.Name.Pascal}}Model()
-	row := Select.QueryRow(mapper)
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}
-	err := Select.Result().
-		BindFields(model.BuildFields(true,fields...)).
-		ScanFrom(row)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	return model, model.AfterFind()
-}
+//func (mapper *{{.Name.Pascal}}Mapper) Find(Select *querybuilder.Select,fields ...string) (*{{.Name.Pascal}}Model,error){
+//   model:=New{{.Name.Pascal}}Model()
+//	row := Select.QueryRow(mapper)
+//	if len(fields)==0{
+//		fields=Default{{.Name.Pascal}}FieldsSelect
+//	}
+//	err := Select.Result().
+//		BindFields(model.BuildFields(true,fields...)).
+//		ScanFrom(row)
+//	if err == sql.ErrNoRows {
+//		return nil, nil
+//	}
+//	if err != nil {
+//		return nil, err
+//	}
+//	return model, model.AfterFind()
+//}
 
-//FindByPrimaryKey find {{.Name.Pascal}}Model from table {{.Name.Raw}} by primary key.
-func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) (*{{.Name.Pascal}}Model,error){
-    Select:=mapper.BuildSelect()
+//SelectModelByPrimaryKey find {{.Name.Pascal}}Model from table {{.Name.Raw}} by primary key.
+func (mapper *{{.Name.Pascal}}Mapper) SelectModelByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) *modelmapper.SelectTask {
+    Select:=mapper.SelectModel()
 	Select.Where.Condition = mapper.BuildByPKQuery(pk)
-    model:=New{{.Name.Pascal}}Model()
-	row := Select.QueryRow(mapper)
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}	
-	err := Select.Result().
-		BindFields(model.BuildFields(true,fields...)).
-		ScanFrom(row)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	return model, model.AfterFind()
+	return Select
 }
 
-//FindByField find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given field name and field value.
-func (mapper *{{.Name.Pascal}}Mapper) FindByField(fieldName string, fieldValue interface{},fields ...string) (*{{.Name.Pascal}}Model,error){
-    Select:=mapper.BuildSelect()
+//SelectModelByField find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given field name and field value.
+func (mapper *{{.Name.Pascal}}Mapper)  SelectModelByField(fieldName string, fieldValue interface{},fields ...string) *modelmapper.SelectTask{
+    Select:=mapper.SelectModel()
 	Select.Where.Condition = mapper.QueryBuilder().Equal(fieldName, fieldValue)
-    model:=New{{.Name.Pascal}}Model()
-	row := Select.QueryRow(mapper)
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}	
-	err := Select.Result().
-		BindFields(model.BuildFields(true,fields...)).
-		ScanFrom(row)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	return model, model.AfterFind()
+	return Select
 }
 
-//FindByFields : find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given field name and field value map.
-func (mapper *{{.Name.Pascal}}Mapper) FindByFields(fieldsmap map[string]interface{},fields ...string) (*{{.Name.Pascal}}Model,error){
-    Select:=mapper.BuildSelect()
+//SelectModelByFields : find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given field name and field value map.
+func (mapper *{{.Name.Pascal}}Mapper) SelectModelByFields(fieldsmap map[string]interface{},fields ...string) *modelmapper.SelectTask{
+    Select:=mapper.SelectModel()
     for k,v:=range fieldsmap{
 	    Select.Where.Condition.And(mapper.QueryBuilder().Equal(k, v))
     }
-    model:=New{{.Name.Pascal}}Model()
-	row := Select.QueryRow(mapper)
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}	
-	err := Select.Result().
-		BindFields(model.BuildFields(true,fields...)).
-		ScanFrom(row)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	return model, model.AfterFind()
+	return Select
 }
 
 //FindAll : find all {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
-func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *querybuilder.Select,fields ...string) ([]*{{.Name.Pascal}}Model,error){
-    var result=[]*{{.Name.Pascal}}Model{}
-	rows, err := Select.QueryRows(mapper)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}	
-	for rows.Next() {
-	    model:=New{{.Name.Pascal}}Model()
-		err = Select.Result().
-			BindFields(model.BuildFields(true,fields...)).
-			ScanFrom(rows)
-		if err != nil {
-			return nil, err
-		}
-		err = model.AfterFind()
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, model)
-	}
-    return result,nil
-}
+//func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *querybuilder.Select,fields ...string) ([]*{{.Name.Pascal}}Model,error){
+//    var result=[]*{{.Name.Pascal}}Model{}
+//	rows, err := Select.QueryRows(mapper)
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer rows.Close()
+//	if len(fields)==0{
+//		fields=Default{{.Name.Pascal}}FieldsSelect
+//	}	
+//	for rows.Next() {
+//	    model:=New{{.Name.Pascal}}Model()
+//		err = Select.Result().
+//			BindFields(model.BuildFields(true,fields...)).
+//			ScanFrom(rows)
+//		if err != nil {
+//			return nil, err
+//		}
+//		err = model.AfterFind()
+//		if err != nil {
+//			return nil, err
+//		}
+//		result = append(result, model)
+//	}
+//    return result,nil
+//}
 
 
 //{{.Name.Pascal}}  : table {{.Name.Raw}}  mapper instance
@@ -271,7 +199,7 @@ func New{{.Name.Pascal}}Mapper(database db.Database) *{{.Name.Pascal}}Mapper {
 	var sqltable = db.NewTable(database, {{.Name.Pascal}}TableName)
 	sqltable.SetAlias({{.Name.Pascal}}TableAlias)
 	return &{{.Name.Pascal}}Mapper{
-		Mapper: modelmapper.New(sqltable),
+		ModelMapper: modelmapper.New(sqltable),
 	}
 }
 
