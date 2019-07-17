@@ -26,34 +26,33 @@ type {{.Name.Pascal}}Mapper struct{
 }
 
 //BuildSelect : build select query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *querybuilder.Select{
+func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *querybuilder.SelectTask{
 	Select:=mapper.NewSelect()
 	model:=New{{.Name.Pascal}}Model()
 	if len(fields)==0{
 		fields=Default{{.Name.Pascal}}FieldsSelect
 	}
 	Select.Select.AddFields(model.BuildFields(true,fields...))
-	return Select
+	return querybuilder.NewSelectTask(Select,mapper)
 }
 
 //BuildInsertWithoutEvent build insert query and bind model for table {{.Name.Raw}} .
 //Event BeforeInsert will not be called.
-func (mapper *{{.Name.Pascal}}Mapper) BuildInsertWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.Insert{
+func (mapper *{{.Name.Pascal}}Mapper) BuildInsertWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.InsertTask{
 	Insert:=mapper.NewInsert()
 	if len(fields)==0{
 		fields=Default{{.Name.Pascal}}FieldsInsert
 	}
 	Insert.Insert.AddFields(model.BuildFields(false,fields...))
-    return Insert
+    return querybuilder.NewInsertTask(Insert,mapper)
 }
 
 //BuildInsert : build insert query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) BuildInsert(model *{{.Name.Pascal}}Model,fields ...string) (*querybuilder.Insert,error){
-	err := model.BeforeInsert()
-	if err != nil {
-		return nil, err
-	}
-	return mapper.BuildInsertWithoutEvent(model,fields...),nil
+func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.InsertTask{
+	t:=mapper.BuildInsertWithoutEvent(model,fields...)
+	t.OnPrepare(model.BeforeInsert)
+	t.OnSuccess(model.AfterInsert)
+	return t
 }
 
 //BuildUpdateWithPrimaryKey : build update query and bind model for table {{.Name.Raw}}  with given primary 
@@ -92,18 +91,7 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildDelete(pk {{.Columns.PrimayKeyField}}
 	return Delete
 }
 
-//Insert : insert {{.Name.Raw}}  model to database;
-func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model) (sql.Result,error){
-	Insert ,err:= mapper.BuildInsert(model)
-	if err != nil {
-		return nil, err
-	}	
-	result, err := Insert.Query().Exec(mapper)
-	if err != nil {
-		return nil, err
-	}
-	return result, model.AfterInsert()
-}
+
 
 //Update : update {{.Name.Raw}}  model by given pk in database;
 //Event AfterUpdate will be called.
