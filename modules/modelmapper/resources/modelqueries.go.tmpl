@@ -9,6 +9,7 @@ import (
 
 	"github.com/herb-go/herb/model/sql/db"
 	"github.com/herb-go/herb/model/sql/querybuilder"
+	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"
 	"github.com/herb-go/util"
 )
 
@@ -22,33 +23,33 @@ const {{$Name.Pascal}}TableAlias="{{.Name.Raw}}"
 
 //{{.Name.Pascal}}Mapper : table {{.Name.Raw}}  mapper struct
 type {{.Name.Pascal}}Mapper struct{
-   	*querybuilder.Table
+   	*modelmapper.Mapper
 }
 
 //BuildSelect : build select query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *querybuilder.SelectTask{
+func (mapper *{{.Name.Pascal}}Mapper) BuildSelect(fields ...string) *modelmapper.SelectTask{
 	Select:=mapper.NewSelect()
 	model:=New{{.Name.Pascal}}Model()
 	if len(fields)==0{
 		fields=Default{{.Name.Pascal}}FieldsSelect
 	}
 	Select.Select.AddFields(model.BuildFields(true,fields...))
-	return querybuilder.NewSelectTask(Select,mapper)
+	return modelmapper.NewSelectTask(Select,mapper)
 }
 
 //BuildInsertWithoutEvent build insert query and bind model for table {{.Name.Raw}} .
 //Event BeforeInsert will not be called.
-func (mapper *{{.Name.Pascal}}Mapper) BuildInsertWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.InsertTask{
+func (mapper *{{.Name.Pascal}}Mapper) BuildInsertWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
 	Insert:=mapper.NewInsert()
 	if len(fields)==0{
 		fields=Default{{.Name.Pascal}}FieldsInsert
 	}
 	Insert.Insert.AddFields(model.BuildFields(false,fields...))
-    return querybuilder.NewInsertTask(Insert,mapper)
+    return modelmapper.NewInsertTask(Insert,mapper)
 }
 
 //BuildInsert : build insert query and bind model for table {{.Name.Raw}} 
-func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model,fields ...string) *querybuilder.InsertTask{
+func (mapper *{{.Name.Pascal}}Mapper) Insert(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
 	t:=mapper.BuildInsertWithoutEvent(model,fields...)
 	t.OnPrepare(model.BeforeInsert)
 	t.OnSuccess(model.AfterInsert)
@@ -270,7 +271,7 @@ func New{{.Name.Pascal}}Mapper(database db.Database) *{{.Name.Pascal}}Mapper {
 	var sqltable = db.NewTable(database, {{.Name.Pascal}}TableName)
 	sqltable.SetAlias({{.Name.Pascal}}TableAlias)
 	return &{{.Name.Pascal}}Mapper{
-		Table: querybuilder.NewTable(sqltable),
+		Mapper: modelmapper.New(sqltable),
 	}
 }
 

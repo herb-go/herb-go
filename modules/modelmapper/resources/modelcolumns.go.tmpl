@@ -5,12 +5,13 @@ import (
     "time"
     {{end}}
 	"github.com/herb-go/herb/model/sql/querybuilder"
+	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"
 )
 {{$Name := .Name}}
 
 //{{.Name.Pascal}}ModelFields :{{.Name.Raw }} model fields
 type {{.Name.Pascal}}ModelFields struct {
-	querybuilder.CommonQueryEvents
+	modelmapper.CommonQueryEvents
 	{{- range .Columns.Columns}}
 	{{.Name}} {{if not .NotNull }}*{{end}}{{.ColumnType}}
 	{{- end}}
