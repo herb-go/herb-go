@@ -118,7 +118,6 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	if m.SlienceMode {
 		return nil
 	}
-	fmt.Println(mc.PrimaryKeys)
 	if len(mc.PrimaryKeys) == 1 && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
 		crud := m.WithCreate && m.WithRead && m.WithUpdate && m.WithDelete
 		err := QuestionCRUD.ExecIf(a, !crud, &crud)

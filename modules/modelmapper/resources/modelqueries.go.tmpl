@@ -1,14 +1,12 @@
 package models
 
 import (
-	"database/sql"
 	database "modules/{{.Columns.Database}}"
     "modules/{{.Module}}"
 	{{if .Columns.HasTime}}"time"
     {{end -}}
 
 	"github.com/herb-go/herb/model/sql/db"
-	"github.com/herb-go/herb/model/sql/querybuilder"
 	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"
 	"github.com/herb-go/util"
 )
@@ -120,16 +118,29 @@ func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper
 
 //SelectModelByPrimaryKey find {{.Name.Pascal}}Model from table {{.Name.Raw}} by primary key.
 func (mapper *{{.Name.Pascal}}Mapper) SelectModelByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) *modelmapper.SelectTask {
-    Select:=mapper.SelectModel()
-	model:=New{{.Name.Pascal}}Model()
-	if len(fields)==0{
-		fields=Default{{.Name.Pascal}}FieldsSelect
-	}
-	Select.Select.AddFields(model.BuildFields(true,fields...))
+	Select := mapper.SelectModel(fields...)
 	Select.Where.Condition = mapper.BuildByPKQuery(pk)
 	return Select
 }
 
+func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk interface{}, fields ...string) (*{{.Name.Pascal}}Model, error) {
+	Select := mapper.SelectModelByPrimaryKey(pk, fields...)
+	result := New{{.Name.Pascal}}ModelResult(fields...)
+	err := Select.FindTo(result)
+	if err != nil {
+		return nil, err
+	}
+	return result.Model, nil
+}
+
+func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *modelmapper.SelectTask, fields ...string) ([]*{{.Name.Pascal}}Model, error) {
+	result := New{{.Name.Pascal}}ModelsResult(fields...)
+	err := Select.FindAllTo(result)
+	if err != nil {
+		return nil, err
+	}
+	return result.Models, nil
+}
 
 
 //FindAll : find all {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
