@@ -54,23 +54,38 @@ func New{{.Name.Pascal}}Model() *{{.Name.Pascal}}Model{
 
 
 type {{.Name.Pascal}}ModelResult struct {
-	Model  *{{.Name.Pascal}}Model
+	models []*{{.Name.Pascal}}Model
 	fields []string
 }
 
 func (r *{{.Name.Pascal}}ModelResult) Fields() *querybuilder.Fields {
-	return r.Model.BuildFields(true, r.fields...)
+	model := New{{.Name.Pascal}}Model()
+	r.models = append(r.models, model)
+	return model.BuildFields(true, r.fields...)
 }
 
 func (r *{{.Name.Pascal}}ModelResult) OnFinish(err error) error {
 	if err == sql.ErrNoRows {
-		r.Model = nil
 		return nil
 	}
 	if err != nil {
 		return err
 	}
-	return r.Model.AfterFind()
+	model := r.models[len(r.models)-1]
+	return model.AfterFind()
+}
+
+
+
+func (r *{{.Name.Pascal}}ModelResult) Model() *{{.Name.Pascal}}Model {
+	if len(r.models) == 0 {
+		return nil
+	}
+	return r.models[0]
+}
+
+func (r *{{.Name.Pascal}}ModelResult) Models() []*{{.Name.Pascal}}Model {
+	return r.models
 }
 
 func New{{.Name.Pascal}}ModelResult(fields ...string) *{{.Name.Pascal}}ModelResult {
@@ -78,36 +93,7 @@ func New{{.Name.Pascal}}ModelResult(fields ...string) *{{.Name.Pascal}}ModelResu
 		fields = Default{{.Name.Pascal}}FieldsSelect
 	}
 	return &{{.Name.Pascal}}ModelResult{
-		Model:  New{{.Name.Pascal}}Model(),
-		fields: fields,
-	}
-}
-
-type {{.Name.Pascal}}ModelsResult struct {
-	Models []*{{.Name.Pascal}}Model
-	fields []string
-}
-
-func (r *{{.Name.Pascal}}ModelsResult) Fields() *querybuilder.Fields {
-	model := New{{.Name.Pascal}}Model()
-	r.Models = append(r.Models, model)
-	return model.BuildFields(true, r.fields...)
-}
-
-func (r *{{.Name.Pascal}}ModelsResult) OnFinish(err error) error {
-	if err != nil {
-		return err
-	}
-	model := r.Models[len(r.Models)-1]
-	return model.AfterFind()
-}
-
-func New{{.Name.Pascal}}ModelsResult(fields ...string) *{{.Name.Pascal}}ModelsResult {
-	if len(fields) == 0 {
-		fields = Default{{.Name.Pascal}}FieldsSelect
-	}
-	return &{{.Name.Pascal}}ModelsResult{
-		Models: []*{{.Name.Pascal}}Model{},
+		models: []*{{.Name.Pascal}}Model{},
 		fields: fields,
 	}
 }

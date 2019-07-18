@@ -130,17 +130,18 @@ func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk interface{}, fields ..
 	if err != nil {
 		return nil, err
 	}
-	return result.Model, nil
+	return result.Model(), nil
 }
 
 func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *modelmapper.SelectTask, fields ...string) ([]*{{.Name.Pascal}}Model, error) {
-	result := New{{.Name.Pascal}}ModelsResult(fields...)
+	result := New{{.Name.Pascal}}ModelResult(fields...)
 	err := Select.FindAllTo(result)
 	if err != nil {
 		return nil, err
 	}
-	return result.Models, nil
+	return result.Models(), nil
 }
+
 
 
 //FindAll : find all {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
