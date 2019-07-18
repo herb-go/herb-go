@@ -7,9 +7,6 @@ import (
 	"github.com/herb-go/util/config"
 )
 
-//Must panic if any error rasied
-var Must = util.Must
-
 func loadConfigs() {
 	//Uncomment next line to print config loading log .
 	//config.Debug = true
