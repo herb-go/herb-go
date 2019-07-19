@@ -9,7 +9,7 @@ import (
 )
 {{$Name := .Name}}
 
-//{{.Name.Pascal}}ModelFields :{{.Name.Raw }} model fields
+//{{.Name.Pascal}}ModelFields {{.Name.Raw }} model fields struct
 type {{.Name.Pascal}}ModelFields struct {
 	modelmapper.CommonQueryEvents
 	{{- range .Columns.Columns}}
@@ -17,7 +17,7 @@ type {{.Name.Pascal}}ModelFields struct {
 	{{- end}}
 }
 
-//BuildFields build given columns to querybuilder.Fields.
+//BuildFields build  querybuilder.Fields by  given columns.
 //Columns will prefixed by alias if withAlias is true.
 func (f *{{.Name.Pascal}}ModelFields) BuildFields(withAlias bool, columns ...string) *querybuilder.Fields {
 	var field string
@@ -65,7 +65,7 @@ type {{.Name.Pascal}}PrimaryKey struct{
 {{- end}}
 
 
-//ModelPrimaryKey :  get primary key from model.
+//ModelPrimaryKey   get primary key of given  {{.Name.Raw}} model.
 func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Model ) *{{.Name.Pascal}}PrimaryKey {
 {{- if not .Columns.HasPrimayKey }}
 	return nil
@@ -84,8 +84,8 @@ func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Mo
 
 
 
-//BuildByPKQuery : build by pk query for table {{.Name.Raw}}
-func (mapper *{{.Name.Pascal}}Mapper) BuildByPKQuery(pk {{.Columns.PrimayKeyField}}) *querybuilder.PlainQuery {
+//BuildByPrimaryKeyQuery  build by Primay Key query for table {{.Name.Raw}}
+func (mapper *{{.Name.Pascal}}Mapper) BuildByPrimaryKeyQuery(pk {{.Columns.PrimayKeyField}}) *querybuilder.PlainQuery {
     var query= mapper.QueryBuilder()
     var q = query.New("")
 {{- if not .Columns.HasPrimayKey }}
@@ -102,7 +102,7 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildByPKQuery(pk {{.Columns.PrimayKeyFiel
 	return q
 }
 
-//PrimaryKeyFields : primary key fields of table {{.Name.Raw}} 
+//PrimaryKeyFields  primary key fields of table {{.Name.Raw}} 
 func (mapper *{{.Name.Pascal}}Mapper) PrimaryKeyFields() []string{
 	return []string{
 {{range .Columns.PrimaryKeys}}        {{$Name.Pascal}}Field{{.Name}} ,

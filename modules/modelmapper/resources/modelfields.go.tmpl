@@ -2,7 +2,7 @@ package models
 
 {{- $Name := .Name}}
 
-//Default{{.Name.Pascal}}FieldsSelect default select fields for {{.Name.Raw}} model.
+//Default{{.Name.Pascal}}FieldsSelect default  {{.Name.Raw}} model select fields.
 var Default{{.Name.Pascal}}FieldsSelect=[]string{
 	{{- range .Columns.Columns}}
 	//Field  "{{$Name.Raw }}.{{.Field}}"
@@ -11,7 +11,7 @@ var Default{{.Name.Pascal}}FieldsSelect=[]string{
 }
 
 
-//Default{{.Name.Pascal}}FieldsInsert default insert fields for {{.Name.Raw}} model.
+//Default{{.Name.Pascal}}FieldsInsert default  {{.Name.Raw}} model insert fields.
 var Default{{.Name.Pascal}}FieldsInsert=[]string{
 	{{- range .Columns.Columns}}
 	{{- if .AutoValue}}
@@ -27,7 +27,7 @@ var Default{{.Name.Pascal}}FieldsInsert=[]string{
 
 
 
-//Default{{.Name.Pascal}}FieldsUpdate default update fields for {{.Name.Raw}} model.
+//Default{{.Name.Pascal}}FieldsUpdate default  {{.Name.Raw}} model update fields.
 var Default{{.Name.Pascal}}FieldsUpdate=[]string{
 	{{- range .Columns.Columns}}
 	{{- if .AutoValue}}

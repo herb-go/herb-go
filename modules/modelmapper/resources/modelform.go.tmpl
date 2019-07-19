@@ -22,7 +22,7 @@ import (
     {{- end}}
     {{- end}}
     {{ if .Confirmed.WithList -}}
-	"github.com/herb-go/herb/model/sql/querybuilder"    
+	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"    
     {{- end }}
     "modules/{{.Module}}/models"
 )
@@ -34,9 +34,8 @@ var Create{{.Name.Pascal}}FormFieldLabels = map[string]string{
     {{- range .Columns.Columns}}
     {{- if and ( not .AutoValue) ( not .PrimayKey)}}
     "{{.Name}}": "{{.Field}}",
-    {{ end -}}
-    {{end -}}
-    
+    {{- end }}
+    {{- end }}
 }
 
 
@@ -52,7 +51,7 @@ func NewCreate{{.Name.Pascal}}Form() *Create{{.Name.Pascal}}Form{
 }
 
 
-//Create{{.Name.Pascal}}Form : form for {{.Name.Raw}} model creating.
+//Create{{.Name.Pascal}}Form  form for {{.Name.Raw}} model creating.
 type Create{{.Name.Pascal}}Form struct {
 	formdata.Form
     {{ range .Columns.Columns -}}
@@ -62,12 +61,13 @@ type Create{{.Name.Pascal}}Form struct {
     {{- end -}}
 }
 
-//Validate : validate Create{{.Name.Pascal}}Form
+//Validate  validate Create{{.Name.Pascal}}Form
 func (f *Create{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
-    {{- if .NotNull -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
-    {{- if  eq .ColumnType "string" -}}
+    {{- if  not .NotNull -}}
+    f.ValidateFieldf(f.{{.Name}} !=nil, "{{.Name}}", messages.MsgFormFieldRequired) 
+    {{else if  eq .ColumnType "string" -}}
     f.ValidateFieldf(f.{{.Name}} != "", "{{.Name}}", messages.MsgFormFieldRequired) 
     {{else if eq .ColumnType "int" -}}
     f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired) 
@@ -82,8 +82,8 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
     {{end}}
     {{- end -}}
     {{- end -}}
-    {{- end -}}
 	//if !f.HasError() {
+    //     validate code which should be run if no error raised.
 	//}
 	return nil
 }
@@ -93,7 +93,7 @@ func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	return nil
 }
 
-//Model : create {{.Name.Raw}} model from Create{{.Name.Pascal}}Form.
+//Model  create {{.Name.Raw}} model from Create{{.Name.Pascal}}Form.
 func (f *Create{{.Name.Pascal}}Form) Model() (*models.{{.Name.Pascal}}Model,error) {
     model:=models.New{{.Name.Pascal}}Model()
     {{ range .Columns.Columns }}
@@ -126,7 +126,7 @@ func NewUpdate{{.Name.Pascal}}Form() *Update{{.Name.Pascal}}Form{
 }
 
 
-//Update{{.Name.Pascal}}Form : form for {{.Name.Raw}} model updating.
+//Update{{.Name.Pascal}}Form  form for {{.Name.Raw}} model updating.
 type Update{{.Name.Pascal}}Form struct {
 	formdata.Form
     {{ range .Columns.Columns -}}
@@ -136,12 +136,13 @@ type Update{{.Name.Pascal}}Form struct {
     {{- end -}}    
 }
 
-//Validate : validate Update{{.Name.Pascal}}Form
+//Validate  validate Update{{.Name.Pascal}}Form
 func (f *Update{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
-    {{- if .NotNull -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
-    {{- if  eq .ColumnType "string" -}}
+    {{- if  not .NotNull -}}
+    f.ValidateFieldf(f.{{.Name}} !=nil, "{{.Name}}", messages.MsgFormFieldRequired) 
+    {{else if  eq .ColumnType "string" -}}
     f.ValidateFieldf(f.{{.Name}} != "", "{{.Name}}", messages.MsgFormFieldRequired) 
     {{else if eq .ColumnType "int" -}}
     f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired) 
@@ -153,22 +154,22 @@ func (f *Update{{.Name.Pascal}}Form) Validate() error {
     f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
     {{else if eq .ColumnType "time.Time" -}}
     f.ValidateFieldf(!f.{{.Name}}.IsZero() , "{{.Name}}", messages.MsgFormFieldRequired)
-    {{- end -}}
-    {{- end -}}
+    {{end}}
     {{- end -}}
     {{- end -}}
 	//if !f.HasError() {
+    //     validate code which should be run if no error raised.
 	//}
 	return nil
 }
 
-//InitWithRequest : init Update{{.Name.Pascal}}Form with request.
+//InitWithRequest  init Update{{.Name.Pascal}}Form with request.
 func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	f.SetFieldLabels(Update{{.Name.Pascal}}FormFieldLabels)
 	return nil
 }
 
-//Apply : apply Update{{.Name.Pascal}}Form to given {{.Name.Pascal}}Model.
+//Apply apply Update{{.Name.Pascal}}Form on given {{.Name.Pascal}}Model.
 func (f *Update{{.Name.Pascal}}Form) Apply(model *models.{{.Name.Pascal}}Model) error  {
     {{ range .Columns.Columns }}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
@@ -187,35 +188,37 @@ func MustGet{{.Name.Pascal}}PrimaryKeyFormRequest(r *http.Request) models.{{.Nam
     var pk models.{{.Name.Pascal}}PrimaryKey
     id:=router.GetParams(r).Get("id")
     if id == "" {
-        {{ if not .Columns.FirstPrimayKey.NotNull }}
+        {{- if not .Columns.FirstPrimayKey.NotNull}}
         return nil
-        {{else}}
-        {{ if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
+        {{- else }}
+        {{- if eq .Columns.FirstPrimayKey.ColumnType "int" }}
         return 0
-        {{ else -}}
+        {{- else }}
         return ""
-        {{end -}}
-        {{end}}
-    }{{ if eq .Columns.FirstPrimayKey.ColumnType "int"}}
+        {{- end }}
+        {{- end}}
+    }
+    {{ if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
     idval,err:=strconv.Atoi(id)
     if err!=nil{
-        {{ if not .Columns.FirstPrimayKey.NotNull }}
+        {{ if not .Columns.FirstPrimayKey.NotNull -}}
         return nil
-        {{else}}
+        {{else -}}
         return 0
-        {{end}}
+        {{- end }}
     }
-    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}idval){{else}}
-    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}id){{end}}
+    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}idval)
+    {{else -}}
+    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}id)
+    {{end -}}
     return pk
 }
-{{- end }}
-{{- end }}
+{{end -}}
+{{end -}}
 
-{{ if .Confirmed.WithList -}}
-
-//{{.Name.Pascal}}SortableFields fields which fields can be sorted.
-//Comment any filed if your disallow this field being sorted.
+{{ if .Confirmed.WithList }}
+//{{.Name.Pascal}}SortableFields fields which  can be used for sorting.
+//Comment any field if not needed.
 var {{.Name.Pascal}}SortableFields=map[string]string{
     {{range .Columns.Columns -}}
     "{{.Name}}":models.{{$Name.Pascal}}FieldAlias{{.Name}},
@@ -232,8 +235,8 @@ type {{.Name.Pascal}}Params struct{
     Asc bool
 }
 
-//ApplyToModelsSelect apply request params to models select query.
-func (p *{{.Name.Pascal}}Params) ApplyToModelsSelect(Select *querybuilder.Select){
+//ApplyToModelsSelect apply request params to models select task.
+func (p *{{.Name.Pascal}}Params) ApplyToModelsSelect(Select *modelmapper.SelectTask){
     p.ApplyToCountSelect(Select)
     if p.Sorted!=""{
         Select.OrderBy.Add(p.Sorted,p.Asc)
@@ -249,8 +252,8 @@ func (p *{{.Name.Pascal}}Params) ApplyToModelsSelect(Select *querybuilder.Select
     {{- end }}
 }
 
-//ApplyToCountSelect apply request params to models count query.
-func (p *{{.Name.Pascal}}Params) ApplyToCountSelect(Select *querybuilder.Select){
+//ApplyToCountSelect apply request params to models count task.
+func (p *{{.Name.Pascal}}Params) ApplyToCountSelect(Select *modelmapper.SelectTask){
 
 }
 

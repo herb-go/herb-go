@@ -9,14 +9,14 @@ func New{{.Name.Pascal}}Output() *{{.Name.Pascal}}Output{
      return &{{.Name.Pascal}}Output{}
 }
 
-//{{.Name.Pascal}}Output : {{.Name.Raw }} output struct
+//{{.Name.Pascal}}Output  {{.Name.Raw }} output struct
 type {{.Name.Pascal}}Output struct {
 	{{- range .Columns.Columns}}
 	{{.Name}} {{if not .NotNull }}*{{end}}{{.ColumnType}}
 	{{- end}}
 }
 
-//Convert : convert from  {{.Name.Raw }} model.
+//Convert : convert {{.Name.Raw }} model to output.
 //Return any error if raised.
 func (o *{{.Name.Pascal}}Output) Convert(model *models.{{.Name.Pascal}}Model) error{
     {{- range .Columns.Columns}}
@@ -25,7 +25,7 @@ func (o *{{.Name.Pascal}}Output) Convert(model *models.{{.Name.Pascal}}Model) er
     return nil
 }
 
-//MustConvertOutput{{.Name.Pascal}} : convert  {{.Name.Raw }} model to  {{.Name.Raw }} output .
+//MustConvertOutput{{.Name.Pascal}}  convert  {{.Name.Raw }} model to  output .
 //Panic if any error raised.
 func MustConvertOutput{{.Name.Pascal}}(model *models.{{.Name.Pascal}}Model) *{{.Name.Pascal}}Output{
     output:=New{{.Name.Pascal}}Output()
@@ -37,7 +37,7 @@ func MustConvertOutput{{.Name.Pascal}}(model *models.{{.Name.Pascal}}Model) *{{.
 }
 
 
-//MustConvertOutputList{{.Name.Pascal}} : convert  {{.Name.Raw }} models to  {{.Name.Raw }} output list.
+//MustConvertOutputList{{.Name.Pascal}}  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} output list.
 //Panic if any error raised.
 func MustConvertOutputList{{.Name.Pascal}}(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}Output{
     output:=make([]*{{.Name.Pascal}}Output,len(models))

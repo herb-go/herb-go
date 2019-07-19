@@ -52,20 +52,22 @@ func New{{.Name.Pascal}}Model() *{{.Name.Pascal}}Model{
     return model
 }
 
-
+//{{.Name.Pascal}}ModelResult model result for {{.Name.Raw }} mapper find method 
 type {{.Name.Pascal}}ModelResult struct {
 	models []*{{.Name.Pascal}}Model
 	fields []string
 }
-
+//Fields return query builder fields to bind
 func (r *{{.Name.Pascal}}ModelResult) Fields() *querybuilder.Fields {
 	model := New{{.Name.Pascal}}Model()
 	r.models = append(r.models, model)
 	return model.BuildFields(true, r.fields...)
 }
 
+//OnFinish finish event called when data found or erros raised.
 func (r *{{.Name.Pascal}}ModelResult) OnFinish(err error) error {
 	if err == sql.ErrNoRows {
+		r.models[len(r.models)-1]=nil
 		return nil
 	}
 	if err != nil {
@@ -76,7 +78,7 @@ func (r *{{.Name.Pascal}}ModelResult) OnFinish(err error) error {
 }
 
 
-
+//Model return first {{.Name.Raw }} model  or nil if not found.
 func (r *{{.Name.Pascal}}ModelResult) Model() *{{.Name.Pascal}}Model {
 	if len(r.models) == 0 {
 		return nil
@@ -84,10 +86,12 @@ func (r *{{.Name.Pascal}}ModelResult) Model() *{{.Name.Pascal}}Model {
 	return r.models[0]
 }
 
+//Models return {{.Name.Raw }} model list.
 func (r *{{.Name.Pascal}}ModelResult) Models() []*{{.Name.Pascal}}Model {
 	return r.models
 }
 
+//New{{.Name.Pascal}}ModelResult create new {{.Name.Raw }} model result with given model fields.
 func New{{.Name.Pascal}}ModelResult(fields ...string) *{{.Name.Pascal}}ModelResult {
 	if len(fields) == 0 {
 		fields = Default{{.Name.Pascal}}FieldsSelect

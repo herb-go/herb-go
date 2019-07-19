@@ -4,28 +4,27 @@ import (
 	database "modules/{{.Columns.Database}}"
     "modules/{{.Module}}"
 	{{if .Columns.HasTime}}"time"
-    {{end -}}
-
+	{{end }}
 	"github.com/herb-go/herb/model/sql/db"
 	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"
 	"github.com/herb-go/util"
 )
 
-{{$Name := .Name}}
+{{- $Name := .Name }}
 
-//{{$Name.Pascal}}TableName table name of model  {{.Name.Raw}}
+//{{$Name.Pascal}}TableName table name of model  {{.Name.Raw}}.
 const {{$Name.Pascal}}TableName= "{{.Name.Raw}}"
 
 //{{$Name.Pascal}}TableAlias table alias of model  {{.Name.Raw}} which will not changed when table name changed.
 const {{$Name.Pascal}}TableAlias="{{.Name.Raw}}"
 
-//{{.Name.Pascal}}Mapper : table {{.Name.Raw}}  mapper struct
+//{{.Name.Pascal}}Mapper  model mapper struct for  table {{.Name.Raw}}.
 type {{.Name.Pascal}}Mapper struct{
    	*modelmapper.ModelMapper
 }
 
-//InsertModelWithoutEvent build insert task and bind model for table {{.Name.Raw}} .
-//Event BeforeInsert will not be called.
+//InsertModelWithoutEvent create insert task and bind model for table {{.Name.Raw}} .
+//Event BeforeInsert and AfterInsert will not be called.
 func (mapper *{{.Name.Pascal}}Mapper) InsertModelWithoutEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
 	Insert:=mapper.Insert()
 	if len(fields)==0{
@@ -35,7 +34,8 @@ func (mapper *{{.Name.Pascal}}Mapper) InsertModelWithoutEvent(model *{{.Name.Pas
     return Insert
 }
 
-//InsertModel : build insert task and bind model for table {{.Name.Raw}} 
+//InsertModel : create insert task and bind model for table {{.Name.Raw}} 
+//Event BeforeInsert and AfterInsert will be called.
 func (mapper *{{.Name.Pascal}}Mapper) InsertModel(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.InsertTask{
 	t:=mapper.InsertModelWithoutEvent(model,fields...)
 	t.OnPrepare(model.BeforeInsert)
@@ -43,19 +43,20 @@ func (mapper *{{.Name.Pascal}}Mapper) InsertModel(model *{{.Name.Pascal}}Model,f
 	return t
 }
 
-//UpdateModel : build update query and bind model for table {{.Name.Raw}}  with given primary 
+//UpdateModel : create update task and bind model for table {{.Name.Raw}}.
+//Model primary key  will be used for search model
+//Event BeforeUpdate and AfterUpdate will be called.
 func (mapper *{{.Name.Pascal}}Mapper) UpdateModel(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
 	Update:=mapper.UpdateModelWithoutPrimaryKeyAndEvent(model,fields...)
 	pk := mapper.ModelPrimaryKey(model)
-	Update.Where.Condition=mapper.BuildByPKQuery(pk)
+	Update.Where.Condition=mapper.BuildByPrimaryKeyQuery(pk)
 	Update.OnPrepare(model.BeforeUpdate)
 	Update.OnSuccess(model.AfterUpdate)
 	return Update
 }
 
-
-//UpdateModelWithoutPrimaryKeyAndEvent  build update query and bind model for table {{.Name.Raw}}.
-//Event BeforeUpdate will not be called.
+//UpdateModelWithoutPrimaryKeyAndEvent  create update task and bind model for table {{.Name.Raw}}.
+//Event BeforeUpdate and BeforeUpdate  will not be called.
 func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithoutPrimaryKeyAndEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
 	Update:=mapper.Update()
 	if len(fields)==0{
@@ -65,16 +66,15 @@ func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithoutPrimaryKeyAndEvent(model
 	return Update
 }
 
-
-
-//DeleteByPrimaryKeyWithoutEvent : build delete query for table {{.Name.Raw}} with given primary key. 
+//DeleteByPrimaryKeyWithoutEvent  create delete task for table {{.Name.Raw}} with given primary key. 
 func (mapper *{{.Name.Pascal}}Mapper) DeleteByPrimaryKeyWithoutEvent(pk {{.Columns.PrimayKeyField}}) *modelmapper.DeleteTask{
 	Delete:=mapper.Delete()
-	Delete.Where.Condition = mapper.BuildByPKQuery(pk)
+	Delete.Where.Condition = mapper.BuildByPrimaryKeyQuery(pk)
 	return Delete
 }
 
-// DeleteModel : delete node  model in database;
+// DeleteModel create delete task for table {{.Name.Raw}} with given model.
+//Event AfterDelete will be called.
 func (mapper *{{.Name.Pascal}}Mapper) DeleteModel(model *{{.Name.Pascal}}Model) *modelmapper.DeleteTask {
 	pk := mapper.ModelPrimaryKey(model)
 	Delete := mapper.DeleteByPrimaryKeyWithoutEvent(pk)
@@ -82,10 +82,7 @@ func (mapper *{{.Name.Pascal}}Mapper) DeleteModel(model *{{.Name.Pascal}}Model) 
 	return Delete
 }
 
-
-
-
-//SelectModel : build select query and bind model for table {{.Name.Raw}} 
+//SelectModel : create select task and bind model fields for table {{.Name.Raw}} 
 func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper.SelectTask{
 	Select:=mapper.Select()
 	model:=New{{.Name.Pascal}}Model()
@@ -96,34 +93,27 @@ func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper
 	return Select
 }
 
-
-//Find : find {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
-//func (mapper *{{.Name.Pascal}}Mapper) Find(Select *querybuilder.Select,fields ...string) (*{{.Name.Pascal}}Model,error){
-//   model:=New{{.Name.Pascal}}Model()
-//	row := Select.QueryRow(mapper)
-//	if len(fields)==0{
-//		fields=Default{{.Name.Pascal}}FieldsSelect
-//	}
-//	err := Select.Result().
-//		BindFields(model.BuildFields(true,fields...)).
-//		ScanFrom(row)
-//	if err == sql.ErrNoRows {
-//		return nil, nil
-//	}
-//	if err != nil {
-//		return nil, err
-//	}
-//	return model, model.AfterFind()
-//}
-
-//SelectModelByPrimaryKey find {{.Name.Pascal}}Model from table {{.Name.Raw}} by primary key.
+//SelectModelByPrimaryKey create by primary key select task and bind model fields for table {{.Name.Raw}}.
 func (mapper *{{.Name.Pascal}}Mapper) SelectModelByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) *modelmapper.SelectTask {
 	Select := mapper.SelectModel(fields...)
-	Select.Where.Condition = mapper.BuildByPKQuery(pk)
+	Select.Where.Condition = mapper.BuildByPrimaryKeyQuery(pk)
 	return Select
 }
 
-func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk interface{}, fields ...string) (*{{.Name.Pascal}}Model, error) {
+//Find find {{.Name.Raw}} model by given task and fields.
+//Event AfterFind will be called.
+func (mapper *{{.Name.Pascal}}Mapper) Find(Select *modelmapper.SelectTask, fields ...string) (*{{.Name.Pascal}}Model, error) {
+	result := New{{.Name.Pascal}}ModelResult(fields...)
+	err := Select.FindTo(result)
+	if err != nil {
+		return nil, err
+	}
+	return result.Model(), nil
+}
+
+//FindByPrimaryKey find {{.Name.Raw}} model by given primary key and fields.
+//Event AfterFind will be called.
+func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk {{.Columns.PrimayKeyField}}, fields ...string) (*{{.Name.Pascal}}Model, error) {
 	Select := mapper.SelectModelByPrimaryKey(pk, fields...)
 	result := New{{.Name.Pascal}}ModelResult(fields...)
 	err := Select.FindTo(result)
@@ -133,6 +123,8 @@ func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk interface{}, fields ..
 	return result.Model(), nil
 }
 
+//FindAll find all {{.Name.Raw}} models by given task and fields.
+//Event AfterFind will be called on each model.
 func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *modelmapper.SelectTask, fields ...string) ([]*{{.Name.Pascal}}Model, error) {
 	result := New{{.Name.Pascal}}ModelResult(fields...)
 	err := Select.FindAllTo(result)
@@ -142,38 +134,7 @@ func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *modelmapper.SelectTask, fi
 	return result.Models(), nil
 }
 
-
-
-//FindAll : find all {{.Name.Pascal}}Model from table {{.Name.Raw}} by given select query.
-//func (mapper *{{.Name.Pascal}}Mapper) FindAll(Select *querybuilder.Select,fields ...string) ([]*{{.Name.Pascal}}Model,error){
-//    var result=[]*{{.Name.Pascal}}Model{}
-//	rows, err := Select.QueryRows(mapper)
-//	if err != nil {
-//		return nil, err
-//	}
-//	defer rows.Close()
-//	if len(fields)==0{
-//		fields=Default{{.Name.Pascal}}FieldsSelect
-//	}	
-//	for rows.Next() {
-//	    model:=New{{.Name.Pascal}}Model()
-//		err = Select.Result().
-//			BindFields(model.BuildFields(true,fields...)).
-//			ScanFrom(rows)
-//		if err != nil {
-//			return nil, err
-//		}
-//		err = model.AfterFind()
-//		if err != nil {
-//			return nil, err
-//		}
-//		result = append(result, model)
-//	}
-//    return result,nil
-//}
-
-
-//{{.Name.Pascal}}  : table {{.Name.Raw}}  mapper instance
+//{{.Name.Pascal}}  default table {{.Name.Raw}}  mapper instance
 var {{.Name.Pascal }} *{{.Name.Pascal }}Mapper
 
 //You  can create transaction with this database.Example:
@@ -188,11 +149,11 @@ var {{.Name.Pascal }} *{{.Name.Pascal }}Mapper
 //	return txdb.Commit()
 //}
 
-// {{.Name.Pascal }}Database database by which settings mapper query data.
+// {{.Name.Pascal }}Database database for model mapper {{.Name.Pascal}}.
 var {{.Name.Pascal }}Database db.Database
 
 
-//New{{.Name.Pascal}}Mapper create new table  {{.Name.Raw}} mapper
+//New{{.Name.Pascal}}Mapper create new  {{.Name.Raw}} model mapper.
 func New{{.Name.Pascal}}Mapper(database db.Database) *{{.Name.Pascal}}Mapper {
 	var sqltable = db.NewTable(database, {{.Name.Pascal}}TableName)
 	sqltable.SetAlias({{.Name.Pascal}}TableAlias)
