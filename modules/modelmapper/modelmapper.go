@@ -118,7 +118,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	if m.SlienceMode {
 		return nil
 	}
-	if len(mc.PrimaryKeys) == 1 && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
+	if mc.IsSinglePrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
 		crud := m.WithCreate && m.WithRead && m.WithUpdate && m.WithDelete
 		err := QuestionCRUD.ExecIf(a, !crud, &crud)
 		if err != nil {
@@ -135,48 +135,54 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 			m.CreateForm = true
 			m.CreateOutput = true
 		}
-		err = QuestionWithCreate.ExecIf(a, mc.CanCreate() && !m.WithCreate, &m.WithCreate)
+		err = QuestionWithCreate.ExecIf(a, !m.WithCreate, &m.WithCreate)
 		if err != nil {
 			return err
 		}
-		if mc.HasPrimayKey() {
-			err = QuestionWithRead.ExecIf(a, !m.WithRead, &m.WithRead)
-			if err != nil {
-				return err
-			}
-			err = QuestionWithUpdate.ExecIf(a, !m.WithUpdate, &m.WithUpdate)
-			if err != nil {
-				return err
-			}
-			err = QuestionWithDelete.ExecIf(a, !m.WithDelete, &m.WithDelete)
-			if err != nil {
-				return err
-			}
-		}
-		err = QuestionWithList.ExecIf(a, !m.WithList, &m.WithList)
+		err = QuestionWithRead.ExecIf(a, !m.WithRead, &m.WithRead)
 		if err != nil {
 			return err
 		}
-		if m.WithList {
-			err = QuestionWithPager.ExecIf(a, !m.WithPager, &m.WithPager)
-			if err != nil {
-				return err
-			}
-		}
-		if m.WithCreate || m.WithRead || m.WithUpdate || m.WithDelete || m.WithList {
-			err = QuestionCreateForm.ExecIf(a, !m.CreateForm, &m.CreateForm)
-			if err != nil {
-				return err
-			}
-			err = QuestionCreateAction.ExecIf(a, !m.CreateAction, &m.CreateAction)
-			if err != nil {
-				return err
-			}
-		}
-		err = QuestionCreateOutput.ExecIf(a, !m.CreateOutput, &m.CreateOutput)
+		err = QuestionWithUpdate.ExecIf(a, !m.WithUpdate, &m.WithUpdate)
 		if err != nil {
 			return err
 		}
+		err = QuestionWithDelete.ExecIf(a, !m.WithDelete, &m.WithDelete)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := QuestionWithCreate.ExecIf(a, !m.WithCreate, &m.WithCreate)
+		if err != nil {
+			return err
+		}
+	}
+	err := QuestionWithList.ExecIf(a, !m.WithList, &m.WithList)
+	if err != nil {
+		return err
+	}
+	if m.WithList {
+		err = QuestionWithPager.ExecIf(a, !m.WithPager, &m.WithPager)
+		if err != nil {
+			return err
+		}
+	}
+	if m.WithCreate || m.WithRead || m.WithUpdate || m.WithDelete || m.WithList {
+		err = QuestionCreateForm.ExecIf(a, !m.CreateForm, &m.CreateForm)
+		if err != nil {
+			return err
+		}
+		err = QuestionCreateAction.ExecIf(a, !m.CreateAction, &m.CreateAction)
+		if err != nil {
+			return err
+		}
+	}
+	if m.CreateAction {
+		m.CreateOutput = true
+	}
+	err = QuestionCreateOutput.ExecIf(a, !m.CreateOutput, &m.CreateOutput)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -254,7 +260,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
 		filepath.Join(mp, n.LowerPath("models"), n.Lower+".go"):        "model.go.tmpl",
 	}
-	if len(mc.PrimaryKeys) == 1 && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
+	if m.WithList || m.WithCreate || (mc.HasPrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") && (m.WithDelete || m.WithUpdate || m.WithRead)) {
 		if m.CreateForm {
 			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
 		}
@@ -265,6 +271,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 			filesToRender[filepath.Join(mp, n.LowerPath("outputs"), n.Lower+"output.go")] = "modeloutput.go.tmpl"
 		}
 	}
+
 	data := map[string]interface{}{
 		"Name":      n,
 		"Columns":   mc,

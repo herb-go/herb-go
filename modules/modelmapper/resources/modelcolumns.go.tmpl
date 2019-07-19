@@ -67,9 +67,7 @@ type {{.Name.Pascal}}PrimaryKey struct{
 
 //ModelPrimaryKey   get primary key of given  {{.Name.Raw}} model.
 func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Model ) *{{.Name.Pascal}}PrimaryKey {
-{{- if not .Columns.HasPrimayKey }}
-	return nil
-{{- else if .Columns.IsSinglePrimayKey }}
+{{- if .Columns.IsSinglePrimayKey }}
     var pk {{.Name.Pascal}}PrimaryKey
 	pk={{.Name.Pascal}}PrimaryKey(model.{{.Columns.FirstPrimayKey.Name}})
 	return &pk

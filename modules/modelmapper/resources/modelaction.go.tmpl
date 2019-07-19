@@ -10,7 +10,6 @@ import (
 	"github.com/herb-go/herb/render"
 )
 {{ if .Confirmed.CreateForm -}}
-{{ if .Columns.CanCreate -}}
 {{ if .Confirmed.WithCreate -}}
 //ActionCreate{{.Name.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}Form.
 func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
@@ -30,11 +29,10 @@ func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	}
 }
 {{- end }}
-{{- end }}
 {{- end -}}
 
 {{ if .Confirmed.CreateOutput -}}
-{{ if .Columns.HasPrimayKey -}}
+{{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithRead }}
 
 //ActionGet{{.Name.Pascal}} action which get {{.Name.Raw}} model by primary key in url.
@@ -74,7 +72,7 @@ func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
 {{- end }}
 
 {{ if .Confirmed.CreateForm -}}
-{{ if .Columns.HasPrimayKey -}}
+{{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithUpdate -}}
 
 //ActionUpdate{{.Name.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  FormUpdate{{.Name.Pascal}}.
@@ -125,7 +123,7 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 {{- end -}}
 {{- end }}
 
-{{ if .Columns.HasPrimayKey -}}
+{{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithDelete -}}
 
 //ActionDelete{{.Name.Pascal}} action which delete {{.Name.Raw}} model by primary key in url.

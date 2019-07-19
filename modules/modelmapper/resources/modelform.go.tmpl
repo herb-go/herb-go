@@ -3,7 +3,7 @@ package forms
 {{$Name := .Name}}
 
 import (
-    {{ if or ( and (.Columns.CanCreate) ( .Confirmed.WithCreate) ) (  .Confirmed.WithUpdate ) ( .Confirmed.WithRead)   (.Confirmed.WithList) (.Confirmed.WithDelete) -}}
+    {{ if or ( and  ( .Confirmed.WithCreate) ) (  .Confirmed.WithUpdate ) ( .Confirmed.WithRead)   (.Confirmed.WithList) (.Confirmed.WithDelete) -}}
 	"net/http"
     {{- end }}
 	{{if .Columns.HasTime}}
@@ -12,10 +12,10 @@ import (
      {{- if or (eq .Columns.FirstPrimayKey.ColumnType "int") ( .Confirmed.WithPager ) }}
     "strconv"
     {{ end -}}
-    {{ if and (.Columns.HasPrimayKey)  ( or (.Confirmed.WithRead) ( .Confirmed.WithUpdate ) ( .Confirmed.WithDelete )) -}}
+    {{ if and (.Columns.IsSinglePrimayKey)  ( or (.Confirmed.WithRead) ( .Confirmed.WithUpdate ) ( .Confirmed.WithDelete )) -}}
     "github.com/herb-go/herb/middleware/router"
     {{- end}}
-    {{ if or (and (.Columns.CanCreate) ( .Confirmed.WithCreate) ) ( and ( .Columns.HasPrimayKey ) ( .Confirmed.WithUpdate)) }}
+    {{ if or (and  ( .Confirmed.WithCreate) ) ( and ( .Columns.IsSinglePrimayKey ) ( .Confirmed.WithUpdate)) }}
     {{if  .Confirmed.CreateForm }}
 	"github.com/herb-go/herb/model/formdata"
     "modules/messages"
@@ -27,7 +27,6 @@ import (
     "modules/{{.Module}}/models"
 )
 
-{{ if .Columns.CanCreate -}}
 {{ if and (.Confirmed.WithCreate) (.Confirmed.CreateForm) -}}
 //Create{{.Name.Pascal}}FormFieldLabels : field labels for Create{{.Name.Pascal}}Form
 var Create{{.Name.Pascal}}FormFieldLabels = map[string]string{ 
@@ -105,9 +104,8 @@ func (f *Create{{.Name.Pascal}}Form) Model() (*models.{{.Name.Pascal}}Model,erro
 }
 
 {{- end }}
-{{- end }}
 
-{{ if .Columns.HasPrimayKey -}}
+{{ if .Columns.IsSinglePrimayKey -}}
 {{ if and (.Confirmed.WithUpdate) ( (.Confirmed.CreateForm)) -}}
 //Update{{.Name.Pascal}}FormFieldLabels : field labels for Update{{.Name.Pascal}}Form
 var Update{{.Name.Pascal}}FormFieldLabels = map[string]string{ {{range .Columns.Columns}}{{if and ( not .AutoValue) ( not .PrimayKey)}}

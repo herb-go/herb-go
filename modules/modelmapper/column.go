@@ -35,18 +35,6 @@ func (m *ModelColumns) FirstPrimayKey() *Column {
 	return m.Columns[0]
 }
 
-func (m *ModelColumns) CanCreate() bool {
-	if len(m.PrimaryKeys) == 1 {
-		if m.PrimaryKeys[0].ColumnType == "string" {
-			return true
-		}
-		if m.PrimaryKeys[0].AutoValue {
-			return true
-		}
-	}
-	return false
-}
-
 func (m *ModelColumns) HasPrimayKey() bool {
 	return len(m.PrimaryKeys) > 0
 }
