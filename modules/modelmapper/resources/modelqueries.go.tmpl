@@ -46,6 +46,8 @@ func (mapper *{{.Name.Pascal}}Mapper) InsertModel(model *{{.Name.Pascal}}Model,f
 	return t
 }
 
+{{- if .Columns.HasPrimayKey }}
+
 //UpdateModel : create update task and bind model for table {{.Name.Raw}}.
 //Model primary key  will be used for search model
 //Event BeforeUpdate and AfterUpdate will be called.
@@ -58,6 +60,8 @@ func (mapper *{{.Name.Pascal}}Mapper) UpdateModel(model *{{.Name.Pascal}}Model,f
 	return Update
 }
 
+{{- end }}
+
 //UpdateModelWithoutPrimaryKeyAndEvent  create update task and bind model for table {{.Name.Raw}}.
 //Event BeforeUpdate and BeforeUpdate  will not be called.
 func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithoutPrimaryKeyAndEvent(model *{{.Name.Pascal}}Model,fields ...string) *modelmapper.UpdateTask{
@@ -68,6 +72,8 @@ func (mapper *{{.Name.Pascal}}Mapper) UpdateModelWithoutPrimaryKeyAndEvent(model
 	Update.Update.AddFields(model.BuildFields(false,fields...))
 	return Update
 }
+
+{{- if .Columns.HasPrimayKey }}
 
 //DeleteByPrimaryKeyWithoutEvent  create delete task for table {{.Name.Raw}} with given primary key. 
 func (mapper *{{.Name.Pascal}}Mapper) DeleteByPrimaryKeyWithoutEvent(pk {{.Columns.PrimayKeyField}}) *modelmapper.DeleteTask{
@@ -85,6 +91,8 @@ func (mapper *{{.Name.Pascal}}Mapper) DeleteModel(model *{{.Name.Pascal}}Model) 
 	return Delete
 }
 
+{{- end }}
+
 //SelectModel : create select task and bind model fields for table {{.Name.Raw}} 
 func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper.SelectTask{
 	Select:=mapper.Select()
@@ -96,12 +104,15 @@ func (mapper *{{.Name.Pascal}}Mapper) SelectModel(fields ...string) *modelmapper
 	return Select
 }
 
+{{- if .Columns.HasPrimayKey }}
+
 //SelectModelByPrimaryKey create by primary key select task and bind model fields for table {{.Name.Raw}}.
 func (mapper *{{.Name.Pascal}}Mapper) SelectModelByPrimaryKey(pk {{.Columns.PrimayKeyField}},fields ...string) *modelmapper.SelectTask {
 	Select := mapper.SelectModel(fields...)
 	Select.Where.Condition = mapper.BuildByPrimaryKeyQuery(pk)
 	return Select
 }
+{{- end }}
 
 //Find find {{.Name.Raw}} model by given task and fields.
 //Event AfterFind will be called.
@@ -114,6 +125,8 @@ func (mapper *{{.Name.Pascal}}Mapper) Find(Select *modelmapper.SelectTask, field
 	return result.Model(), nil
 }
 
+{{- if .Columns.HasPrimayKey }}
+
 //FindByPrimaryKey find {{.Name.Raw}} model by given primary key and fields.
 //Event AfterFind will be called.
 func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk {{.Columns.PrimayKeyField}}, fields ...string) (*{{.Name.Pascal}}Model, error) {
@@ -125,6 +138,8 @@ func (mapper *{{.Name.Pascal}}Mapper) FindByPrimaryKey(pk {{.Columns.PrimayKeyFi
 	}
 	return result.Model(), nil
 }
+
+{{- end }}
 
 //FindAll find all {{.Name.Raw}} models by given task and fields.
 //Event AfterFind will be called on each model.

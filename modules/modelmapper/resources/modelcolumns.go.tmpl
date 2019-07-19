@@ -52,11 +52,10 @@ var(
 	{{- end}}
 )
 
+{{- if .Columns.HasPrimayKey }}
 
 //{{.Name.Pascal}}PrimaryKey : table {{.Name.Raw}} primary key type
-{{- if not .Columns.HasPrimayKey }}
-type {{.Name.Pascal}}PrimaryKey map[string]interface{}
-{{- else if .Columns.IsSinglePrimayKey }}
+{{- if .Columns.IsSinglePrimayKey }}
 type {{.Name.Pascal}}PrimaryKey {{ if not .Columns.FirstPrimayKey.NotNull }}*{{ end }}{{.Columns.FirstPrimayKey.ColumnType}}
 {{- else }}
 type {{.Name.Pascal}}PrimaryKey struct{
@@ -65,7 +64,6 @@ type {{.Name.Pascal}}PrimaryKey struct{
 {{- end}}
 }
 {{- end}}
-
 
 //ModelPrimaryKey   get primary key of given  {{.Name.Raw}} model.
 func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Model ) *{{.Name.Pascal}}PrimaryKey {
@@ -83,7 +81,6 @@ func (mapper *{{.Name.Pascal}}Mapper) ModelPrimaryKey( model *{{.Name.Pascal}}Mo
     return &pk
 {{- end}}
 }
-
 
 
 //BuildByPrimaryKeyQuery  build by Primay Key query for table {{.Name.Raw}}
@@ -107,6 +104,10 @@ func (mapper *{{.Name.Pascal}}Mapper) BuildByPrimaryKeyQuery(pk {{.Columns.Prima
 //PrimaryKeyFields  primary key fields of table {{.Name.Raw}} 
 func (mapper *{{.Name.Pascal}}Mapper) PrimaryKeyFields() []string{
 	return []string{
-{{range .Columns.PrimaryKeys}}        {{$Name.Pascal}}Field{{.Name}} ,
-{{end}}    }
+{{- range .Columns.PrimaryKeys}}       
+ 		{{$Name.Pascal}}Field{{.Name}} ,
+{{- end}}
+    }
 }
+
+{{- end}}
