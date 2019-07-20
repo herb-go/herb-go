@@ -262,11 +262,19 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 			return err
 		}
 	}
-	filesToRender := map[string]string{
-		filepath.Join(mp, n.LowerPath("models"), n.Lower+"queries.go"): "modelqueries.go.tmpl",
-		filepath.Join(mp, n.LowerPath("models"), n.Lower+"columns.go"): "modelcolumns.go.tmpl",
-		filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go"):  "modelfields.go.tmpl",
-		filepath.Join(mp, n.LowerPath("models"), n.Lower+".go"):        "model.go.tmpl",
+	filesToRender := map[string]string{}
+	exists, err = tools.FileExists(filepath.Join(a.Cwd, mp, n.LowerPath("models"), n.Lower+"queries.go"))
+	if err != nil {
+		return err
+	}
+	if !exists {
+		filesToRender[filepath.Join(mp, n.LowerPath("models"), n.Lower+"queries.go")] = "modelqueries.go.tmpl"
+		filesToRender[filepath.Join(mp, n.LowerPath("models"), n.Lower+"columns.go")] = "modelcolumns.go.tmpl"
+		filesToRender[filepath.Join(mp, n.LowerPath("models"), n.Lower+"fields.go")] = "modelfields.go.tmpl"
+		filesToRender[filepath.Join(mp, n.LowerPath("models"), n.Lower+".go")] = "model.go.tmpl"
+
+	} else {
+		a.Printf("File \"%s\" exists.\nSkip model code installation.", filepath.Join(a.Cwd, mp, n.LowerPath("models"), n.Lower+"queries.go"))
 	}
 	if m.WithList || m.WithCreate || (mc.HasPrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") && (m.WithDelete || m.WithUpdate || m.WithRead)) {
 		if m.CreateForm {
