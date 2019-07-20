@@ -270,13 +270,13 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 	}
 	if m.WithList || m.WithCreate || (mc.HasPrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") && (m.WithDelete || m.WithUpdate || m.WithRead)) {
 		if m.CreateForm {
-			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+id.Lower+"form.go")] = "modelform.go.tmpl"
 		}
 		if m.CreateAction {
-			filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")] = "modelaction.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+id.Lower+"action.go")] = "modelaction.go.tmpl"
 		}
 		if m.CreateViewModel {
-			filesToRender[filepath.Join(mp, n.LowerPath("viewmodels"), n.Lower+"viewmodel.go")] = "modelviewmodel.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath("viewmodels"), n.Lower+id.Lower+"viewmodel.go")] = "modelviewmodel.go.tmpl"
 		}
 	}
 
