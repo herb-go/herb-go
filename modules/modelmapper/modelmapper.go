@@ -29,6 +29,7 @@ var QuestionCreateOutput = tools.NewTrueOrFalseQuestion("Do you want to create m
 type ModelMapper struct {
 	app.BasicModule
 	Database     string
+	QueryID      string
 	CreateForm   bool
 	CreateOutput bool
 	CreateAction bool
@@ -39,7 +40,6 @@ type ModelMapper struct {
 	WithList     bool
 	WithPager    bool
 	SlienceMode  bool
-	QueryName    string
 }
 
 func (m *ModelMapper) ID() string {
@@ -85,7 +85,9 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Database, "database", "database",
 		`database module name. 
 	`)
-
+	m.FlagSet().StringVar(&m.QueryID, "id", "",
+		`moder mapper id for actions,queries and viewmodels. 
+	`)
 	crud := m.FlagSet().Bool("crud", false, "Whether create all CRUD codes")
 	m.FlagSet().BoolVar(&m.CreateAction, "createaction", false, "Whether create model actions")
 	m.FlagSet().BoolVar(&m.CreateForm, "createform", false, "Whether create model forms")
@@ -200,7 +202,7 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	qn, err := name.New(false, args...)
+	qn, err := name.New(false, m.QueryID)
 	if err != nil {
 		return err
 	}
@@ -247,7 +249,7 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, qn *name.Name, mc *ModelColumns) error {
+func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, id *name.Name, mc *ModelColumns) error {
 	modelmodule := n.LowerWithParentPath
 	modulepath := filepath.Join(mp, modelmodule)
 	exists, err := tools.FileExists(modulepath)
@@ -280,7 +282,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 
 	data := map[string]interface{}{
 		"Name":      n,
-		"QueryName": qn,
+		"ID":        id,
 		"Columns":   mc,
 		"Module":    modelmodule,
 		"Confirmed": m,
