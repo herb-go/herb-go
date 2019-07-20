@@ -25,9 +25,9 @@ func (o *{{.Name.Pascal}}Output) Convert(model *models.{{.Name.Pascal}}Model) er
     return nil
 }
 
-//MustConvertOutput{{.Name.Pascal}}  convert  {{.Name.Raw }} model to  output .
+//MustConvert{{.Name.Pascal}}Output  convert  {{.Name.Raw }} model to  output .
 //Panic if any error raised.
-func MustConvertOutput{{.Name.Pascal}}(model *models.{{.Name.Pascal}}Model) *{{.Name.Pascal}}Output{
+func MustConvert{{.Name.Pascal}}Output(model *models.{{.Name.Pascal}}Model) *{{.Name.Pascal}}Output{
     output:=New{{.Name.Pascal}}Output()
     err:=output.Convert(model)
     if err!=nil{
@@ -37,9 +37,9 @@ func MustConvertOutput{{.Name.Pascal}}(model *models.{{.Name.Pascal}}Model) *{{.
 }
 
 
-//MustConvertOutputList{{.Name.Pascal}}  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} output list.
+//MustConvert{{.Name.Pascal}}OutputList  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} output list.
 //Panic if any error raised.
-func MustConvertOutputList{{.Name.Pascal}}(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}Output{
+func MustConvert{{.Name.Pascal}}OutputList(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}Output{
     output:=make([]*{{.Name.Pascal}}Output,len(models))
     for k,v:=range models{
         o:=&{{.Name.Pascal}}Output{}
