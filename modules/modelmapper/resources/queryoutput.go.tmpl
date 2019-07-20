@@ -4,7 +4,7 @@ import (
     "modules/{{.Module}}/models"
 )
 
-//New{{.Name.Pascal}}Output create new {{.Name.Pascal}}Output
+//New{{.Name.Pascal}}{{.QueryName.Pascal}}Output create new {{.Name.Pascal}}{{.QueryName.Pascal}}Output
 func New{{.Name.Pascal}}{{.QueryName.Pascal}}Output *{{.Name.Pascal}}{{.QueryName.Pascal}}Output{
      return &{{.Name.Pascal}}{{.QueryName.Pascal}}Output{
     }
@@ -37,9 +37,9 @@ func MustConvert{{.Name.Pascal}}{{.QueryName.Pascal}}Output(model *models.{{.Nam
 }
 
 
-//MustConvert{{.Name.Pascal}}OutputList{{.QueryName.Pascal}} : convert  {{.Name.Raw }}{{.QueryName.Pascal}} models to  {{.Name.Raw }}{ {.QueryName.Raw}} output list.
+//MustConvert{{.Name.Pascal}}{{.QueryName.Pascal}}OutputList{{.QueryName.Pascal}} : convert  {{.Name.Raw }}{{.QueryName.Pascal}} models to  {{.Name.Raw }}{ {.QueryName.Raw}} output list.
 //Panic if any error raised.
-func MustConvert{{.Name.Pascal}}OutputList{{.QueryName.Pascal}}(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}{{.QueryName.Pascal}}Output{
+func MustConvert{{.Name.Pascal}}{{.QueryName.Pascal}}OutputList{{.QueryName.Pascal}}(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}{{.QueryName.Pascal}}Output{
     output:=make([]*{{.Name.Pascal}}{{.QueryName.Pascal}}Output,len(models))
     for k,v:=range models{
         o:=&{{.Name.Pascal}}{{.QueryName.Pascal}}Output{}

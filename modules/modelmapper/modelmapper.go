@@ -39,6 +39,7 @@ type ModelMapper struct {
 	WithList     bool
 	WithPager    bool
 	SlienceMode  bool
+	QueryName    string
 }
 
 func (m *ModelMapper) ID() string {
@@ -199,6 +200,11 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	qn, err := name.New(false, args...)
+	if err != nil {
+		return err
+	}
+
 	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
@@ -218,7 +224,7 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/modelmapper/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, mp, task, n, mc)
+	err = m.Render(a, a.Cwd, mp, task, n, qn, mc)
 	if err != nil {
 		return err
 	}
@@ -241,7 +247,7 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, mc *ModelColumns) error {
+func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, qn *name.Name, mc *ModelColumns) error {
 	modelmodule := n.LowerWithParentPath
 	modulepath := filepath.Join(mp, modelmodule)
 	exists, err := tools.FileExists(modulepath)
@@ -274,6 +280,7 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 
 	data := map[string]interface{}{
 		"Name":      n,
+		"QueryName": qn,
 		"Columns":   mc,
 		"Module":    modelmodule,
 		"Confirmed": m,
