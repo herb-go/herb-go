@@ -1,4 +1,4 @@
-package outputs
+package viewmodels
 
 import (
 	"modules/{{.LowerWithParent}}/models"
@@ -7,33 +7,33 @@ import (
 	"github.com/herb-go/herb/cache/datastore"
 )
 
-//New{{.Pascal}}OutputLoaderFactory create new {{.Pascal}}OutputLoader factory.
+//New{{.Pascal}}ViewModelLoaderFactory create new {{.Pascal}}ViewModelLoader factory.
 //You should create your loader factory in your model cache module.
-var New{{.Pascal}}OutputLoaderFactory = func(c cache.Cacheable) func() *{{.Pascal}}OutputLoader {
-	return func() *{{.Pascal}}OutputLoader {
-		return &{{.Pascal}}OutputLoader{
-			Loader: {{.Pascal}}OutputDataSource.NewSyncMapStoreLoader(c),
+var New{{.Pascal}}ViewModelLoaderFactory = func(c cache.Cacheable) func() *{{.Pascal}}ViewModelLoader {
+	return func() *{{.Pascal}}ViewModelLoader {
+		return &{{.Pascal}}ViewModelLoader{
+			Loader: {{.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader(c),
 		}
 	}
 }
 
-//{{.Pascal}}OutputLoader {{.Raw}} otuput loader
-type {{.Pascal}}OutputLoader struct {
+//{{.Pascal}}ViewModelLoader {{.Raw}} otuput loader
+type {{.Pascal}}ViewModelLoader struct {
 	*datastore.Loader
 }
 
 //Get get  {{.Raw}} otuput  by given key.
 //You should load value first or use the LoadAndGet method
-func (l *{{.Pascal}}OutputLoader) Get(key string) *{{.Pascal}}Output {
+func (l *{{.Pascal}}ViewModelLoader) Get(key string) *{{.Pascal}}ViewModel {
 	v := l.Store.LoadInterface(key)
 	if v == nil {
 		return nil
 	}
-	return v.(*{{.Pascal}}Output)
+	return v.(*{{.Pascal}}ViewModel)
 }
 
 //LoadAndGet load and get  {{.Raw}} otuput  by given key.
-func (l *{{.Pascal}}OutputLoader) LoadAndGet(key string) (*{{.Pascal}}Output, error) {
+func (l *{{.Pascal}}ViewModelLoader) LoadAndGet(key string) (*{{.Pascal}}ViewModel, error) {
 	err := l.Load(key)
 	if err != nil {
 		return nil, err
@@ -41,16 +41,16 @@ func (l *{{.Pascal}}OutputLoader) LoadAndGet(key string) (*{{.Pascal}}Output, er
 	return l.Get(key), nil
 }
 
-//{{.Pascal}}OutputDataSource  {{.Raw}} output datasource.
-//Datasource can used to create  {{.Raw}} output data store loader by {{.Pascal}}OutputDataSource.NewMapStoreLoader or {{.Pascal}}OutputDataSource.NewSyncMapStoreLoader method.
+//{{.Pascal}}ViewModelDataSource  {{.Raw}} viewmodel datasource.
+//Datasource can used to create  {{.Raw}} viewmodel data store loader by {{.Pascal}}ViewModelDataSource.NewMapStoreLoader or {{.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader method.
 //Member can use datasource as user data provider by RegisterDataProvider method.
-var {{.Pascal}}OutputDataSource = datastore.NewDataSource()
+var {{.Pascal}}ViewModelDataSource = datastore.NewDataSource()
 
 func init() {
-	{{.Pascal}}OutputDataSource.Creator = func() interface{} {
-		return New{{.Pascal}}Output()
+	{{.Pascal}}ViewModelDataSource.Creator = func() interface{} {
+		return New{{.Pascal}}ViewModel()
 	}
-	{{.Pascal}}OutputDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
+	{{.Pascal}}ViewModelDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
 		var results = map[string]interface{}{}
 		for _, v := range keys {
 			model, err := models.{{.Pascal}}.FindByPrimaryKey(v)
@@ -60,12 +60,12 @@ func init() {
 			if model == nil {
 				continue
 			}
-			output := New{{.Pascal}}Output()
-			err = output.Convert(model)
+			viewmodel := New{{.Pascal}}ViewModel()
+			err = viewmodel.Convert(model)
 			if err != nil {
 				return nil, err
 			}
-			results[v] = output
+			results[v] = viewmodel
 		}
 		return results, nil
 	}

@@ -24,22 +24,22 @@ var QuestionWithList = tools.NewTrueOrFalseQuestion("Do you want to create model
 var QuestionWithPager = tools.NewTrueOrFalseQuestion("Do you want to use pager for  \"List\" component?")
 var QuestionCreateForm = tools.NewTrueOrFalseQuestion("Do you want to create model forms?")
 var QuestionCreateAction = tools.NewTrueOrFalseQuestion("Do you want to create model actions?")
-var QuestionCreateOutput = tools.NewTrueOrFalseQuestion("Do you want to create model output class")
+var QuestionCreateViewModel = tools.NewTrueOrFalseQuestion("Do you want to create model view model class")
 
 type ModelMapper struct {
 	app.BasicModule
-	Database     string
-	QueryID      string
-	CreateForm   bool
-	CreateOutput bool
-	CreateAction bool
-	WithCreate   bool
-	WithRead     bool
-	WithUpdate   bool
-	WithDelete   bool
-	WithList     bool
-	WithPager    bool
-	SlienceMode  bool
+	Database        string
+	QueryID         string
+	CreateForm      bool
+	CreateViewModel bool
+	CreateAction    bool
+	WithCreate      bool
+	WithRead        bool
+	WithUpdate      bool
+	WithDelete      bool
+	WithList        bool
+	WithPager       bool
+	SlienceMode     bool
 }
 
 func (m *ModelMapper) ID() string {
@@ -91,7 +91,7 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	crud := m.FlagSet().Bool("crud", false, "Whether create all CRUD codes")
 	m.FlagSet().BoolVar(&m.CreateAction, "createaction", false, "Whether create model actions")
 	m.FlagSet().BoolVar(&m.CreateForm, "createform", false, "Whether create model forms")
-	m.FlagSet().BoolVar(&m.CreateOutput, "createoutput", false, "Whether create model output class")
+	m.FlagSet().BoolVar(&m.CreateViewModel, "createviewmodel", false, "Whether create model viewmodel class")
 	m.FlagSet().BoolVar(&m.WithCreate, "withcreate", false, "Whether create model create code")
 	m.FlagSet().BoolVar(&m.WithRead, "withread", false, "Whether create model read code")
 	m.FlagSet().BoolVar(&m.WithUpdate, "withupdate", false, "Whether create model update code")
@@ -110,7 +110,7 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 		m.WithDelete = true
 		m.CreateAction = true
 		m.CreateForm = true
-		m.CreateOutput = true
+		m.CreateViewModel = true
 		m.WithList = true
 		m.WithPager = true
 	}
@@ -136,7 +136,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 			m.WithPager = true
 			m.CreateAction = true
 			m.CreateForm = true
-			m.CreateOutput = true
+			m.CreateViewModel = true
 		}
 		err = QuestionWithCreate.ExecIf(a, !m.WithCreate, &m.WithCreate)
 		if err != nil {
@@ -181,9 +181,9 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 		}
 	}
 	if m.CreateAction {
-		m.CreateOutput = true
+		m.CreateViewModel = true
 	}
-	err = QuestionCreateOutput.ExecIf(a, !m.CreateOutput, &m.CreateOutput)
+	err = QuestionCreateViewModel.ExecIf(a, !m.CreateViewModel, &m.CreateViewModel)
 	if err != nil {
 		return err
 	}
@@ -275,8 +275,8 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 		if m.CreateAction {
 			filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")] = "modelaction.go.tmpl"
 		}
-		if m.CreateOutput {
-			filesToRender[filepath.Join(mp, n.LowerPath("outputs"), n.Lower+"output.go")] = "modeloutput.go.tmpl"
+		if m.CreateViewModel {
+			filesToRender[filepath.Join(mp, n.LowerPath("viewmodels"), n.Lower+"viewmodel.go")] = "modelviewmodel.go.tmpl"
 		}
 	}
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
     "modules/{{.Module}}/forms"
     "modules/{{.Module}}/models"
-    "modules/{{.Module}}/outputs"
+    "modules/{{.Module}}/viewmodels"
 
 	"github.com/herb-go/herb/model/formdata"
 	"github.com/herb-go/herb/render"
@@ -23,7 +23,7 @@ func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         if err!=nil{
             panic(err)
         }
-		render.MustJSON(w, outputs.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}Output(model), 200)
+		render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model), 200)
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
@@ -31,7 +31,7 @@ func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 {{- end }}
 {{- end -}}
 
-{{ if .Confirmed.CreateOutput -}}
+{{ if .Confirmed.CreateViewModel -}}
 {{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithRead }}
 
@@ -65,7 +65,7 @@ func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	render.MustJSON(w, outputs.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}Output(model), 200)
+	render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model), 200)
 }
 {{- end -}}
 {{- end }}
@@ -165,7 +165,7 @@ func ActionDelete{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 {{- end }}
 {{- end }}
 
-{{ if .Confirmed.CreateOutput -}}
+{{ if .Confirmed.CreateViewModel -}}
 {{ if .Confirmed.WithList -}}
 //ActionList{{.Name.Pascal}} action which list {{.Name.Raw}} models by request params.
 func ActionList{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +187,7 @@ func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
         panic(err)
     }
     return map[string]interface{}{
-        "Items":outputs.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}OutputList(modellist),
+        "Items":viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModelList(modellist),
         "Count":result,
     }
 }
