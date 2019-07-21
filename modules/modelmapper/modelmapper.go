@@ -299,6 +299,3 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 }
 
 var ModelMapperModule = &ModelMapper{}
-
-func init() {
-}

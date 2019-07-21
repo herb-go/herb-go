@@ -22,7 +22,7 @@ type {{.Pascal}}ViewModelLoader struct {
 	*datastore.Loader
 }
 
-//Get get  {{.Raw}} otuput  by given key.
+//Get get  {{.Raw}} view model  by given key.
 //You should load value first or use the LoadAndGet method
 func (l *{{.Pascal}}ViewModelLoader) Get(key string) *{{.Pascal}}ViewModel {
 	v := l.Store.LoadInterface(key)

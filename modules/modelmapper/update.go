@@ -192,6 +192,3 @@ func (m *Update) Render(a *app.Application, appPath string, mp string, task *too
 }
 
 var UpdateModule = &Update{}
-
-func init() {
-}
