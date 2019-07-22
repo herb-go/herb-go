@@ -5,33 +5,33 @@ import (
 	"github.com/herb-go/herb/cache/datastore"
 )
 
-//New{{.Pascal}}ModelLoaderFactory create new {{.Pascal}}ModelLoader factory.
+//New{{.Name.Pascal}}ModelLoaderFactory create new {{.Name.Pascal}}ModelLoader factory.
 //You should create your loader factory in your model cache module.
-var New{{.Pascal}}ModelLoaderFactory = func(c cache.Cacheable) func() *{{.Pascal}}ModelLoader {
-	return func() *{{.Pascal}}ModelLoader {
-		return &{{.Pascal}}ModelLoader{
-			Loader: {{.Pascal}}ModelDataSource.NewSyncMapStoreLoader(c),
+var New{{.Name.Pascal}}ModelLoaderFactory = func(c cache.Cacheable) func() *{{.Name.Pascal}}ModelLoader {
+	return func() *{{.Name.Pascal}}ModelLoader {
+		return &{{.Name.Pascal}}ModelLoader{
+			Loader: {{.Name.Pascal}}ModelDataSource.NewSyncMapStoreLoader(c),
 		}
 	}
 }
 
-//{{.Pascal}}ModelLoader {{.Raw}} otuput loader
-type {{.Pascal}}ModelLoader struct {
+//{{.Name.Pascal}}ModelLoader {{.Name.Raw}} otuput loader
+type {{.Name.Pascal}}ModelLoader struct {
 	*datastore.Loader
 }
 
-//Get get  {{.Raw}} otuput  by given key.
+//Get get  {{.Name.Raw}} otuput  by given key.
 //You should load value first or use the LoadAndGet method
-func (l *{{.Pascal}}ModelLoader) Get(key string) *{{.Pascal}}Model {
+func (l *{{.Name.Pascal}}ModelLoader) Get(key string) *{{.Name.Pascal}}Model {
 	v := l.Store.LoadInterface(key)
 	if v == nil {
 		return nil
 	}
-	return v.(*{{.Pascal}}Model)
+	return v.(*{{.Name.Pascal}}Model)
 }
 
-//LoadAndGet load and get  {{.Raw}} otuput  by given key.
-func (l *{{.Pascal}}ModelLoader) LoadAndGet(key string) (*{{.Pascal}}Model, error) {
+//LoadAndGet load and get  {{.Name.Raw}} otuput  by given key.
+func (l *{{.Name.Pascal}}ModelLoader) LoadAndGet(key string) (*{{.Name.Pascal}}Model, error) {
 	err := l.Load(key)
 	if err != nil {
 		return nil, err
@@ -40,19 +40,19 @@ func (l *{{.Pascal}}ModelLoader) LoadAndGet(key string) (*{{.Pascal}}Model, erro
 }
 
 
-//{{.Pascal}}ModelDataSource  {{.Raw}} model datasource.
-//Datasource can used to create  {{.Raw}} model data store loader by {{.Pascal}}ModelDataSource.NewMapStoreLoader or {{.Pascal}}ModelDataSource.NewSyncMapStoreLoader method.
+//{{.Name.Pascal}}ModelDataSource  {{.Name.Raw}} model datasource.
+//Datasource can used to create  {{.Name.Raw}} model data store loader by {{.Name.Pascal}}ModelDataSource.NewMapStoreLoader or {{.Name.Pascal}}ModelDataSource.NewSyncMapStoreLoader method.
 //Member can use datasource as user data provider by RegisterDataProvider method.
-var {{.Pascal}}ModelDataSource = datastore.NewDataSource()
+var {{.Name.Pascal}}ModelDataSource = datastore.NewDataSource()
 
 func init() {
-	{{.Pascal}}ModelDataSource.Creator = func() interface{} {
-		return New{{.Pascal}}Model()
+	{{.Name.Pascal}}ModelDataSource.Creator = func() interface{} {
+		return New{{.Name.Pascal}}Model()
 	}
-	{{.Pascal}}ModelDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
+	{{.Name.Pascal}}ModelDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
 		var results = map[string]interface{}{}
 		for _, v := range keys {
-			model, err := {{.Pascal}}.FindByPrimaryKey(v)
+			model, err := {{.Name.Pascal}}.FindByPrimaryKey(v)
 			if err != nil {
 				return nil, err
 			}

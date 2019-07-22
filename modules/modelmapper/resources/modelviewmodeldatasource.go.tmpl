@@ -1,39 +1,39 @@
 package viewmodels
 
 import (
-	"modules/{{.LowerWithParent}}/models"
+	"modules/{{.Name.LowerWithParentPath}}/models"
 	
 	"github.com/herb-go/herb/cache"
 	"github.com/herb-go/herb/cache/datastore"
 )
 
-//New{{.Pascal}}ViewModelLoaderFactory create new {{.Pascal}}ViewModelLoader factory.
+//New{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoaderFactory create new {{.Name.Pascal}}ViewModelLoader factory.
 //You should create your loader factory in your model cache module.
-var New{{.Pascal}}ViewModelLoaderFactory = func(c cache.Cacheable) func() *{{.Pascal}}ViewModelLoader {
-	return func() *{{.Pascal}}ViewModelLoader {
-		return &{{.Pascal}}ViewModelLoader{
-			Loader: {{.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader(c),
+var New{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoaderFactory = func(c cache.Cacheable) func() *{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader {
+	return func() *{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader {
+		return &{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader{
+			Loader: {{.Name.Pascal}}{{.ID.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader(c),
 		}
 	}
 }
 
-//{{.Pascal}}ViewModelLoader {{.Raw}} otuput loader
-type {{.Pascal}}ViewModelLoader struct {
+//{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader {{.Name.Raw}} view model loader
+type {{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader struct {
 	*datastore.Loader
 }
 
-//Get get  {{.Raw}} view model  by given key.
+//Get get  {{.Name.Raw}} view model  by given key.
 //You should load value first or use the LoadAndGet method
-func (l *{{.Pascal}}ViewModelLoader) Get(key string) *{{.Pascal}}ViewModel {
+func (l *{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader) Get(key string) *{{.Name.Pascal}}{{.ID.Pascal}}ViewModel {
 	v := l.Store.LoadInterface(key)
 	if v == nil {
 		return nil
 	}
-	return v.(*{{.Pascal}}ViewModel)
+	return v.(*{{.Name.Pascal}}{{.ID.Pascal}}ViewModel)
 }
 
-//LoadAndGet load and get  {{.Raw}} otuput  by given key.
-func (l *{{.Pascal}}ViewModelLoader) LoadAndGet(key string) (*{{.Pascal}}ViewModel, error) {
+//LoadAndGet load and get  {{.Name.Raw}} {{.ID.Raw}} view model  by given key.
+func (l *{{.Name.Pascal}}{{.ID.Pascal}}ViewModelLoader) LoadAndGet(key string) (*{{.Name.Pascal}}{{.ID.Pascal}}ViewModel, error) {
 	err := l.Load(key)
 	if err != nil {
 		return nil, err
@@ -41,26 +41,26 @@ func (l *{{.Pascal}}ViewModelLoader) LoadAndGet(key string) (*{{.Pascal}}ViewMod
 	return l.Get(key), nil
 }
 
-//{{.Pascal}}ViewModelDataSource  {{.Raw}} viewmodel datasource.
-//Datasource can used to create  {{.Raw}} viewmodel data store loader by {{.Pascal}}ViewModelDataSource.NewMapStoreLoader or {{.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader method.
+//{{.Name.Pascal}}{{.ID.Pascal}}ViewModelDataSource  {{.Name.Raw}} viewmodel datasource.
+//Datasource can used to create  {{.Name.Raw}} {{.ID.Raw}} viewmodel data store loader by {{.Name.Pascal}}ViewModelDataSource.NewMapStoreLoader or {{.Name.Pascal}}ViewModelDataSource.NewSyncMapStoreLoader method.
 //Member can use datasource as user data provider by RegisterDataProvider method.
-var {{.Pascal}}ViewModelDataSource = datastore.NewDataSource()
+var {{.Name.Pascal}}{{.ID.Pascal}}ViewModelDataSource = datastore.NewDataSource()
 
 func init() {
-	{{.Pascal}}ViewModelDataSource.Creator = func() interface{} {
-		return New{{.Pascal}}ViewModel()
+	{{.Name.Pascal}}{{.ID.Pascal}}ViewModelDataSource.Creator = func() interface{} {
+		return New{{.Name.Pascal}}{{.ID.Pascal}}ViewModel()
 	}
-	{{.Pascal}}ViewModelDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
+	{{.Name.Pascal}}{{.ID.Pascal}}ViewModelDataSource.SourceLoader = func(keys ...string) (map[string]interface{}, error) {
 		var results = map[string]interface{}{}
 		for _, v := range keys {
-			model, err := models.{{.Pascal}}.FindByPrimaryKey(v)
+			model, err := models.{{.Name.Pascal}}.FindByPrimaryKey(v)
 			if err != nil {
 				return nil, err
 			}
 			if model == nil {
 				continue
 			}
-			viewmodel := New{{.Pascal}}ViewModel()
+			viewmodel := New{{.Name.Pascal}}{{.ID.Pascal}}ViewModel()
 			err = viewmodel.Convert(model)
 			if err != nil {
 				return nil, err
