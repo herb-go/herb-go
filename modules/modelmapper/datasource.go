@@ -1,6 +1,7 @@
 package modelmapper
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -13,6 +14,8 @@ import (
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
 )
+
+var ErrUnsupportedPK = errors.New("unsupported primary key")
 
 type DataSource struct {
 	Database string
@@ -121,6 +124,9 @@ func (m *DataSource) Exec(a *app.Application, args []string) error {
 	mc, err := m.GetColumn(n.Raw)
 	if err != nil {
 		return err
+	}
+	if !mc.IsSinglePrimayKey() || (mc.PrimaryKeys[0].ColumnType != "string" && mc.PrimaryKeys[0].ColumnType != "int" && mc.PrimaryKeys[0].ColumnType != "int64") {
+		return ErrUnsupportedPK
 	}
 	err = m.Question(a)
 	if err != nil {

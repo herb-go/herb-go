@@ -6,10 +6,10 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
-	"github.com/herb-go/herb-go/modules/project"
-	"github.com/herb-go/herb-go/modules/session"
 	"github.com/herb-go/herb-go/modules/cache"
 	"github.com/herb-go/herb-go/modules/database"
+	"github.com/herb-go/herb-go/modules/project"
+	"github.com/herb-go/herb-go/modules/session"
 
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -20,19 +20,19 @@ type Member struct {
 	InstallSession    bool
 	InstallSQLUser    bool
 	InstallCache      bool
-	InstallDatabase bool
+	InstallDatabase   bool
 	DatabaseInstalled bool
-	SlienceMode bool
+	SlienceMode       bool
 }
 
 type renderData struct {
-	Name *name.Name
+	Name              *name.Name
 	InstallSession    bool
 	InstallSQLUser    bool
 	InstallCache      bool
 	DatabaseInstalled bool
-
 }
+
 func (m *Member) ID() string {
 	return "github.com/herb-go/herb-go/modules/member"
 }
@@ -73,29 +73,29 @@ func (m *Member) Init(a *app.Application, args *[]string) error {
 	*args = m.FlagSet().Args()
 	return nil
 }
-func (m *Member) Question(a *app.Application,mp string) error {
-	err:=tools.NewTrueOrFalseQuestion("Do you want to install session module").ExecIf(a,!m.InstallSession && !m.SlienceMode,&m.InstallSession)
-	if err!=nil{
+func (m *Member) Question(a *app.Application, mp string) error {
+	err := tools.NewTrueOrFalseQuestion("Do you want to install session module").ExecIf(a, !m.InstallSession && !m.SlienceMode, &m.InstallSession)
+	if err != nil {
 		return err
 	}
-	err=tools.NewTrueOrFalseQuestion("Do you want to add member cache code?\nOtherwise you have to install member cache manually.").ExecIf(a,!m.InstallCache && !m.SlienceMode,&m.InstallCache)
-	if err!=nil{
+	err = tools.NewTrueOrFalseQuestion("Do you want to add member cache code?\nOtherwise you have to install member cache manually.").ExecIf(a, !m.InstallCache && !m.SlienceMode, &m.InstallCache)
+	if err != nil {
 		return err
 	}
-		err=tools.NewTrueOrFalseQuestion("Do you want to install sqluser?\nOtherwise you have to install user modules manually.").ExecIf(a,!m.InstallSQLUser && !m.SlienceMode,&m.InstallSQLUser)
-	if err!=nil{
+	err = tools.NewTrueOrFalseQuestion("Do you want to install sqluser?\nOtherwise you have to install user modules manually.").ExecIf(a, !m.InstallSQLUser && !m.SlienceMode, &m.InstallSQLUser)
+	if err != nil {
 		return err
 	}
-	if m.InstallSQLUser{
-		result,err:=tools.FileExists(filepath.Join(mp,"database", "database.go")) 
-		if err!=nil{
+	if m.InstallSQLUser {
+		result, err := tools.FileExists(filepath.Join(mp, "database", "database.go"))
+		if err != nil {
 			return err
 		}
-		if result{
-				m.DatabaseInstalled = true
-		}else{
-			err=tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install user modules manually.").ExecIf(a,!m.InstallDatabase && !m.SlienceMode,&m.InstallDatabase)
-			if err!=nil{
+		if result {
+			m.DatabaseInstalled = true
+		} else {
+			err = tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install user modules manually.").ExecIf(a, !m.InstallDatabase && !m.SlienceMode, &m.InstallDatabase)
+			if err != nil {
 				return err
 			}
 		}
@@ -111,15 +111,15 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Println("No member module name given.\"member\" is used")
-		n ,err= name.New(true,"member")
-	}else{
+		n, err = name.New(true, "member")
+	} else {
 		n, err = name.New(true, args...)
 	}
 	if err != nil {
 		return err
 	}
 
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -127,13 +127,13 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err=m.Question(a,mp)
-	if err!=nil{
+	err = m.Question(a, mp)
+	if err != nil {
 		return err
 	}
 	task := tools.NewTask(filepath.Join(app, "/modules/member/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -156,36 +156,36 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Member) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
-	if m.InstallSession{
-		err:=session.SessionModule.Exec(a,[]string{"-s",filepath.Join(n.Parents,n.Lower ,"/session")})
-		if err!=nil{
+func (m *Member) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
+	if m.InstallSession {
+		err := session.SessionModule.Exec(a, []string{"-s", filepath.Join(n.Parents, n.Lower, "/session")})
+		if err != nil {
 			return err
 		}
 	}
-    if m.InstallCache{
-		err:=cache.Module.Exec(a,[]string{"-s",filepath.Join(n.Parents,n.Lower ,"/cache")})
-		if err!=nil{
+	if m.InstallCache {
+		err := cache.Module.Exec(a, []string{"-s", filepath.Join(n.Parents, n.Lower, "/cache")})
+		if err != nil {
 			return err
 		}
 	}
-	if m.InstallDatabase{
-		err:=database.DatabaseModule.Exec(a,[]string{"-s"})
-		if err!=nil{
+	if m.InstallDatabase {
+		err := database.DatabaseModule.Exec(a, []string{"-s"})
+		if err != nil {
 			return err
 		}
 		m.DatabaseInstalled = true
 	}
 	filesToRender := map[string]string{
-		filepath.Join(mp,n.LowerPath(n.Lower+".go")):"member.modules.go.tmpl",
-		filepath.Join(mp,"middlewares", n.LowerWithParentDotSeparated+".go"):"middleware.go.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                             "member.modules.go.tmpl",
+		filepath.Join(mp, "middlewares", n.LowerWithParentDotSeparated+".go"): "middleware.go.tmpl",
 	}
-	data:=renderData{
-		Name:n,
-	InstallSession :m.InstallSession,
-	InstallSQLUser :m.InstallSQLUser,
-	InstallCache:m.InstallCache,
-	DatabaseInstalled:m.DatabaseInstalled,
+	data := renderData{
+		Name:              n,
+		InstallSession:    m.InstallSession,
+		InstallSQLUser:    m.InstallSQLUser,
+		InstallCache:      m.InstallCache,
+		DatabaseInstalled: m.DatabaseInstalled,
 	}
 	return task.RenderFiles(filesToRender, data)
 }

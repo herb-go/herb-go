@@ -189,14 +189,14 @@ func MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r *http.Request)
         {{- if not .Columns.FirstPrimayKey.NotNull}}
         return nil
         {{- else }}
-        {{- if eq .Columns.FirstPrimayKey.ColumnType "int" }}
+        {{- if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") }}
         return 0
         {{- else }}
         return ""
         {{- end }}
         {{- end}}
     }
-    {{ if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
+    {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     idval,err:=strconv.Atoi(id)
     if err!=nil{
         {{ if not .Columns.FirstPrimayKey.NotNull -}}

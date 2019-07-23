@@ -1,0 +1,18 @@
+package {{.Name.Lower}}
+
+import (
+	"modules/app"
+)
+
+{{ $Prefix := .Prefix}}
+var initializerenvs = app.Development.OnEnv({{.EnvParams}}).ThenInitalize(func() bool {
+	{{- range $env := .Envlist}}
+	{{$env.Lower}} := app.Development.GetInitializeEnv("{{$Prefix}}.{{$env.Raw}}")
+	{{- end }}
+	if {{.EnvOr}} {
+		return false
+	}
+    //Put your initializer code here.
+    //Return true if successed.
+	return true
+})

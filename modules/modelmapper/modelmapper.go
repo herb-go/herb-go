@@ -171,15 +171,20 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 		}
 	}
 	if m.WithCreate || m.WithRead || m.WithUpdate || m.WithDelete || m.WithList {
-		err = QuestionCreateForm.ExecIf(a, !m.CreateForm, &m.CreateForm)
-		if err != nil {
-			return err
-		}
 		err = QuestionCreateAction.ExecIf(a, !m.CreateAction, &m.CreateAction)
 		if err != nil {
 			return err
 		}
 	}
+
+	if m.CreateAction && (m.WithCreate || m.WithUpdate || m.WithList) {
+		m.CreateForm = true
+	}
+	err = QuestionCreateForm.ExecIf(a, !m.CreateForm, &m.CreateForm)
+	if err != nil {
+		return err
+	}
+
 	if m.CreateAction {
 		m.CreateViewModel = true
 	}

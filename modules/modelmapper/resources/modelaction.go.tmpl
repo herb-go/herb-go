@@ -2,7 +2,9 @@ package actions
 
 import (
 	"net/http"
+{{- if .Confirmed.CreateForm }}
     "modules/{{.Module}}/forms"
+{{- end }}
     "modules/{{.Module}}/models"
     "modules/{{.Module}}/viewmodels"
 
@@ -38,7 +40,7 @@ func ActionCreate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 //ActionGet{{.Name.Pascal}}{{.ID.Pascal}} action which get {{.Name.Raw}} model by primary key in url.
 func ActionGet{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request){
     pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
-    {{ if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
+    {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
         {{else -}}
@@ -78,7 +80,7 @@ func ActionGet{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Requ
 //ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  FormUpdate{{.Name.Pascal}}.
 func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
     pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
-    {{if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
+    {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
         {{else -}}
@@ -130,7 +132,7 @@ func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 func ActionDelete{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
     var err error
    pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
-    {{if eq .Columns.FirstPrimayKey.ColumnType "int" -}}
+    {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
         {{else -}}
