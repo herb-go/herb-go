@@ -1,0 +1,57 @@
+package forms
+
+import (
+	"modules/member"
+	"net/http"
+	"strings"
+
+	"github.com/herb-go/herb/model/formdata"
+)
+
+//LoginFormFieldLabels form field labels map.
+var LoginFormFieldLabels = map[string]string{
+	"Username": "Username",
+	"Password": "Password",
+}
+
+//LoginForm form struct for login
+type LoginForm struct {
+	formdata.Form
+	Username string
+	Password string
+}
+
+//LoginFormID form id of form login
+const LoginFormID = "formmember.login"
+
+//NewLoginForm create new login form
+func NewLoginForm() *LoginForm {
+	form := &LoginForm{}
+	form.SetModelID(LoginFormID)
+	form.SetFieldLabels(LoginFormFieldLabels)
+	return form
+}
+
+//Validate Validate form and return any error if raised.
+func (f *LoginForm) Validate() error {
+	f.Username = strings.ToLower(f.Username)
+	f.Username = strings.TrimSpace(f.Username)
+	f.ValidateFieldf(f.Username != "", "Username", "%[1]s必填")
+	f.ValidateFieldf(f.Password != "", "Password", "%[1]s必填")
+	if !f.HasError() {
+		result, err := member.Member.PasswordProvider.VerifyPassword(f.Username, f.Password)
+		if err != nil {
+			return err
+		}
+		f.ValidateFieldf(result == true, "Username", "帐号密码错误")
+	}
+
+	return nil
+}
+
+//InitWithRequest init  login form  with http request.
+func (f *LoginForm) InitWithRequest(r *http.Request) error {
+	//Put your request form code here.
+	//such as get current user id or ip address.
+	return nil
+}
