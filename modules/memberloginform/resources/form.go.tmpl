@@ -4,9 +4,15 @@ import (
 	"modules/{{.Name.LowerWithParentPath}}"
 	"net/http"
 	"strings"
-
+	{{- if eq .AccountKeyword "" }}
+	"github.com/herb-go/herb/user"
+	{{- end}}
 	"github.com/herb-go/herb/model/formdata"
 )
+{{ if eq .AccountKeyword "" }}
+//AccountKeyword account keyword used to login.
+const AccountKeyword = "{{.AccountKeyword}}"
+{{ -end }}
 
 //{{.FormID.Pascal}}FormFieldLabels form field labels map.
 var {{.FormID.Pascal}}FormFieldLabels = map[string]string{
@@ -56,14 +62,30 @@ func (f *{{.FormID.Pascal}}Form) ValidateUserStatus() error {
 
 //GetUserID get user id from username field
 //Return user id and any error if raised
+{{- if eq .AccountKeyword "" }}
 func (f *{{.FormID.Pascal}}Form) GetUserID() (string, error) {
 	f.uid = f.Username
 	return f.uid, nil
 }
+{{- else }}
+func (f *{{.FormID.Pascal}}Form) GetUserID() (string, error) {
+	account := user.NewAccount()
+	account.Keyword = AccountKeyword
+	account.Account = f.Username
+	uid, err := members.Member.Accounts().AccountToUID(account)
+	if err != nil {
+		return "", err
+	}
+	f.uid = uid
+	return f.uid, nil
+}
+{{- end}}
 
 //Validate Validate form and return any error if raised.
 func (f *{{.FormID.Pascal}}Form) Validate() error {
+	 {{- if .Caseinsensitive }}
 	f.Username = strings.ToLower(f.Username)
+	{{- end }}
 	f.Username = strings.TrimSpace(f.Username)
 	f.ValidateFieldf(f.Username != "", "Username", "%[1]s必填")
 	f.ValidateFieldf(f.Password != "", "Password", "%[1]s必填")

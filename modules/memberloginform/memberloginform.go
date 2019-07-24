@@ -14,10 +14,10 @@ import (
 
 type LoginForm struct {
 	app.BasicModule
-	FormID        string
-	ByUID         bool
-	Casesensitive bool
-	SlienceMode   bool
+	FormID          string
+	Caseinsensitive bool
+	AccountKeyword  string
+	SlienceMode     bool
 }
 
 func (m *LoginForm) ID() string {
@@ -50,7 +50,9 @@ func (m *LoginForm) Init(a *app.Application, args *[]string) error {
 		return nil
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
-	m.FlagSet().StringVar(&m.FormID, "id", "login", "Slience mode")
+	m.FlagSet().StringVar(&m.FormID, "id", "login", "Form id")
+	m.FlagSet().BoolVar(&m.Caseinsensitive, "caseinsensitive", false, "Username case insensitive mode")
+	m.FlagSet().StringVar(&m.AccountKeyword, "accountkeyword", "", "Member account keyword.UID will be used for login if no account keyword given.")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -125,8 +127,10 @@ func (m *LoginForm) Render(a *app.Application, appPath string, mp string, task *
 		filepath.Join(mp, n.LowerPath(fid.Lower, "actions", fid.Lower+"action.go")): "action.go.tmpl",
 	}
 	data := map[string]interface{}{
-		"Name":   n,
-		"FormID": fid,
+		"Name":            n,
+		"FormID":          fid,
+		"Caseinsensitive": m.Caseinsensitive,
+		"AccountKeyword":  m.AccountKeyword,
 	}
 	return task.RenderFiles(filesToRender, data)
 }
