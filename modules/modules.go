@@ -17,5 +17,7 @@ import _ "github.com/herb-go/herb-go/modules/api"      //api module
 
 import _ "github.com/herb-go/herb-go/modules/form" //form module
 
-import _ "github.com/herb-go/herb-go/modules/member"      //member module
+import _ "github.com/herb-go/herb-go/modules/member"          //member module
+import _ "github.com/herb-go/herb-go/modules/memberloginform" //member login form module
+
 import _ "github.com/herb-go/herb-go/modules/modelmapper" //modelmapper module

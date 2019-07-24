@@ -110,8 +110,8 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	var n *name.Name
 
 	if len(args) == 0 {
-		fmt.Println("No member module name given.\"member\" is used")
-		n, err = name.New(true, "member")
+		fmt.Println("No member module name given.\"members\" is used")
+		n, err = name.New(true, "members")
 	} else {
 		n, err = name.New(true, args...)
 	}

@@ -1,6 +1,7 @@
 package memberloginform
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -32,7 +33,7 @@ func (m *LoginForm) Help(a *app.Application) string {
 	help := `Usage %s memberloginform [name].
 Create new member login form and action.
 File below will be created:
-	src/vendor/modules;[name]/[id]/forms/login.form
+	src/vendor/modules/[name]/[id]/forms/login.form
 	src/vendor/modules/[name]/[id]/actions/login.action
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
@@ -49,7 +50,7 @@ func (m *LoginForm) Init(a *app.Application, args *[]string) error {
 		return nil
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
-
+	m.FlagSet().StringVar(&m.FormID, "id", "login", "Slience mode")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -73,9 +74,20 @@ func (m *LoginForm) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	formid, err := name.New(false, m.FormID)
+	if err != nil {
+		return err
+	}
 	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
+	}
+	result, err := tools.FileExists(mp, n.LowerPath("init.go"))
+	if err != nil {
+		return err
+	}
+	if !result {
+		return errors.New("member modules not found")
 	}
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
@@ -84,7 +96,7 @@ func (m *LoginForm) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/memberloginform/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n, formid)
 	if err != nil {
 		return err
 	}
@@ -107,15 +119,14 @@ func (m *LoginForm) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *LoginForm) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
-	var configgopath string
-
+func (m *LoginForm) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, fid *name.Name) error {
 	filesToRender := map[string]string{
-		filepath.Join("system", "constants", n.LowerWithParentDotSeparated+".toml"): "config.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):               configgopath,
+		filepath.Join(mp, n.LowerPath(fid.Lower, "forms", fid.Lower+"form.go")):     "form.go.tmpl",
+		filepath.Join(mp, n.LowerPath(fid.Lower, "actions", fid.Lower+"action.go")): "action.go.tmpl",
 	}
 	data := map[string]interface{}{
-		"Name": n,
+		"Name":   n,
+		"FormID": fid,
 	}
 	return task.RenderFiles(filesToRender, data)
 }

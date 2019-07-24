@@ -1,5 +1,42 @@
 package actions
 
+//Actions for database table {{.Name.Raw}} {{.ID.Raw}}.
+//You can  bind actions to  router by using below code :
+{{ if .Confirmed.CreateViewModel }}
+{{- if .Confirmed.WithList -}}
+//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}list").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionList{{.Name.Pascal}}{{.ID.Pascal}})
+{{- end }}
+{{- end }}
+{{- if .Confirmed.CreateViewModel }}
+{{- if .Columns.IsSinglePrimayKey }}
+{{- if .Confirmed.WithRead }}
+//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}view/:id").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionGet{{.Name.Pascal}}{{.ID.Pascal}})
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Confirmed.CreateForm }}
+{{- if .Confirmed.WithCreate }}
+//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}create").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionCreate{{.Name.Pascal}}{{.ID.Pascal}})
+{{- end }}
+{{- end }}
+{{- if .Confirmed.CreateForm }}
+{{- if .Columns.IsSinglePrimayKey }}
+{{- if .Confirmed.WithUpdate }}
+//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}update/:id").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}})
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Columns.IsSinglePrimayKey }}
+{{- if .Confirmed.WithDelete }}
+//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}delete/:id").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionDelete{{.Name.Pascal}}{{.ID.Pascal}})
+{{- end }}
+{{- end }}
+
 import (
 	"net/http"
 {{- if .Confirmed.CreateForm }}

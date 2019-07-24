@@ -7,16 +7,17 @@ import (
 	"github.com/herb-go/herb/render"
 	"github.com/herb-go/util"
 
-	"modules/member"
-	"modules/member/login/forms"
+	"modules/{{.Name.LowerWithParentPath}}"
+	"modules/{{.Name.LowerWithParentPath}}/{{.FormID.Lower}}/forms"
 )
 
 //ActionLogin action that verify login form in json format.
 func ActionLogin(w http.ResponseWriter, r *http.Request) {
-	form := forms.NewLoginForm()
+	form := forms.New{{.FormID.Pascal}}Form()
 	if formdata.MustValidateJSONRequest(r, form) {
-    	util.Must(member.Member.Login(w, r, form.Username))
-	    render.MustJSON(w, user, 200)
-	}
-		formdata.MustRenderErrorsJSON(w, form)
+		util.Must({{.Name.Lower}}.Member.Login(w, r, form.UID()))
+		render.MustJSON(w, form.Username, 200)
+		return
+	} 
+	formdata.MustRenderErrorsJSON(w, form)
 }
