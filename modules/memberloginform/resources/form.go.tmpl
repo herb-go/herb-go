@@ -4,15 +4,15 @@ import (
 	"modules/{{.Name.LowerWithParentPath}}"
 	"net/http"
 	"strings"
-	{{- if eq .AccountKeyword "" }}
+	{{- if not (eq .AccountKeyword "") }}
 	"github.com/herb-go/herb/user"
 	{{- end}}
 	"github.com/herb-go/herb/model/formdata"
 )
-{{ if eq .AccountKeyword "" }}
+{{ if not (eq .AccountKeyword "" )}}
 //AccountKeyword account keyword used to login.
 const AccountKeyword = "{{.AccountKeyword}}"
-{{ -end }}
+{{- end }}
 
 //{{.FormID.Pascal}}FormFieldLabels form field labels map.
 var {{.FormID.Pascal}}FormFieldLabels = map[string]string{
