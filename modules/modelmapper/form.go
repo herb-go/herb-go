@@ -14,38 +14,37 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-type DataSource struct {
+type Form struct {
 	Database string
 	app.BasicModule
-	ViewModel   bool
 	QueryID     string
 	SlienceMode bool
 }
 
-func (m *DataSource) ID() string {
-	return "github.com/herb-go/herb-go/modules/modelmapper/datasource"
+func (m *Form) ID() string {
+	return "github.com/herb-go/herb-go/modules/modelmapper/form"
 }
 
-func (m *DataSource) Cmd() string {
-	return "modelmapperdatasource"
+func (m *Form) Cmd() string {
+	return "modelmapperform"
 }
 
-func (m *DataSource) Help(a *app.Application) string {
+func (m *Form) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
-	help := `Usage %s modelmapperdatasource [name].
-Create model dataSource code.
+	help := `Usage %s modelmapperform [name].
+Create model form code.
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
 
-func (m *DataSource) Desc(a *app.Application) string {
-	return "Create model dataSource code."
+func (m *Form) Desc(a *app.Application) string {
+	return "Create model form code."
 }
-func (m *DataSource) Group(a *app.Application) string {
+func (m *Form) Group(a *app.Application) string {
 	return "Model"
 }
 
-func (m *DataSource) GetColumn(table string) (*ModelColumns, error) {
+func (m *Form) GetColumn(table string) (*ModelColumns, error) {
 	conn := db.New()
 	c := db.Config{}
 	tomlconfig.MustLoad(util.File("./config/"+m.Database+".toml"), &c)
@@ -57,7 +56,7 @@ func (m *DataSource) GetColumn(table string) (*ModelColumns, error) {
 	return NewModelCulumns(conn, m.Database, table)
 }
 
-func (m *DataSource) Init(a *app.Application, args *[]string) error {
+func (m *Form) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
@@ -65,9 +64,8 @@ func (m *DataSource) Init(a *app.Application, args *[]string) error {
 		`database module name. 
 	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
-		`moder mapper id for actions,queries and viewmodels. 
+		`moder mapper form id. 
 	`)
-	m.FlagSet().BoolVar(&m.ViewModel, "viewmodel", false, "Whether create viewmodel datasource")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -76,10 +74,10 @@ func (m *DataSource) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 
-func (m *DataSource) Question(a *app.Application) error {
+func (m *Form) Question(a *app.Application) error {
 	return nil
 }
-func (m *DataSource) Exec(a *app.Application, args []string) error {
+func (m *Form) Exec(a *app.Application, args []string) error {
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
@@ -108,19 +106,6 @@ func (m *DataSource) Exec(a *app.Application, args []string) error {
 	if !result {
 		return fmt.Errorf("model file \"%s\"not found", file)
 	}
-	if m.ViewModel {
-		if m.QueryID == "" {
-			return ErrUnsuportedIDRequired
-		}
-		file := filepath.Join(mp, n.LowerPath("viewmodels"), n.Lower+qn.Lower+"viewmodel.go")
-		result, err := tools.FileExists(file)
-		if err != nil {
-			return err
-		}
-		if !result {
-			return fmt.Errorf("view model file \"%s\" not found", file)
-		}
-	}
 	mc, err := m.GetColumn(n.Raw)
 	if err != nil {
 		return err
@@ -144,11 +129,7 @@ func (m *DataSource) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	task.AddJob(func() error {
-		if m.ViewModel {
-			a.Printf("ModelMapper  view model datasource \"%s\" created.\n", n.LowerWithParentDotSeparated)
-		} else {
-			a.Printf("ModelMapper  datasource \"%s\" created.\n", n.LowerWithParentDotSeparated)
-		}
+		a.Printf("ModelMapper  form \"%s %s\" created.\n", n.LowerWithParentDotSeparated, qn.Lower)
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()
@@ -165,22 +146,18 @@ func (m *DataSource) Exec(a *app.Application, args []string) error {
 	return task.Exec()
 }
 
-func (m *DataSource) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, id *name.Name, mc *ModelColumns) error {
+func (m *Form) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name, id *name.Name, mc *ModelColumns) error {
 	modelmodule := n.LowerWithParentPath
 	filesToRender := map[string]string{}
-	if m.ViewModel {
-		filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "viewmodels"), n.Lower+"datasource.go")] = "modelviewmodeldatasource.go.tmpl"
-	} else {
-		filesToRender[filepath.Join(mp, n.LowerPath("models"), n.Lower+"datasource.go")] = "modeldatasource.go.tmpl"
-	}
+	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "forms"), n.Lower+"form.go")] = "form.go.tmpl"
+	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "actions"), n.Lower+"action.go")] = "action.go.tmpl"
 	data := map[string]interface{}{
-		"Name":      n,
-		"Columns":   mc,
-		"ID":        id,
-		"Module":    modelmodule,
-		"Confirmed": m,
+		"Name":    n,
+		"Columns": mc,
+		"ID":      id,
+		"Module":  modelmodule,
 	}
 	return task.RenderFiles(filesToRender, data)
 }
 
-var DataSourceModule = &DataSource{}
+var FormModule = &Form{}

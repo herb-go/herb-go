@@ -4,13 +4,13 @@ import (
     "modules/{{.Module}}/models"
 )
 
-//New{{.Name.Pascal}}{{.ID.Pascal}}ViewModel create new {{.Name.Pascal}}{{.ID.Pascal}}ViewModel
-func New{{.Name.Pascal}}{{.ID.Pascal}}ViewModel() *{{.Name.Pascal}}{{.ID.Pascal}}ViewModel{
-     return &{{.Name.Pascal}}{{.ID.Pascal}}ViewModel{}
+//New{{.Name.Pascal}}ViewModel create new {{.Name.Pascal}}ViewModel
+func New{{.Name.Pascal}}ViewModel() *{{.Name.Pascal}}ViewModel{
+     return &{{.Name.Pascal}}ViewModel{}
 }
 
-//{{.Name.Pascal}}{{.ID.Pascal}}ViewModel  {{.Name.Raw }} view model struct
-type {{.Name.Pascal}}{{.ID.Pascal}}ViewModel struct {
+//{{.Name.Pascal}}ViewModel  {{.Name.Raw }} view model struct
+type {{.Name.Pascal}}ViewModel struct {
 	{{- range .Columns.Columns}}
 	{{.Name}} {{if not .NotNull }}*{{end}}{{.ColumnType}}
 	{{- end}}
@@ -18,17 +18,17 @@ type {{.Name.Pascal}}{{.ID.Pascal}}ViewModel struct {
 
 //Convert : convert {{.Name.Raw }} model to view model.
 //Return any error if raised.
-func (o *{{.Name.Pascal}}{{.ID.Pascal}}ViewModel) Convert(model *models.{{.Name.Pascal}}Model) error{
+func (o *{{.Name.Pascal}}ViewModel) Convert(model *models.{{.Name.Pascal}}Model) error{
     {{- range .Columns.Columns}}
 	o.{{.Name}} = model.{{.Name}}
 	{{- end}}
     return nil
 }
 
-//MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel  convert  {{.Name.Raw }} model to  view model .
+//MustConvert{{.Name.Pascal}}ViewModel  convert  {{.Name.Raw }} model to  view model .
 //Panic if any error raised.
-func MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model *models.{{.Name.Pascal}}Model) *{{.Name.Pascal}}{{.ID.Pascal}}ViewModel{
-    viewmodel:=New{{.Name.Pascal}}{{.ID.Pascal}}ViewModel()
+func MustConvert{{.Name.Pascal}}ViewModel(model *models.{{.Name.Pascal}}Model) *{{.Name.Pascal}}ViewModel{
+    viewmodel:=New{{.Name.Pascal}}ViewModel()
     err:=viewmodel.Convert(model)
     if err!=nil{
         panic(err)
@@ -37,12 +37,12 @@ func MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model *models.{{.Name.Pa
 }
 
 
-//MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModelList  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} view model list.
+//MustConvert{{.Name.Pascal}}ViewModelList  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} view model list.
 //Panic if any error raised.
-func MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModelList(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}{{.ID.Pascal}}ViewModel{
-    viewmodels:=make([]*{{.Name.Pascal}}{{.ID.Pascal}}ViewModel,len(models))
+func MustConvert{{.Name.Pascal}}ViewModelList(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}ViewModel{
+    viewmodels:=make([]*{{.Name.Pascal}}ViewModel,len(models))
     for k,v:=range models{
-        o:=&{{.Name.Pascal}}{{.ID.Pascal}}ViewModel{}
+        o:=&{{.Name.Pascal}}ViewModel{}
         err:=o.Convert(v)
         if err!=nil{
             panic(err)

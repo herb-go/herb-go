@@ -1,0 +1,60 @@
+package actions
+
+//Actions for database table {{.Name.Raw}} form {{.ID.Raw}}.
+//You can  bind actions to  router by using below code :
+//import   {{.Name.Lower}}{{.ID.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
+//
+//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}/:id").
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.Action{{.Name.Pascal}})
+
+import (
+	"net/http"
+    "modules/{{.Module}}/{{.ID.Lower}}/forms"
+    "modules/{{.Module}}/models"
+
+	"github.com/herb-go/herb/model/formdata"
+	"github.com/herb-go/herb/render"
+)
+
+
+//Action{{.Name.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  Form{{.Name.Pascal}}.
+func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
+    {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
+    {{ if not .Columns.FirstPrimayKey.NotNull -}}
+    if pk==nil{
+        {{else -}}
+    if pk==0{        
+        {{end -}}
+        http.Error(w,http.StatusText(404),404)
+        return
+    } 
+    {{- else -}}
+    {{ if not .Columns.FirstPrimayKey.NotNull -}}
+    if pk==nil{
+        {{else -}}
+    if pk==""{        
+        {{end -}}
+        http.Error(w,http.StatusText(404),404)
+        return
+    }     
+    {{- end }}
+    model, err := models.{{.Name.Pascal}}.FindByPrimaryKey(pk)
+	if err!=nil{
+        panic(err)
+    }
+    if model == nil {
+		http.Error(w, http.StatusText(404), 404)
+        return
+	}
+	form := forms.New{{.Name.Pascal}}Form()
+	if formdata.MustValidateJSONRequest(r, form) {
+		 err := form.Exec(model)
+         if err!=nil{
+             panic(err)
+         }
+		render.MustJSON(w, "ok", 200)
+	} else {
+		formdata.MustRenderErrorsJSON(w, form)
+	}
+}

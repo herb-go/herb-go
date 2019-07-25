@@ -85,7 +85,7 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Database, "database", "database",
 		`database module name. 
 	`)
-	m.FlagSet().StringVar(&m.QueryID, "id", "",
+	m.FlagSet().StringVar(&m.QueryID, "id", "common",
 		`moder mapper id for actions,queries and viewmodels. 
 	`)
 	crud := m.FlagSet().Bool("crud", false, "Whether create all CRUD codes")
@@ -211,7 +211,9 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-
+	if m.QueryID == "" {
+		return ErrUnsuportedIDRequired
+	}
 	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
@@ -283,13 +285,13 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 	}
 	if m.WithList || m.WithCreate || (mc.HasPrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") && (m.WithDelete || m.WithUpdate || m.WithRead)) {
 		if m.CreateForm {
-			filesToRender[filepath.Join(mp, n.LowerPath("forms"), n.Lower+id.Lower+"form.go")] = "modelform.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "forms"), n.Lower+"form.go")] = "modelform.go.tmpl"
 		}
 		if m.CreateAction {
-			filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+id.Lower+"action.go")] = "modelaction.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "actions"), n.Lower+"action.go")] = "modelaction.go.tmpl"
 		}
 		if m.CreateViewModel {
-			filesToRender[filepath.Join(mp, n.LowerPath("viewmodels"), n.Lower+id.Lower+"viewmodel.go")] = "modelviewmodel.go.tmpl"
+			filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "viewmodels"), n.Lower+"viewmodel.go")] = "modelviewmodel.go.tmpl"
 		}
 	}
 

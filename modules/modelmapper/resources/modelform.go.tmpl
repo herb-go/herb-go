@@ -28,8 +28,8 @@ import (
 )
 
 {{ if and (.Confirmed.WithCreate) (.Confirmed.CreateForm) -}}
-//Create{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels : field labels for Create{{.Name.Pascal}}{{.ID.Pascal}}Form
-var Create{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels = map[string]string{ 
+//Create{{.Name.Pascal}}FormFieldLabels : field labels for Create{{.Name.Pascal}}Form
+var Create{{.Name.Pascal}}FormFieldLabels = map[string]string{ 
     {{- range .Columns.Columns}}
     {{- if and ( not .AutoValue) ( not .PrimayKey)}}
     "{{.Name}}": "{{.Field}}",
@@ -38,20 +38,20 @@ var Create{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels = map[string]string{
 }
 
 
-//Create{{.Name.Pascal}}{{.ID.Pascal}}FormID form id of form create {{.Name.Raw}}
-const Create{{.Name.Pascal}}{{.ID.Pascal}}FormID = "form{{.Name.LowerWithParentDotSeparated}}"
+//Create{{.Name.Pascal}}FormID form id of form create {{.Name.Raw}}
+const Create{{.Name.Pascal}}FormID = "formcreate{{.Name.LowerWithParentDotSeparated}}{{.ID.Raw}}"
 
-//NewCreate{{.Name.Pascal}}{{.ID.Pascal}}Form create new {{.Name.Raw}} form
-func NewCreate{{.Name.Pascal}}{{.ID.Pascal}}Form() *Create{{.Name.Pascal}}{{.ID.Pascal}}Form{
-	form:=&Create{{.Name.Pascal}}{{.ID.Pascal}}Form{}
-	form.SetModelID(Create{{.Name.Pascal}}{{.ID.Pascal}}FormID)
-	form.SetFieldLabels(Create{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels)
+//NewCreate{{.Name.Pascal}}Form create new {{.Name.Raw}} form
+func NewCreate{{.Name.Pascal}}Form() *Create{{.Name.Pascal}}Form{
+	form:=&Create{{.Name.Pascal}}Form{}
+	form.SetModelID(Create{{.Name.Pascal}}FormID)
+	form.SetFieldLabels(Create{{.Name.Pascal}}FormFieldLabels)
 	return form
 }
 
 
-//Create{{.Name.Pascal}}{{.ID.Pascal}}Form  form for {{.Name.Raw}} model creating.
-type Create{{.Name.Pascal}}{{.ID.Pascal}}Form struct {
+//Create{{.Name.Pascal}}Form  form for {{.Name.Raw}} model creating.
+type Create{{.Name.Pascal}}Form struct {
 	formdata.Form
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
@@ -60,8 +60,8 @@ type Create{{.Name.Pascal}}{{.ID.Pascal}}Form struct {
     {{- end -}}
 }
 
-//Validate  validate Create{{.Name.Pascal}}{{.ID.Pascal}}Form
-func (f *Create{{.Name.Pascal}}{{.ID.Pascal}}Form) Validate() error {
+//Validate  validate Create{{.Name.Pascal}}Form
+func (f *Create{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{- if  not .NotNull -}}
@@ -87,13 +87,13 @@ func (f *Create{{.Name.Pascal}}{{.ID.Pascal}}Form) Validate() error {
 	return nil
 }
 
-//InitWithRequest : init Create{{.Name.Pascal}}{{.ID.Pascal}}Form with request.
-func (f *Create{{.Name.Pascal}}{{.ID.Pascal}}Form) InitWithRequest(r *http.Request) error {
+//InitWithRequest : init Create{{.Name.Pascal}}Form with request.
+func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	return nil
 }
 
-//Model  create {{.Name.Raw}} model from Create{{.Name.Pascal}}{{.ID.Pascal}}Form.
-func (f *Create{{.Name.Pascal}}{{.ID.Pascal}}Form) Model() (*models.{{.Name.Pascal}}Model,error) {
+//Model  create {{.Name.Raw}} model from Create{{.Name.Pascal}}Form.
+func (f *Create{{.Name.Pascal}}Form) Model() (*models.{{.Name.Pascal}}Model,error) {
     model:=models.New{{.Name.Pascal}}Model()
     {{ range .Columns.Columns }}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
@@ -107,25 +107,25 @@ func (f *Create{{.Name.Pascal}}{{.ID.Pascal}}Form) Model() (*models.{{.Name.Pasc
 
 {{ if .Columns.IsSinglePrimayKey -}}
 {{ if and (.Confirmed.WithUpdate) ( (.Confirmed.CreateForm)) -}}
-//Update{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels : field labels for Update{{.Name.Pascal}}{{.ID.Pascal}}Form
-var Update{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels = map[string]string{ {{range .Columns.Columns}}{{if and ( not .AutoValue) ( not .PrimayKey)}}
+//Update{{.Name.Pascal}}FormFieldLabels : field labels for Update{{.Name.Pascal}}Form
+var Update{{.Name.Pascal}}FormFieldLabels = map[string]string{ {{range .Columns.Columns}}{{if and ( not .AutoValue) ( not .PrimayKey)}}
     "{{.Name}}": "{{.Field}}",{{end}}{{end}}
     }
 
-//Update{{.Name.Pascal}}{{.ID.Pascal}}FormModelID form id of form create {{.Name.Raw}}
-const Update{{.Name.Pascal}}{{.ID.Pascal}}FormModelID = "form{{.Name.LowerWithParentDotSeparated}}"
+//Update{{.Name.Pascal}}FormModelID form id of form create {{.Name.Raw}}
+const Update{{.Name.Pascal}}FormModelID = "formupdate{{.Name.LowerWithParentDotSeparated}}{{.ID.Raw}}"
 
-//NewUpdate{{.Name.Pascal}}{{.ID.Pascal}}Form create new update {{.Name.Raw}} form
-func NewUpdate{{.Name.Pascal}}{{.ID.Pascal}}Form() *Update{{.Name.Pascal}}{{.ID.Pascal}}Form{
-	form:=&Update{{.Name.Pascal}}{{.ID.Pascal}}Form{}
-	form.SetModelID(Update{{.Name.Pascal}}{{.ID.Pascal}}FormModelID)
-	form.SetFieldLabels(Update{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels)
+//NewUpdate{{.Name.Pascal}}Form create new update {{.Name.Raw}} form
+func NewUpdate{{.Name.Pascal}}Form() *Update{{.Name.Pascal}}Form{
+	form:=&Update{{.Name.Pascal}}Form{}
+	form.SetModelID(Update{{.Name.Pascal}}FormModelID)
+	form.SetFieldLabels(Update{{.Name.Pascal}}FormFieldLabels)
 	return form
 }
 
 
-//Update{{.Name.Pascal}}{{.ID.Pascal}}Form  form for {{.Name.Raw}} model updating.
-type Update{{.Name.Pascal}}{{.ID.Pascal}}Form struct {
+//Update{{.Name.Pascal}}Form  form for {{.Name.Raw}} model updating.
+type Update{{.Name.Pascal}}Form struct {
 	formdata.Form
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
@@ -134,8 +134,8 @@ type Update{{.Name.Pascal}}{{.ID.Pascal}}Form struct {
     {{- end -}}    
 }
 
-//Validate  validate Update{{.Name.Pascal}}{{.ID.Pascal}}Form
-func (f *Update{{.Name.Pascal}}{{.ID.Pascal}}Form) Validate() error {
+//Validate  validate Update{{.Name.Pascal}}Form
+func (f *Update{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{- if  not .NotNull -}}
@@ -161,14 +161,14 @@ func (f *Update{{.Name.Pascal}}{{.ID.Pascal}}Form) Validate() error {
 	return nil
 }
 
-//InitWithRequest  init Update{{.Name.Pascal}}{{.ID.Pascal}}Form with request.
-func (f *Update{{.Name.Pascal}}{{.ID.Pascal}}Form) InitWithRequest(r *http.Request) error {
-	f.SetFieldLabels(Update{{.Name.Pascal}}{{.ID.Pascal}}FormFieldLabels)
+//InitWithRequest  init Update{{.Name.Pascal}}Form with request.
+func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
+	f.SetFieldLabels(Update{{.Name.Pascal}}FormFieldLabels)
 	return nil
 }
 
-//Apply apply Update{{.Name.Pascal}}{{.ID.Pascal}}Form on given {{.Name.Pascal}}Model.
-func (f *Update{{.Name.Pascal}}{{.ID.Pascal}}Form) Apply(model *models.{{.Name.Pascal}}Model) error  {
+//Apply apply Update{{.Name.Pascal}}Form on given {{.Name.Pascal}}Model.
+func (f *Update{{.Name.Pascal}}Form) Apply(model *models.{{.Name.Pascal}}Model) error  {
     {{ range .Columns.Columns }}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     model.{{.Name}}=f.{{.Name}}
@@ -179,9 +179,9 @@ func (f *Update{{.Name.Pascal}}{{.ID.Pascal}}Form) Apply(model *models.{{.Name.P
 {{- end }}
 
 {{ if or (.Confirmed.WithRead) (.Confirmed.WithUpdate) (.Confirmed.WithDelete) -}}
-//MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest : get {{.Name.Pascal}}PrimaryKey from request.
+//MustGet{{.Name.Pascal}}PrimaryKeyFromRequest : get {{.Name.Pascal}}PrimaryKey from request.
 //Panic if any error raised.
-func MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r *http.Request) models.{{.Name.Pascal}}PrimaryKey {
+func MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r *http.Request) models.{{.Name.Pascal}}PrimaryKey {
     //Get primary key from request router params.
     var pk models.{{.Name.Pascal}}PrimaryKey
     id:=router.GetParams(r).Get("id")
@@ -215,17 +215,17 @@ func MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r *http.Request)
 {{end -}}
 
 {{ if .Confirmed.WithList }}
-//{{.Name.Pascal}}{{.ID.Pascal}}SortableFields fields which  can be used for sorting.
+//{{.Name.Pascal}}SortableFields fields which  can be used for sorting.
 //Comment any field if not needed.
-var {{.Name.Pascal}}{{.ID.Pascal}}SortableFields=map[string]string{
+var {{.Name.Pascal}}SortableFields=map[string]string{
     {{range .Columns.Columns -}}
     "{{.Name}}":models.{{$Name.Pascal}}FieldAlias{{.Name}},
     {{end -}}
 
 }
 
-//{{.Name.Pascal}}{{.ID.Pascal}}Params  {{.Name.Raw}} request params struct
-type {{.Name.Pascal}}{{.ID.Pascal}}Params struct{
+//{{.Name.Pascal}}Params  {{.Name.Raw}} request params struct
+type {{.Name.Pascal}}Params struct{
     {{ if .Confirmed.WithPager -}}
     Page int
     {{- end }}
@@ -234,7 +234,7 @@ type {{.Name.Pascal}}{{.ID.Pascal}}Params struct{
 }
 
 //ApplyToModelsSelect apply request params to models select task.
-func (p *{{.Name.Pascal}}{{.ID.Pascal}}Params) ApplyToModelsSelect(Select *modelmapper.SelectTask){
+func (p *{{.Name.Pascal}}Params) ApplyToModelsSelect(Select *modelmapper.SelectTask){
     p.ApplyToCountSelect(Select)
     if p.Sorted!=""{
         Select.OrderBy.Add(p.Sorted,p.Asc)
@@ -251,14 +251,14 @@ func (p *{{.Name.Pascal}}{{.ID.Pascal}}Params) ApplyToModelsSelect(Select *model
 }
 
 //ApplyToCountSelect apply request params to models count task.
-func (p *{{.Name.Pascal}}{{.ID.Pascal}}Params) ApplyToCountSelect(Select *modelmapper.SelectTask){
+func (p *{{.Name.Pascal}}Params) ApplyToCountSelect(Select *modelmapper.SelectTask){
 
 }
 
-//MustGet{{.Name.Pascal}}{{.ID.Pascal}}ParamsFromRequest get params from request;
+//MustGet{{.Name.Pascal}}ParamsFromRequest get params from request;
 //Panic if any error raised.
-func MustGet{{.Name.Pascal}}{{.ID.Pascal}}ParamsFromRequest(r *http.Request) (*{{.Name.Pascal}}{{.ID.Pascal}}Params) {
-    p:=&{{.Name.Pascal}}{{.ID.Pascal}}Params{}
+func MustGet{{.Name.Pascal}}ParamsFromRequest(r *http.Request) (*{{.Name.Pascal}}Params) {
+    p:=&{{.Name.Pascal}}Params{}
     {{ if .Confirmed.WithPager -}}
     page := r.URL.Query().Get("page")
 	if page != "" {
@@ -272,8 +272,8 @@ func MustGet{{.Name.Pascal}}{{.ID.Pascal}}ParamsFromRequest(r *http.Request) (*{
 	}
     {{- end }}
     sorted:=r.URL.Query().Get("sorted")
-    if sorted!="" &&  {{.Name.Pascal}}{{.ID.Pascal}}SortableFields[sorted]!=""{
-        p.Sorted={{.Name.Pascal}}{{.ID.Pascal}}SortableFields[sorted]
+    if sorted!="" &&  {{.Name.Pascal}}SortableFields[sorted]!=""{
+        p.Sorted={{.Name.Pascal}}SortableFields[sorted]
         order:=r.URL.Query().Get("order")
         p.Asc=(order!="desc")
     }

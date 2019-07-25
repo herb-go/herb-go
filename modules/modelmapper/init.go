@@ -6,4 +6,5 @@ func init() {
 	app.Register(ModelMapperModule)
 	app.Register(UpdateModule)
 	app.Register(DataSourceModule)
+	app.Register(FormModule)
 }

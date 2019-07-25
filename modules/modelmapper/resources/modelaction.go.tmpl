@@ -2,57 +2,59 @@ package actions
 
 //Actions for database table {{.Name.Raw}} {{.ID.Raw}}.
 //You can  bind actions to  router by using below code :
+//import {{.Name.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
+//
 {{ if .Confirmed.CreateViewModel }}
 {{- if .Confirmed.WithList -}}
-//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}list").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionList{{.Name.Pascal}}{{.ID.Pascal}})
+//	Router.GET("/{{.Name.Lower}}list").
+//		HandleFunc({{.Name.Lower}}actions.ActionList{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateViewModel }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithRead }}
-//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}view/:id").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionGet{{.Name.Pascal}}{{.ID.Pascal}})
+//	Router.GET("/{{.Name.Lower}}view/:id").
+//		HandleFunc({{.Name.Lower}}actions.ActionGet{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateForm }}
 {{- if .Confirmed.WithCreate }}
-//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}create").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionCreate{{.Name.Pascal}}{{.ID.Pascal}})
+//	Router.POST("/{{.Name.Lower}}create").
+//		HandleFunc({{.Name.Lower}}actions.ActionCreate{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateForm }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithUpdate }}
-//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}update/:id").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}})
+//	Router.POST("/{{.Name.Lower}}update/:id").
+//		HandleFunc({{.Name.Lower}}actions.ActionUpdate{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- end }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithDelete }}
-//	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}delete/:id").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionDelete{{.Name.Pascal}}{{.ID.Pascal}})
+//	Router.POST("/{{.Name.Lower}}delete/:id").
+//		HandleFunc({{.Name.Lower}}actions.ActionDelete{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 
 import (
 	"net/http"
 {{- if .Confirmed.CreateForm }}
-    "modules/{{.Module}}/forms"
+    "modules/{{.Module}}/{{.ID.Lower}}/forms"
 {{- end }}
     "modules/{{.Module}}/models"
-    "modules/{{.Module}}/viewmodels"
+    "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
 
 	"github.com/herb-go/herb/model/formdata"
 	"github.com/herb-go/herb/render"
 )
 {{ if .Confirmed.CreateForm -}}
 {{ if .Confirmed.WithCreate -}}
-//ActionCreate{{.Name.Pascal}}{{.ID.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}{{.ID.Pascal}}Form.
-func ActionCreate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
-	form := forms.NewCreate{{.Name.Pascal}}{{.ID.Pascal}}Form()
+//ActionCreate{{.Name.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}Form.
+func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+	form := forms.NewCreate{{.Name.Pascal}}Form()
 	if formdata.MustValidateJSONRequest(r, form) {
 		model ,err:= form.Model()
         if err!=nil{
@@ -62,7 +64,7 @@ func ActionCreate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
         if err!=nil{
             panic(err)
         }
-		render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model), 200)
+		render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}ViewModel(model), 200)
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
@@ -74,9 +76,9 @@ func ActionCreate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 {{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithRead }}
 
-//ActionGet{{.Name.Pascal}}{{.ID.Pascal}} action which get {{.Name.Raw}} model by primary key in url.
-func ActionGet{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request){
-    pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
+//ActionGet{{.Name.Pascal}} action which get {{.Name.Raw}} model by primary key in url.
+func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
+    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
@@ -104,7 +106,7 @@ func ActionGet{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Requ
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModel(model), 200)
+	render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}ViewModel(model), 200)
 }
 {{- end -}}
 {{- end }}
@@ -114,9 +116,9 @@ func ActionGet{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Requ
 {{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithUpdate -}}
 
-//ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  FormUpdate{{.Name.Pascal}}.
-func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
-    pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
+//ActionUpdate{{.Name.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  FormUpdate{{.Name.Pascal}}.
+func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
@@ -142,8 +144,9 @@ func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
     }
     if model == nil {
 		http.Error(w, http.StatusText(404), 404)
+        return
 	}
-	form := forms.NewUpdate{{.Name.Pascal}}{{.ID.Pascal}}Form()
+	form := forms.NewUpdate{{.Name.Pascal}}Form()
 	if formdata.MustValidateJSONRequest(r, form) {
 		 err := form.Apply(model)
          if err!=nil{
@@ -153,7 +156,7 @@ func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
         if err!=nil{
             panic(err)
         }
-		render.MustJSON(w, model, 200)
+		render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}ViewModel(model), 200)
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
@@ -165,10 +168,10 @@ func ActionUpdate{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 {{ if .Columns.IsSinglePrimayKey -}}
 {{ if .Confirmed.WithDelete -}}
 
-//ActionDelete{{.Name.Pascal}}{{.ID.Pascal}} action which delete {{.Name.Raw}} model by primary key in url.
-func ActionDelete{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
+//ActionDelete{{.Name.Pascal}} action which delete {{.Name.Raw}} model by primary key in url.
+func ActionDelete{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
     var err error
-   pk:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}PrimaryKeyFromRequest(r)
+   pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
     if pk==nil{
@@ -194,6 +197,7 @@ func ActionDelete{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 	}
 	if model == nil {
 		http.Error(w, http.StatusText(404), 404)
+        return
 	}
 	_, err = models.{{.Name.Pascal}}.DeleteModel(model).Exec()
     if err!=nil{
@@ -206,13 +210,13 @@ func ActionDelete{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.R
 
 {{ if .Confirmed.CreateViewModel -}}
 {{ if .Confirmed.WithList -}}
-//ActionList{{.Name.Pascal}}{{.ID.Pascal}} action which list {{.Name.Raw}} models by request params.
-func ActionList{{.Name.Pascal}}{{.ID.Pascal}}(w http.ResponseWriter, r *http.Request) {
-       	render.MustJSON(w, mustList{{.Name.Pascal}}{{.ID.Pascal}}Models(r), 200)
+//ActionList{{.Name.Pascal}} action which list {{.Name.Raw}} models by request params.
+func ActionList{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+       	render.MustJSON(w, mustList{{.Name.Pascal}}Models(r), 200)
 }
 
-func mustList{{.Name.Pascal}}{{.ID.Pascal}}Models(r *http.Request) map[string]interface{}{
-    p:=forms.MustGet{{.Name.Pascal}}{{.ID.Pascal}}ParamsFromRequest(r)
+func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
+    p:=forms.MustGet{{.Name.Pascal}}ParamsFromRequest(r)
     modelsSelect:=models.{{.Name.Pascal}}.SelectModel()
     p.ApplyToModelsSelect(modelsSelect)
     modellist,err:=models.{{.Name.Pascal}}.FindAll(modelsSelect)
@@ -226,7 +230,7 @@ func mustList{{.Name.Pascal}}{{.ID.Pascal}}Models(r *http.Request) map[string]in
         panic(err)
     }
     return map[string]interface{}{
-        "Items":viewmodels.MustConvert{{.Name.Pascal}}{{.ID.Pascal}}ViewModelList(modellist),
+        "Items":viewmodels.MustConvert{{.Name.Pascal}}ViewModelList(modellist),
         "Count":result,
     }
 }
