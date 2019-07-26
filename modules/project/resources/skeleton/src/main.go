@@ -33,6 +33,7 @@ func start() {
 	util.MustChRoot()
 	loadConfigs()
 	initModules()
+	app.Development.NotTestingOrPanic()
 	util.RegisterDataFolder() //Auto created appdata folder if not exists
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
