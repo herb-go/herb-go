@@ -11,9 +11,10 @@ func loadConfigs() {
 	//Uncomment next line to print config loading log .
 	//config.Debug = true
 	config.Lock.RLock()
-	app.LoadConfigs()
+	config.LoadAll()
 	config.Lock.RUnlock()
 }
+
 func initModules() {
 	util.InitModulesOrderByName()
 	//Put Your own init code here.
