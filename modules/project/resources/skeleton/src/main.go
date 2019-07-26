@@ -25,7 +25,8 @@ var run = func() {
 	panic(errFuncWhenRunFuncNotRewrited)
 }
 
-func start() {
+//Init init app
+func Init() {
 	defer util.Recover()
 	util.ApplieationLock.Lock()
 	defer util.ApplieationLock.Unlock()
@@ -34,15 +35,17 @@ func start() {
 	loadConfigs()
 	initModules()
 	app.Development.NotTestingOrPanic()
-	util.RegisterDataFolder() //Auto created appdata folder if not exists
+	//Auto created appdata folder if not exists
+	util.RegisterDataFolder()
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
-	run()
 }
+
 func main() {
 	// Set app root path.
 	//Default rootpah is "src/../"
 	//You can set os env  "HerbRoot" to overwrite this setting while starting app.
 	// util.RootPath = ""
-	start()
+	Init()
+	run()
 }
