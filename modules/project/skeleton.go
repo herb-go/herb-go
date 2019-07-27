@@ -7,18 +7,22 @@ var AppSkeleton = func(mp string) map[string]string {
 		"/config/readme.md":                        "/skeleton/config/readme.md",
 		"/config/development.toml":                 "/skeleton/config/development.toml",
 		"/system/data/readme.md":                   "/skeleton/system/data/readme.md",
-		"/src/test/config/readme.md":               "/skeleton/src/test/config/readme.md",
+		"/test/testconfig/readme.md":               "/skeleton/test/testconfig/readme.md",
 		"/src/main.go":                             "/skeleton/src/main.go",
 		"/src/drivers.go":                          "/skeleton/src/drivers.go",
 		"/src/errors.go":                           "/skeleton/src/errors.go",
 		"/system/constants/time.toml":              "/skeleton/system/constants/time.toml",
 		"/system/config.examples/development.toml": "/skeleton/system/config.examples/development.toml",
 		mp + "/app/development.go":                 "/skeleton/src/vendor/modules/app/development.go",
+		mp + "/app/app_test.go":                    "/skeleton/src/vendor/modules/app/app_test.go",
 		mp + "/readme.md":                          "/skeleton/src/vendor/modules/readme.md",
 		mp + "/go.mod":                             "/skeleton/src/vendor/modules/go.mod",
 		mp + "/app/time.go":                        "/skeleton/src/vendor/modules/app/time.go",
 		mp + "/appevents/appevents.go":             "/skeleton/src/vendor/modules/appevents/appevents.go",
 		mp + "/appevents/registeredevents.go":      "/skeleton/src/vendor/modules/appevents/registeredevents.go",
+		mp + "/test/test.go":                       "/skeleton/src/vendor/modules/test/test.go",
+		mp + "/test/drivers.go":                    "/skeleton/src/vendor/modules/test/drivers.go",
+		mp + "/test/init_test.go":                  "/skeleton/src/vendor/modules/test/init_test.go",
 	}
 }
 
