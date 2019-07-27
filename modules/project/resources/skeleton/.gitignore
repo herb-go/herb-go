@@ -28,8 +28,9 @@ _testmain.go
 /src/debug
 /bin/
 /appdata/
-/src/test/config/*.json
-/src/test/config/*.toml
+/test/testconfig/*.json
+/test/testconfig/*.toml
+/test/appdate
 .directory
 node_modules
 
