@@ -2,7 +2,7 @@ package project
 
 var AppSkeleton = func(mp string) map[string]string {
 	return map[string]string{
-		"/.gitignore.example":                      "/skeleton/.gitignore",
+		"/.gitignore":                              "/skeleton/.gitignore.example",
 		"/appdata/readme.md":                       "/skeleton/appdata/readme.md",
 		"/config/readme.md":                        "/skeleton/config/readme.md",
 		"/config/development.toml":                 "/skeleton/config/development.toml",
