@@ -24,6 +24,7 @@ var QuestionConfirmBackupQueries = tools.NewTrueOrFalseQuestion("Have you backed
 
 type Update struct {
 	Database string
+	Location string
 	app.BasicModule
 	UpdateColumns bool
 	UpdateFields  bool
@@ -72,6 +73,10 @@ func (m *Update) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Database, "database", "database",
 		`database module name. 
 	`)
+	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
+		`default model code location. 
+	`)
+
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -127,7 +132,12 @@ func (m *Update) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
+	}
 	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err

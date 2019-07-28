@@ -16,6 +16,7 @@ import (
 
 type DataSource struct {
 	Database string
+	Location string
 	app.BasicModule
 	ViewModel   bool
 	QueryID     string
@@ -64,6 +65,9 @@ func (m *DataSource) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Database, "database", "database",
 		`database module name. 
 	`)
+	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
+		`default model code location. 
+	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
 		`moder mapper id for actions,queries and viewmodels. 
 	`)
@@ -91,6 +95,12 @@ func (m *DataSource) Exec(a *app.Application, args []string) error {
 	n, err := name.New(true, args...)
 	if err != nil {
 		return err
+	}
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
 	}
 	qn, err := name.New(false, m.QueryID)
 	if err != nil {

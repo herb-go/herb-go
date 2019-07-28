@@ -16,6 +16,7 @@ import (
 
 type Form struct {
 	Database string
+	Location string
 	app.BasicModule
 	QueryID     string
 	SlienceMode bool
@@ -63,6 +64,9 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Database, "database", "database",
 		`database module name. 
 	`)
+	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
+		`default model code location. 
+	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
 		`moder mapper form id. 
 	`)
@@ -89,6 +93,12 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 	n, err := name.New(true, args...)
 	if err != nil {
 		return err
+	}
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
 	}
 	qn, err := name.New(false, m.QueryID)
 	if err != nil {

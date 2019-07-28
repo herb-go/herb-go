@@ -29,6 +29,7 @@ var QuestionCreateViewModel = tools.NewTrueOrFalseQuestion("Do you want to creat
 type ModelMapper struct {
 	app.BasicModule
 	Database        string
+	Location        string
 	QueryID         string
 	CreateForm      bool
 	CreateViewModel bool
@@ -87,6 +88,9 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "common",
 		`moder mapper id for actions,queries and viewmodels. 
+	`)
+	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
+		`default model code location. 
 	`)
 	crud := m.FlagSet().Bool("crud", false, "Whether create all CRUD codes")
 	m.FlagSet().BoolVar(&m.CreateAction, "createaction", false, "Whether create model actions")
@@ -206,6 +210,12 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	n, err := name.New(true, args...)
 	if err != nil {
 		return err
+	}
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
 	}
 	qn, err := name.New(false, m.QueryID)
 	if err != nil {
