@@ -21,3 +21,5 @@ import _ "github.com/herb-go/herb-go/modules/member"          //member module
 import _ "github.com/herb-go/herb-go/modules/memberloginform" //member login form module
 
 import _ "github.com/herb-go/herb-go/modules/modelmapper" //modelmapper module
+
+import _ "github.com/herb-go/herb-go/modules/translate" //translate module

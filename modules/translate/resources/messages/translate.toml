@@ -1,0 +1,8 @@
+#Langeuage default app language.
+#Should be empty or inside Avaliable list
+Language=""
+#Avaliable avaliable language
+#Each language should be a folder in system/messages folder
+#All translated messages should be putted in [modulesname].toml file.
+#Avaliable=["zh-cn","jp"]
+Avaliable=[]
