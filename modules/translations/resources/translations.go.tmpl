@@ -1,0 +1,17 @@
+package app
+
+import (
+	"github.com/herb-go/util"
+	"github.com/herb-go/util/config"
+	"github.com/herb-go/util/config/tomlconfig"
+	"github.com/herb-go/util/config/translateconfig"
+)
+
+//Translations app translations config
+var Translations = &translateconfig.Config{}
+
+func init() {
+	config.RegisterLoader(util.SystemFile("messages", "translations.toml"), func(configpath util.FileObject) {
+		util.Must(tomlconfig.Load(configpath, Translations))
+	})
+}
