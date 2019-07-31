@@ -7,6 +7,8 @@ import (
 	{{- if not (eq .AccountKeyword "") }}
 	"github.com/herb-go/herb/user"
 	{{- end}}
+	"github.com/herb-go/util/forms/commonform"
+	"github.com/herb-go/herb/translate"
 	"github.com/herb-go/herb/model/formdata"
 )
 {{ if not (eq .AccountKeyword "" )}}
@@ -25,6 +27,7 @@ type {{.FormID.Pascal}}Form struct {
 	formdata.Form
 	Username string
 	Password string
+	language string
 	uid      string
 }
 
@@ -35,7 +38,6 @@ const {{.FormID.Pascal}}FormID = "form{{.Name.Lower}}.{{.FormID.Lower}}"
 func New{{.FormID.Pascal}}Form() *{{.FormID.Pascal}}Form {
 	form := &{{.FormID.Pascal}}Form{}
 	form.SetModelID({{.FormID.Pascal}}FormID)
-	form.SetFieldLabels({{.FormID.Pascal}}FormFieldLabels)
 	return form
 }
 
@@ -87,8 +89,8 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 	f.Username = strings.ToLower(f.Username)
 	{{- end }}
 	f.Username = strings.TrimSpace(f.Username)
-	f.ValidateFieldf(f.Username != "", "Username", "%[1]s必填")
-	f.ValidateFieldf(f.Password != "", "Password", "%[1]s必填")
+	f.ValidateFieldfString(f.Username != "", "Username", commonform.MsgRequired.Translated(f.language)) 
+    f.ValidateFieldfString(f.Password != "", "Password", commonform.MsgRequired.Translated(f.language)) 
 	uid, err := f.GetUserID()
 	if err != nil {
 		return err
@@ -114,5 +116,9 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 func (f *{{.FormID.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//Put your request form code here.
 	//such as get current user id or ip address.
+
+	//Set form labels with translated messages
+	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection(({{.FormID.Pascal}}FormFieldLabels)))
+
 	return nil
 }

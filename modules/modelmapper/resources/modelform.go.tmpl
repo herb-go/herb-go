@@ -18,7 +18,9 @@ import (
     {{ if or (and  ( .Confirmed.WithCreate) ) ( and ( .Columns.IsSinglePrimayKey ) ( .Confirmed.WithUpdate)) }}
     {{if  .Confirmed.CreateForm }}
 	"github.com/herb-go/herb/model/formdata"
-    "modules/messages"
+    "github.com/herb-go/util/forms/commonform"
+	"github.com/herb-go/herb/translate"
+
     {{- end}}
     {{- end}}
     {{ if .Confirmed.WithList -}}
@@ -45,7 +47,6 @@ const Create{{.Name.Pascal}}FormID = "formcreate{{.Name.LowerWithParentDotSepara
 func NewCreate{{.Name.Pascal}}Form() *Create{{.Name.Pascal}}Form{
 	form:=&Create{{.Name.Pascal}}Form{}
 	form.SetModelID(Create{{.Name.Pascal}}FormID)
-	form.SetFieldLabels(Create{{.Name.Pascal}}FormFieldLabels)
 	return form
 }
 
@@ -53,6 +54,7 @@ func NewCreate{{.Name.Pascal}}Form() *Create{{.Name.Pascal}}Form{
 //Create{{.Name.Pascal}}Form  form for {{.Name.Raw}} model creating.
 type Create{{.Name.Pascal}}Form struct {
 	formdata.Form
+    language string
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
@@ -65,19 +67,19 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{- if  not .NotNull -}}
-    f.ValidateFieldf(f.{{.Name}} !=nil, "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} !=nil, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if  eq .ColumnType "string" -}}
-    f.ValidateFieldf(f.{{.Name}} != "", "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} != "", "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if eq .ColumnType "int" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if eq .ColumnType "int64" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "float32" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "float64" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "time.Time" -}}
-    f.ValidateFieldf(!f.{{.Name}}.IsZero() , "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(!f.{{.Name}}.IsZero() , "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{end}}
     {{- end -}}
     {{- end -}}
@@ -89,6 +91,10 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
 
 //InitWithRequest : init Create{{.Name.Pascal}}Form with request.
 func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
+
+	//Set form labels with translated messages
+	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection((Create{{.Name.Pascal}}FormFieldLabels)))
+
 	return nil
 }
 
@@ -119,7 +125,6 @@ const Update{{.Name.Pascal}}FormModelID = "formupdate{{.Name.LowerWithParentDotS
 func NewUpdate{{.Name.Pascal}}Form() *Update{{.Name.Pascal}}Form{
 	form:=&Update{{.Name.Pascal}}Form{}
 	form.SetModelID(Update{{.Name.Pascal}}FormModelID)
-	form.SetFieldLabels(Update{{.Name.Pascal}}FormFieldLabels)
 	return form
 }
 
@@ -127,6 +132,7 @@ func NewUpdate{{.Name.Pascal}}Form() *Update{{.Name.Pascal}}Form{
 //Update{{.Name.Pascal}}Form  form for {{.Name.Raw}} model updating.
 type Update{{.Name.Pascal}}Form struct {
 	formdata.Form
+    language string
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
@@ -139,19 +145,19 @@ func (f *Update{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{- if  not .NotNull -}}
-    f.ValidateFieldf(f.{{.Name}} !=nil, "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} !=nil, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if  eq .ColumnType "string" -}}
-    f.ValidateFieldf(f.{{.Name}} != "", "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} != "", "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if eq .ColumnType "int" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired) 
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
     {{else if eq .ColumnType "int64" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "float32" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "float64" -}}
-    f.ValidateFieldf(f.{{.Name}} != 0, "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{else if eq .ColumnType "time.Time" -}}
-    f.ValidateFieldf(!f.{{.Name}}.IsZero() , "{{.Name}}", messages.MsgFormFieldRequired)
+    f.ValidateFieldfString(!f.{{.Name}}.IsZero() , "{{.Name}}", commonform.MsgRequired.Translated(f.language))
     {{end}}
     {{- end -}}
     {{- end -}}
@@ -163,7 +169,10 @@ func (f *Update{{.Name.Pascal}}Form) Validate() error {
 
 //InitWithRequest  init Update{{.Name.Pascal}}Form with request.
 func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
-	f.SetFieldLabels(Update{{.Name.Pascal}}FormFieldLabels)
+	
+    //Set form labels with translated messages
+	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
+
 	return nil
 }
 
