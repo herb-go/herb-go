@@ -7,10 +7,12 @@ import (
 	{{- if not (eq .AccountKeyword "") }}
 	"github.com/herb-go/herb/user"
 	{{- end}}
-	"github.com/herb-go/util/forms/commonform"
-	"github.com/herb-go/herb/translate"
 	"github.com/herb-go/herb/model/formdata"
+	"github.com/herb-go/herb/translate"
+	"github.com/herb-go/util/forms/commonform"
+	"github.com/herb-go/util/forms/memberform"
 )
+
 {{ if not (eq .AccountKeyword "" )}}
 //AccountKeyword account keyword used to login.
 const AccountKeyword = "{{.AccountKeyword}}"
@@ -54,11 +56,11 @@ func (f *{{.FormID.Pascal}}Form) ValidateUserStatus() error {
 		return err
 	}
 	status := s.Get(f.uid)
-	f.ValidateFieldf(status != nil, "Username", "帐号密码错误")
+	f.ValidateFieldfString(status != nil, "Username", memberform.MsgIncorrectUsernameOrPassword.Translated(f.language))
 	if f.HasError() {
 		return nil
 	}
-	f.ValidateFieldf(status.IsAvaliable(), "Username", "用户状态异常")
+	f.ValidateFieldfString(status.IsAvaliable(), "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	return nil
 }
 
@@ -95,7 +97,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 	if err != nil {
 		return err
 	}
-	f.ValidateFieldf(uid != "", "Username", "帐号密码错误")
+	f.ValidateFieldfString(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	if !f.HasError() {
 		err = f.ValidateUserStatus()
 		if err != nil {
@@ -107,7 +109,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldf(result == true, "Username", "帐号密码错误")
+		f.ValidateFieldfString(result == true, "Username",memberform.MsgUserNotAvailable.Translated(f.language))
 	}
 	return nil
 }
@@ -118,7 +120,7 @@ func (f *{{.FormID.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection(({{.FormID.Pascal}}FormFieldLabels)))
+	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "herbgo.member").Collection(({{.FormID.Pascal}}FormFieldLabels)))
 
 	return nil
 }

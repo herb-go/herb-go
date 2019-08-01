@@ -22,4 +22,4 @@ import _ "github.com/herb-go/herb-go/modules/memberloginform" //member login for
 
 import _ "github.com/herb-go/herb-go/modules/modelmapper" //modelmapper module
 
-import _ "github.com/herb-go/herb-go/modules/translations" //translations module
+import _ "github.com/herb-go/herb-go/modules/translations" //translations,messages module
