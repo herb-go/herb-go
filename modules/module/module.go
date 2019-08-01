@@ -13,6 +13,7 @@ import (
 
 type Module struct {
 	app.BasicModule
+	Location    string
 	Level       string
 	SlienceMode bool
 }
@@ -51,7 +52,9 @@ func (m *Module) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Level, "level", "900",
 		`Module prefix.All modules are sorted by prefix when loading.
 		`)
-
+	m.FlagSet().StringVar(&m.Location, "location", "",
+		`default module  location. 
+	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -75,7 +78,13 @@ func (m *Module) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	mp,err := project.GetModuleFolder(a.Cwd)
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
+	}
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -86,7 +95,7 @@ func (m *Module) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/module/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, mp,task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -109,7 +118,7 @@ func (m *Module) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Module) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Module) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 	return task.Render("module.go.tmpl", filepath.Join(mp, n.LowerPath("init.go")), map[string]interface{}{"Name": n, "Level": m.Level})
 }
 
