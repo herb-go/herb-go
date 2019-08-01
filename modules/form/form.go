@@ -10,16 +10,17 @@ import (
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
 )
+
 var WithActionQuestion = tools.NewQuestion().
 	SetDescription("Do you want to create form validating action").
 	AddAnswer("y", "Yes", true).
 	AddAnswer("n", "No", false)
 
-
 type Form struct {
 	app.BasicModule
 	SlienceMode bool
-	WithAction bool
+	Location    string
+	WithAction  bool
 }
 
 func (m *Form) ID() string {
@@ -50,6 +51,9 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
 	m.FlagSet().BoolVar(&m.WithAction, "withaction", false, "Whether create form action")
+	m.FlagSet().StringVar(&m.Location, "location", "forms",
+		`default form code location. 
+	`)
 
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
@@ -59,7 +63,7 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *Form) Question(a *app.Application) error {
-	return WithActionQuestion.ExecIf(a,!m.WithAction && !m.SlienceMode,&m.WithAction)
+	return WithActionQuestion.ExecIf(a, !m.WithAction && !m.SlienceMode, &m.WithAction)
 }
 func (m *Form) Exec(a *app.Application, args []string) error {
 	err := m.Init(a, &args)
@@ -74,7 +78,14 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	mp,err := project.GetModuleFolder(a.Cwd)
+	if n.Parents == "" && m.Location != "" {
+		n, err = name.New(true, m.Location+"/"+n.Raw)
+		if err != nil {
+			return err
+		}
+	}
+
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -88,7 +99,7 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -111,12 +122,12 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Form) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Form) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 	filesToRender := map[string]string{
-		filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go"):           "form.go.tmpl",
+		filepath.Join(mp, n.LowerPath("forms"), n.Lower+"form.go"): "form.go.tmpl",
 	}
-	if m.WithAction{
-		filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")]="action.go.tmpl"
+	if m.WithAction {
+		filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")] = "action.go.tmpl"
 	}
 	return task.RenderFiles(filesToRender, n)
 }
