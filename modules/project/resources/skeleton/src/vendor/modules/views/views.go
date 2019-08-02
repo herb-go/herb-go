@@ -3,7 +3,7 @@ package views
 import (
 	"modules/app"
 
-	"github.com/herb-go/herb/render"
+	"github.com/herb-go/herb/ui/render"
 )
 
 //SkinPath website skin path

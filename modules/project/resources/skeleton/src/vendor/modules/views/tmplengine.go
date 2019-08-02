@@ -3,8 +3,8 @@ package views
 import (
 	"modules/app"
 
-	"github.com/herb-go/herb/render"
-	"github.com/herb-go/herb/render/engines/gotemplate"
+	"github.com/herb-go/herb/ui/render"
+	"github.com/herb-go/herb/ui/render/engines/gotemplate"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"

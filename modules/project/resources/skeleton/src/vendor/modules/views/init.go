@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/herb-go/herb/render"
+	"github.com/herb-go/herb/ui/render"
 
 	"github.com/herb-go/util"
 )
