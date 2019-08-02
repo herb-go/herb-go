@@ -9,8 +9,8 @@ import (
 	{{- end}}
 	"github.com/herb-go/herb/model/formdata"
 	"github.com/herb-go/herb/translate"
-	"github.com/herb-go/util/forms/commonform"
-	"github.com/herb-go/util/forms/memberform"
+	"github.com/herb-go/util/form/commonform"
+	"github.com/herb-go/util/form/memberform"
 )
 
 {{ if not (eq .AccountKeyword "" )}}
@@ -87,17 +87,22 @@ func (f *{{.FormID.Pascal}}Form) GetUserID() (string, error) {
 
 //Validate Validate form and return any error if raised.
 func (f *{{.FormID.Pascal}}Form) Validate() error {
+	var uid string
+	var err error
+
 	 {{- if .Caseinsensitive }}
 	f.Username = strings.ToLower(f.Username)
 	{{- end }}
 	f.Username = strings.TrimSpace(f.Username)
 	f.ValidateFieldfString(f.Username != "", "Username", commonform.MsgRequired.Translated(f.language)) 
     f.ValidateFieldfString(f.Password != "", "Password", commonform.MsgRequired.Translated(f.language)) 
-	uid, err := f.GetUserID()
-	if err != nil {
-		return err
+	if !f.HasError() {
+		uid, err = f.GetUserID()
+		if err != nil {
+			return err
+		}
+		f.ValidateFieldfString(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	}
-	f.ValidateFieldfString(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	if !f.HasError() {
 		err = f.ValidateUserStatus()
 		if err != nil {

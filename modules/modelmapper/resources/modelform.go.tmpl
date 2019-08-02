@@ -18,7 +18,7 @@ import (
     {{ if or (and  ( .Confirmed.WithCreate) ) ( and ( .Columns.IsSinglePrimayKey ) ( .Confirmed.WithUpdate)) }}
     {{if  .Confirmed.CreateForm }}
 	"github.com/herb-go/herb/model/formdata"
-    "github.com/herb-go/util/forms/commonform"
+    "github.com/herb-go/util/form/commonform"
 	"github.com/herb-go/herb/translate"
 
     {{- end}}

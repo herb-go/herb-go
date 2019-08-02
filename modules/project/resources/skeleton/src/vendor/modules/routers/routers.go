@@ -2,20 +2,15 @@ package routers
 
 import (
 	"modules/app"
-	"net/http"
 
 	//"modules/actions"
 	"github.com/herb-go/herb/file/simplehttpserver"
 	"github.com/herb-go/herb/middleware/router"
 	"github.com/herb-go/herb/middleware/router/httprouter"
-	"github.com/herb-go/herb/render"
 	"github.com/herb-go/util"
 )
 
-func ActionSuccess(w http.ResponseWriter, r *http.Request) {
-	render.MustJSON(w, "success", 200)
-}
-
+//New create new router.
 func New() router.Router {
 	var Router = httprouter.New()
 
