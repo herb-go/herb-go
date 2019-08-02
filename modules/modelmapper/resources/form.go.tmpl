@@ -80,7 +80,7 @@ func (f *{{.Name.Pascal}}Form) Validate() error {
 func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection(({{.Name.Pascal}}FormFieldLabels)))
+	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "app").Collection(({{.Name.Pascal}}FormFieldLabels)))
 
 	return nil
 }

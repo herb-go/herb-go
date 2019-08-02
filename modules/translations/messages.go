@@ -21,7 +21,7 @@ type Messages struct {
 }
 
 func (m *Messages) ID() string {
-	return "github.com/herb-go/herb-go/modules/translate.messages"
+	return "github.com/herb-go/herb-go/modules/ui.messages"
 }
 
 func (m *Messages) Cmd() string {

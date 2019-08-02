@@ -93,7 +93,7 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
 func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection((Create{{.Name.Pascal}}FormFieldLabels)))
+	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "app").Collection((Create{{.Name.Pascal}}FormFieldLabels)))
 
 	return nil
 }
@@ -171,7 +171,7 @@ func (f *Update{{.Name.Pascal}}Form) Validate() error {
 func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	
     //Set form labels with translated messages
-	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
+	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
 
 	return nil
 }

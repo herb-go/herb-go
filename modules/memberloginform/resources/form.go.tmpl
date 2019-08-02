@@ -125,7 +125,7 @@ func (f *{{.FormID.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(translate.GetMessages(f.language, "herbgo.member").Collection(({{.FormID.Pascal}}FormFieldLabels)))
+	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "herbgo.member").Collection(({{.FormID.Pascal}}FormFieldLabels)))
 
 	return nil
 }
