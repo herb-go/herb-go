@@ -33,10 +33,17 @@ func New{{.Pascal}}Form() *{{.Pascal}}Form{
 	form.SetModelID({{.Pascal}}FormID)
 	return form
 }
+
+//ComponentID return form component id.
+func (f *{{.Pascal}}Form)Form) ComponentID() string{
+    return{{.Pascal}}FormID 
+}
+
+
 //Validate Validate form and return any error if raised.
 func (f *{{.Pascal}}Form) Validate() error {
-	f.ValidateFieldfString(f.Field1 != nil, "Field1", commonform.MsgRequired.Translated(f.language))
-	f.ValidateFieldfString(f.Field2 != nil, "Field2", commonform.MsgRequired.Translated(f.language))
+	commonform.ValidateRequiredString(f, f.Field1, "Field1")
+    commonform.ValidateRequiredString(f, f.Field2, "Field2")
 	if !f.HasError() {
 	}
 	return nil
@@ -48,6 +55,6 @@ func (f *{{.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "app").Collection(({{.Pascal}}FormFieldLabels)))
+	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection({{.Pascal}}FormFieldLabels))
 	return nil
 }
