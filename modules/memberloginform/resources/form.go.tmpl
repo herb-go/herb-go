@@ -41,7 +41,6 @@ const {{.FormID.Pascal}}FormID = "form{{.Name.Lower}}.{{.FormID.Lower}}"
 //New{{.FormID.Pascal}}Form create new login form
 func New{{.FormID.Pascal}}Form() *{{.FormID.Pascal}}Form {
 	form := &{{.FormID.Pascal}}Form{}
-	form.SetModelID({{.FormID.Pascal}}FormID)
 	return form
 }
 
@@ -63,11 +62,11 @@ func (f *{{.FormID.Pascal}}Form) ValidateUserStatus() error {
 		return err
 	}
 	status := s.Get(f.uid)
-	f.ValidateFieldfLabel(status != nil, "Username", memberform.MsgIncorrectUsernameOrPassword.Translated(f.language))
+	f.ValidateFieldMessagef(status != nil, "Username", memberform.MsgIncorrectUsernameOrPassword)
 	if f.HasError() {
 		return nil
 	}
-	f.ValidateFieldfLabel(status.IsAvaliable(), "Username", memberform.MsgUserNotAvailable.Translated(f.language))
+	f.ValidateFieldMessagef(status.IsAvaliable(), "Username", memberform.MsgUserNotAvailable)
 	return nil
 }
 
@@ -108,7 +107,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldfLabel(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
+		f.ValidateFieldMessagef(uid != "", "Username", memberform.MsgUserNotAvailable)
 	}
 	if !f.HasError() {
 		err = f.ValidateUserStatus()
@@ -121,7 +120,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldfLabel(result == true, "Username",memberform.MsgUserNotAvailable.Translated(f.language))
+		f.ValidateFieldMessagef(result == true, "Username",memberform.MsgUserNotAvailable)
 	}
 	return nil
 }
