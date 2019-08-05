@@ -30,20 +30,19 @@ const {{.Pascal}}FormID = "form{{.LowerWithParentDotSeparated}}"
 //New{{.Pascal}}Form create new {{.Raw}} form
 func New{{.Pascal}}Form() *{{.Pascal}}Form{
 	form:=&{{.Pascal}}Form{}
-	form.SetModelID({{.Pascal}}FormID)
 	return form
 }
 
 //ComponentID return form component id.
-func (f *{{.Pascal}}Form)Form) ComponentID() string{
-    return{{.Pascal}}FormID 
+func (f *{{.Pascal}}Form) ComponentID() string{
+    return {{.Pascal}}FormID 
 }
 
 
 //Validate Validate form and return any error if raised.
 func (f *{{.Pascal}}Form) Validate() error {
-	commonform.ValidateRequiredString(f, f.Field1, "Field1")
-    commonform.ValidateRequiredString(f, f.Field2, "Field2")
+	commonform.ValidateRequiredPointer(f, f.Field1, "Field1")
+    commonform.ValidateRequiredPointer(f, f.Field2, "Field2")
 	if !f.HasError() {
 	}
 	return nil
