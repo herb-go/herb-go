@@ -43,7 +43,6 @@ func  (f *{{.Name.Pascal}}Form) ComponentID() string{
 //{{.Name.Pascal}}Form  form for {{.Name.Raw}}  model updating.
 type {{.Name.Pascal}}Form struct {
 	formdata.Form
-    language string
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
@@ -83,7 +82,7 @@ func (f *{{.Name.Pascal}}Form) Validate() error {
 func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	//Set form labels with translated messages
-	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection({{.Name.Pascal}}FormFieldLabels))
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection({{.Name.Pascal}}FormFieldLabels))
 
 	return nil
 }

@@ -57,7 +57,6 @@ func (f *Create{{.Name.Pascal}}Form) ComponentID() string{
 //Create{{.Name.Pascal}}Form  form for {{.Name.Raw}} model creating.
 type Create{{.Name.Pascal}}Form struct {
 	formdata.Form
-    language string
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
@@ -96,7 +95,7 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
 func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	//Set form labels with translated messages
-	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection(Create{{.Name.Pascal}}FormFieldLabels))
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection(Create{{.Name.Pascal}}FormFieldLabels))
 
 	return nil
 }
@@ -138,7 +137,6 @@ func (f *Update{{.Name.Pascal}}Form) ComponentID() string{
 //Update{{.Name.Pascal}}Form  form for {{.Name.Raw}} model updating.
 type Update{{.Name.Pascal}}Form struct {
 	formdata.Form
-    language string
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
@@ -177,7 +175,7 @@ func (f *Update{{.Name.Pascal}}Form) Validate() error {
 func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	
     //Set form labels with translated messages
-	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
 
 	return nil
 }

@@ -21,7 +21,6 @@ type {{.Pascal}}Form struct {
 	formdata.Form
 	Field1  *string
 	Field2    *string
-	language string
 }
 
 //{{.Pascal}}FormID form id of form {{.Raw}}
@@ -54,6 +53,6 @@ func (f *{{.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection({{.Pascal}}FormFieldLabels))
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection({{.Pascal}}FormFieldLabels))
 	return nil
 }
