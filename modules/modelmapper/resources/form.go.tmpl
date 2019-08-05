@@ -32,10 +32,13 @@ const {{.Name.Pascal}}FormModelID = "form{{.Name.LowerWithParentDotSeparated}}{{
 //New{{.Name.Pascal}}Form create new  {{.Name.Raw}} form
 func New{{.Name.Pascal}}Form() *{{.Name.Pascal}}Form{
 	form:=&{{.Name.Pascal}}Form{}
-	form.SetModelID({{.Name.Pascal}}FormModelID)
 	return form
 }
 
+//ComponentID return form component id.
+func  (f *{{.Name.Pascal}}Form) ComponentID() string{
+    return {{.Name.Pascal}}FormModelID
+}
 
 //{{.Name.Pascal}}Form  form for {{.Name.Raw}}  model updating.
 type {{.Name.Pascal}}Form struct {
@@ -54,19 +57,19 @@ func (f *{{.Name.Pascal}}Form) Validate() error {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{- if  not .NotNull -}}
-    f.ValidateFieldfString(f.{{.Name}} !=nil, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
+    commonform.ValidateRequiredPointer(f, f.{{.Name}}, "{{.Name}}")
     {{else if  eq .ColumnType "string" -}}
-    f.ValidateFieldfString(f.{{.Name}} != "", "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
+    commonform.ValidateRequiredString(f, f.{{.Name}}, "{{.Name}}")
     {{else if eq .ColumnType "int" -}}
-    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language)) 
+    commonform.ValidateRequiredInt(f, f.{{.Name}}, "{{.Name}}")
     {{else if eq .ColumnType "int64" -}}
-    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
+    commonform.ValidateRequiredInt64(f, f.{{.Name}}, "{{.Name}}")
     {{else if eq .ColumnType "float32" -}}
-    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
+    commonform.ValidateRequiredFloat32(f, f.{{.Name}}, "{{.Name}}")
     {{else if eq .ColumnType "float64" -}}
-    f.ValidateFieldfString(f.{{.Name}} != 0, "{{.Name}}", commonform.MsgRequired.Translated(f.language))
+    commonform.ValidateRequiredFloat64(f, f.{{.Name}}, "{{.Name}}")
     {{else if eq .ColumnType "time.Time" -}}
-    f.ValidateFieldfString(!f.{{.Name}}.IsZero() , "{{.Name}}", commonform.MsgRequired.Translated(f.language))
+    commonform.ValidateRequiredTime(f, f.{{.Name}}, "{{.Name}}")
     {{end}}
     {{- end -}}
     {{- end -}}    
@@ -80,7 +83,7 @@ func (f *{{.Name.Pascal}}Form) Validate() error {
 func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "app").Collection(({{.Name.Pascal}}FormFieldLabels)))
+	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection({{.Name.Pascal}}FormFieldLabels))
 
 	return nil
 }

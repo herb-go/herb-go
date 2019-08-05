@@ -36,11 +36,18 @@ type {{.FormID.Pascal}}Form struct {
 //{{.FormID.Pascal}}FormID form id of  login form
 const {{.FormID.Pascal}}FormID = "form{{.Name.Lower}}.{{.FormID.Lower}}"
 
+
+
 //New{{.FormID.Pascal}}Form create new login form
 func New{{.FormID.Pascal}}Form() *{{.FormID.Pascal}}Form {
 	form := &{{.FormID.Pascal}}Form{}
 	form.SetModelID({{.FormID.Pascal}}FormID)
 	return form
+}
+
+//ComponentID return form component id.
+func (f *{{.FormID.Pascal}}Form) ComponentID() string{
+    return {{.FormID.Pascal}}FormID
 }
 
 //UID return form uid
@@ -56,11 +63,11 @@ func (f *{{.FormID.Pascal}}Form) ValidateUserStatus() error {
 		return err
 	}
 	status := s.Get(f.uid)
-	f.ValidateFieldfString(status != nil, "Username", memberform.MsgIncorrectUsernameOrPassword.Translated(f.language))
+	f.ValidateFieldfLabel(status != nil, "Username", memberform.MsgIncorrectUsernameOrPassword.Translated(f.language))
 	if f.HasError() {
 		return nil
 	}
-	f.ValidateFieldfString(status.IsAvaliable(), "Username", memberform.MsgUserNotAvailable.Translated(f.language))
+	f.ValidateFieldfLabel(status.IsAvaliable(), "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	return nil
 }
 
@@ -94,14 +101,14 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 	f.Username = strings.ToLower(f.Username)
 	{{- end }}
 	f.Username = strings.TrimSpace(f.Username)
-	f.ValidateFieldfString(f.Username != "", "Username", commonform.MsgRequired.Translated(f.language)) 
-    f.ValidateFieldfString(f.Password != "", "Password", commonform.MsgRequired.Translated(f.language)) 
+	commonform.ValidateRequiredString(f, f.Username, "Username")
+    commonform.ValidateRequiredString(f, f.Password, "Password")
 	if !f.HasError() {
 		uid, err = f.GetUserID()
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldfString(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
+		f.ValidateFieldfLabel(uid != "", "Username", memberform.MsgUserNotAvailable.Translated(f.language))
 	}
 	if !f.HasError() {
 		err = f.ValidateUserStatus()
@@ -114,7 +121,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldfString(result == true, "Username",memberform.MsgUserNotAvailable.Translated(f.language))
+		f.ValidateFieldfLabel(result == true, "Username",memberform.MsgUserNotAvailable.Translated(f.language))
 	}
 	return nil
 }
@@ -125,7 +132,7 @@ func (f *{{.FormID.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetFieldLabelsCollection(ui.GetMessages(f.language, "herbgo.member").Collection(({{.FormID.Pascal}}FormFieldLabels)))
+	f.SetComponentLabels(ui.GetMessages(f.language, "app").Collection({{.FormID.Pascal}}FormFieldLabels))
 
 	return nil
 }
