@@ -20,6 +20,7 @@ type Form struct {
 	app.BasicModule
 	QueryID     string
 	SlienceMode bool
+	Prefix      string
 }
 
 func (m *Form) ID() string {
@@ -54,7 +55,7 @@ func (m *Form) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table)
+	return NewModelCulumns(conn, m.Database, table, m.Prefix)
 }
 
 func (m *Form) Init(a *app.Application, args *[]string) error {
@@ -69,6 +70,9 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
 		`moder mapper form id. 
+	`)
+	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
+		`table field prefix. 
 	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {

@@ -34,7 +34,7 @@ import (
 var Create{{.Name.Pascal}}FormFieldLabels = map[string]string{ 
     {{- range .Columns.Columns}}
     {{- if and ( not .AutoValue) ( not .PrimayKey)}}
-    "{{.Name}}": "{{.Field}}",
+    "{{.Name}}": "{{.Raw}}",
     {{- end }}
     {{- end }}
 }
@@ -117,7 +117,7 @@ func (f *Create{{.Name.Pascal}}Form) Model() (*models.{{.Name.Pascal}}Model,erro
 {{ if and (.Confirmed.WithUpdate) ( (.Confirmed.CreateForm)) -}}
 //Update{{.Name.Pascal}}FormFieldLabels : field labels for Update{{.Name.Pascal}}Form
 var Update{{.Name.Pascal}}FormFieldLabels = map[string]string{ {{range .Columns.Columns}}{{if and ( not .AutoValue) ( not .PrimayKey)}}
-    "{{.Name}}": "{{.Field}}",{{end}}{{end}}
+    "{{.Name}}": "{{.Raw}}",{{end}}{{end}}
     }
 
 //Update{{.Name.Pascal}}FormModelID form id of form create {{.Name.Raw}}

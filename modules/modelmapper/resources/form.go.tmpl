@@ -21,7 +21,7 @@ import (
 var {{.Name.Pascal}}FormFieldLabels = map[string]string{
     {{- range .Columns.Columns}}
     {{- if and ( not .AutoValue) ( not .PrimayKey)}}
-    "{{.Name}}": "{{.Field}}",
+    "{{.Name}}": "{{.Raw}}",
     {{- end}}
     {{- end}}
     }

@@ -20,6 +20,7 @@ type DataSource struct {
 	app.BasicModule
 	ViewModel   bool
 	QueryID     string
+	Prefix      string
 	SlienceMode bool
 }
 
@@ -55,7 +56,7 @@ func (m *DataSource) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table)
+	return NewModelCulumns(conn, m.Database, table, m.Prefix)
 }
 
 func (m *DataSource) Init(a *app.Application, args *[]string) error {
@@ -70,6 +71,9 @@ func (m *DataSource) Init(a *app.Application, args *[]string) error {
 	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
 		`moder mapper id for actions,queries and viewmodels. 
+	`)
+	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
+		`table field prefix. 
 	`)
 	m.FlagSet().BoolVar(&m.ViewModel, "viewmodel", false, "Whether create viewmodel datasource")
 	err := m.FlagSet().Parse(*args)

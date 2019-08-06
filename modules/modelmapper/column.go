@@ -1,6 +1,9 @@
 package modelmapper
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/herb-go/herb/model/sql/db"
 	"github.com/herb-go/herb/model/sql/db/columns"
 	_ "github.com/herb-go/herb/model/sql/db/columns/mysqlcolumns"  //mysql driver
@@ -8,25 +11,48 @@ import (
 	"github.com/herb-go/util/cli/name"
 )
 
-type Column struct {
-	*columns.Column
+func NewErrColumnNotStartWithPrefix(field, prefix string) error {
+	return fmt.Errorf("column \"%s\" not start with prefix \"%s\" ", field, prefix)
 }
 
+type Column struct {
+	*columns.Column
+	FieldPrefix string
+}
+
+func (c *Column) Raw() string {
+	return MustGetColumnRaw(c)
+}
 func (c *Column) Name() string {
-	return MustGetColumnName(c.Column)
+	return MustGetColumnName(c)
 }
 
 type ModelColumns struct {
 	Columns     []*Column
-	Raw         string
 	Name        *name.Name
 	Database    string
 	PrimaryKeys []*Column
 	HasTime     bool
 }
 
-func MustGetColumnName(c *columns.Column) string {
-	n, err := name.New(false, c.Field)
+func MustGetColumnRaw(c *Column) string {
+	if !strings.HasPrefix(c.Field, c.FieldPrefix) {
+		panic(NewErrColumnNotStartWithPrefix(c.Field, c.FieldPrefix))
+	}
+	f := c.Field[len(c.FieldPrefix):]
+	n, err := name.New(false, f)
+	if err != nil {
+		panic(err)
+	}
+	return n.Raw
+}
+
+func MustGetColumnName(c *Column) string {
+	if !strings.HasPrefix(c.Field, c.FieldPrefix) {
+		panic(NewErrColumnNotStartWithPrefix(c.Field, c.FieldPrefix))
+	}
+	f := c.Field[len(c.FieldPrefix):]
+	n, err := name.New(false, f)
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +105,10 @@ func NewModelCulumns(conn db.Database, database string, table string, field_pref
 	}
 	c := make([]*Column, len(columns))
 	for k := range columns {
-		c[k] = &Column{columns[k]}
+		c[k] = &Column{
+			Column:      columns[k],
+			FieldPrefix: field_prefix,
+		}
 	}
 	pks := []*Column{}
 	var hasTime bool

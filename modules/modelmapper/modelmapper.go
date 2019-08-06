@@ -41,6 +41,7 @@ type ModelMapper struct {
 	WithList        bool
 	WithPager       bool
 	SlienceMode     bool
+	Prefix          string
 }
 
 func (m *ModelMapper) ID() string {
@@ -76,7 +77,7 @@ func (m *ModelMapper) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table)
+	return NewModelCulumns(conn, m.Database, table, m.Prefix)
 }
 func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
@@ -91,6 +92,9 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	`)
 	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
 		`default model code location. 
+	`)
+	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
+		`table field prefix. 
 	`)
 	crud := m.FlagSet().Bool("crud", false, "Whether create all CRUD codes")
 	m.FlagSet().BoolVar(&m.CreateAction, "createaction", false, "Whether create model actions")

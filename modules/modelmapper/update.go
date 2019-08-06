@@ -29,6 +29,7 @@ type Update struct {
 	UpdateColumns bool
 	UpdateFields  bool
 	UpdateQueries bool
+	Prefix        string
 }
 
 func (m *Update) ID() string {
@@ -63,7 +64,7 @@ func (m *Update) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table)
+	return NewModelCulumns(conn, m.Database, table, m.Prefix)
 }
 
 func (m *Update) Init(a *app.Application, args *[]string) error {
@@ -76,7 +77,9 @@ func (m *Update) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
 		`default model code location. 
 	`)
-
+	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
+		`table field prefix. 
+	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
