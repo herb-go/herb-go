@@ -6,5 +6,5 @@
 "{{label}} is too small (minimum is {{min}})."="{{label}}太小(最小值为{{min}})。"
 "{{label}} is too big (maximum is {{max}})."="{{label}}太大(最大值为{{max}})。"
 "{{label}} is too short (minimum is {{min}} characters)."="{{label}}太短(至少{{min}}个字符)。"
-"{{label}} is too long (maximum is {{max}} characters)."="{label}}太长(最多{{max}}个字符)。"
+"{{label}} is too long (maximum is {{max}} characters)."="{{label}}太长(最多{{max}}个字符)。"
 "{{label}} is of the wrong length (should be {{length}} characters)."="{{label}}长度错误 (正确长度为{{length}}个字符)。"

@@ -28,7 +28,6 @@ var run = func() {
 
 //Init init app
 func Init() {
-	defer util.Recover()
 	util.ApplieationLock.Lock()
 	defer util.ApplieationLock.Unlock()
 	util.UpdatePaths()
