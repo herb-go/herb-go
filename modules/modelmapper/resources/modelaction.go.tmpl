@@ -46,8 +46,11 @@ import (
 {{- end }}
     "modules/{{.Module}}/models"
     "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
-
+    {{- if or (and  ( .Confirmed.WithCreate) ) ( and ( .Columns.IsSinglePrimayKey ) ( .Confirmed.WithUpdate)) }}
+    {{- if  .Confirmed.CreateForm }}
 	"github.com/herb-go/herb/ui/validator/formdata"
+    {{- end }}
+    {{- end }}
 	"github.com/herb-go/herb/ui/render"
 )
 {{ if .Confirmed.CreateForm -}}
