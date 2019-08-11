@@ -47,6 +47,11 @@ func (f *{{.Pascal}}Form) Validate() error {
 	return nil
 }
 
+//Exec execwhen form validated.
+func (f *{{.Pascal}}Form) Exec()  error {
+	return nil
+}
+
 //InitWithRequest init  {{.Raw}} form  with http request.
 func (f *{{.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//Put your request form code here.

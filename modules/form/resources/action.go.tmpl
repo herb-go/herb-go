@@ -21,6 +21,10 @@ import (
 func Action{{.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	form := forms.New{{.Pascal}}Form()
 	if formdata.MustValidateJSONRequest(r, form) {
+		err:=form.Exec()
+		if err!=nil{
+			panic(err)
+		}
 		render.MustJSON(w, form, 200)
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
