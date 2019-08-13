@@ -150,6 +150,7 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	form := forms.NewUpdate{{.Name.Pascal}}Form()
+    form.SetModel(model)
 	if formdata.MustValidateJSONRequest(r, form) {
 		 err := form.Apply(model)
          if err!=nil{

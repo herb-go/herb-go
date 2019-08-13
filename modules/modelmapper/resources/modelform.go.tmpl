@@ -141,7 +141,8 @@ type Update{{.Name.Pascal}}Form struct {
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
     {{ end -}}
-    {{- end -}}    
+    {{- end -}}
+    model *models.{{.Name.Pascal}}Model 
 }
 
 //Validate  validate Update{{.Name.Pascal}}Form
@@ -178,6 +179,11 @@ func (f *Update{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection((Update{{.Name.Pascal}}FormFieldLabels)))
 
 	return nil
+}
+
+//SetModel set model to form
+func (f *Update{{.Name.Pascal}}Form) SetModel (model *models.{{.Name.Pascal}}Model)  {
+    f.model = model
 }
 
 //Apply apply Update{{.Name.Pascal}}Form on given {{.Name.Pascal}}Model.

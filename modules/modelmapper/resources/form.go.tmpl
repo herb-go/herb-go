@@ -48,7 +48,7 @@ type {{.Name.Pascal}}Form struct {
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
     {{ end -}}
     {{- end -}}    
-
+    model *models.{{.Name.Pascal}}Model
 }
 
 //Validate  validate {{.Name.Pascal}}Form
@@ -87,6 +87,12 @@ func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 
 	return nil
 }
+
+//SetModel set model to form
+func (f *{{.Name.Pascal}}Form) SetModel (model *models.{{.Name.Pascal}}Model)   {
+    f.model = model
+}
+
 
 //Exec exec {{.Name.Pascal}}Form on given {{.Name.Pascal}}Model.
 func (f *{{.Name.Pascal}}Form) Exec(model *models.{{.Name.Pascal}}Model) error  {

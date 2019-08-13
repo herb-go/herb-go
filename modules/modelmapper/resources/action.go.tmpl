@@ -48,6 +48,7 @@ func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	form := forms.New{{.Name.Pascal}}Form()
+    form.SetModel(model)
 	if formdata.MustValidateJSONRequest(r, form) {
 		 err := form.Exec(model)
          if err!=nil{
