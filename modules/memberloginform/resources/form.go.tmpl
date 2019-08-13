@@ -119,7 +119,7 @@ func (f *{{.FormID.Pascal}}Form) Validate() error {
 		if err != nil {
 			return err
 		}
-		f.ValidateFieldMessagef(result == true, "Username",memberform.MsgUserNotAvailable)
+		f.ValidateFieldMessagef(result == true, "Username",memberform.MsgIncorrectUsernameOrPassword)
 	}
 	return nil
 }
