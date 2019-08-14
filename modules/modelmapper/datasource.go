@@ -56,7 +56,7 @@ func (m *DataSource) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table, m.Prefix)
+	return NewModelColumns(conn, m.Database, table, m.Prefix)
 }
 
 func (m *DataSource) Init(a *app.Application, args *[]string) error {

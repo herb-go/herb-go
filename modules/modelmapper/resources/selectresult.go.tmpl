@@ -1,0 +1,106 @@
+package result
+
+import (
+    "database/sql"
+    "modules/{{.Module}}/models"
+    {{- range .Joined }}
+    {{.Name.Lower}}models "modules/{{.Name.LowerWithParentPath}}/models"
+    {{- end }}
+
+	"github.com/herb-go/herb/model/sql/querybuilder"
+    {{- if .HasJoined }}
+	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"
+    {{- end }}
+)
+{{- if .HasJoined }}
+
+//JoinModels join models needed to select task
+func JoinModels(t *modelmapper.SelectTask) {
+    //put your join code here
+}
+{{- end }}
+
+//{{.Name.Pascal}}ModelFields field to bind for {{.Name.Pascal}}Model
+var {{.Name.Pascal}}ModelFields = models.Default{{.Name.Pascal}}FieldsSelect
+{{- range .Joined }}
+
+//{{.Name.Pascal}}ModelFields field to bind for {{.Name.Pascal}}Model
+var {{.Name.Pascal}}ModelFields = {{.Name.Lower}}models.Default{{.Name.Pascal}}FieldsSelect
+{{- end }}
+
+//Result select result
+type Result struct{
+ 	{{.Name.Pascal}}Model *models.{{.Name.Pascal}}Model
+    {{- range .Joined }}
+    {{.Name.Pascal}}Model *{{.Name.Lower}}models.{{.Name.Pascal}}Model
+    {{- end }}
+    //put your own select result  here
+}
+
+//NewResult create new result
+func NewResult() *Result{
+    result := &Result{
+        {{.Name.Pascal}}Model:models.New{{.Name.Pascal}}Model(),
+    {{- range .Joined }}
+        {{.Name.Pascal}}Model:{{.Name.Lower}}models.New{{.Name.Pascal}}Model(),
+    {{- end }}
+    }
+
+    //put your own result init code here
+    return result
+}
+
+//Results select result slice.
+type Results []*Result
+
+//Fields return query builder fields to bind
+func (r *Results) Fields() *querybuilder.Fields {
+	var result = NewResult()
+	*r = append(*r, result)
+    var fields = &querybuilder.Fields{}
+    
+    //bind fields for {{.Name.Raw}}
+	*fields=append(*fields,*(result.{{.Name.Pascal}}Model.BuildFields(true, {{.Name.Pascal}}ModelFields...))...)
+    {{- range .Joined }}
+
+    //bind fields for {{.Name.Raw}}
+    *fields=append(*fields,*(result.{{.Name.Pascal}}Model.BuildFields(true, {{.Name.Pascal}}ModelFields...))...)
+    {{- end }}
+
+    //put  your own fields bind code here
+
+    return  fields
+}
+
+//OnFinish finish event called when data found or erros raised.
+func (r *Results) OnFinish(err error) error {
+	if err == sql.ErrNoRows {
+        (*r)[len(*r)-1]=nil
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+    result:= (*r)[len(*r)-1]
+
+    //call {{.Name.Pascal}}Model AfterFind event
+    err = result.{{.Name.Pascal}}Model.AfterFind()
+    if err!=nil {
+        return err
+    }
+    {{- range .Joined }}
+
+    //call {{.Name.Pascal}}Model AfterFind event
+    err = result.{{.Name.Pascal}}Model.AfterFind()
+    if err!=nil {
+        return err
+    }
+    {{- end }}
+
+	return  nil
+}
+
+//NewResults create new select result slice.
+func NewResults()*Results{
+    return &Results{}
+}

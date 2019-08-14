@@ -7,4 +7,5 @@ func init() {
 	app.Register(UpdateModule)
 	app.Register(DataSourceModule)
 	app.Register(FormModule)
+	app.Register(SelectModule)
 }

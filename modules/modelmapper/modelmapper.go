@@ -77,7 +77,7 @@ func (m *ModelMapper) GetColumn(table string) (*ModelColumns, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewModelCulumns(conn, m.Database, table, m.Prefix)
+	return NewModelColumns(conn, m.Database, table, m.Prefix)
 }
 func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {

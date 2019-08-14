@@ -90,7 +90,7 @@ func getLoaderFormDB(conn db.Database) (columns.Loader, error) {
 	return driver, nil
 }
 
-func NewModelCulumns(conn db.Database, database string, table string, field_prefix string) (*ModelColumns, error) {
+func NewModelColumns(conn db.Database, database string, table string, field_prefix string) (*ModelColumns, error) {
 	loader, err := getLoaderFormDB(conn)
 	if err != nil {
 		return nil, err
