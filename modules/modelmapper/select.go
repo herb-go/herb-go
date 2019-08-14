@@ -57,7 +57,7 @@ func (m *Select) Group(a *app.Application) string {
 	return "Model"
 }
 
-func (m *Select) GetColumn(table string) (*ModelColumns, error) {
+func (m *Select) GetColumn(table string, prefix string) (*ModelColumns, error) {
 	conn := db.New()
 	c := db.Config{}
 	tomlconfig.MustLoad(util.File("./config/"+m.Database+".toml"), &c)
@@ -126,13 +126,14 @@ func (m *Select) ParseJoined(mp string) error {
 		if !result {
 			return fmt.Errorf("Model file \"%s\"not found", filepath.Join(mp, j.Name.LowerWithParentPath, "models", j.Name.Lower+".go"))
 		}
-		j.Columns, err = m.GetColumn(j.Name.Raw)
-		if err != nil {
-			return err
-		}
 		if len(list) > 1 {
 			j.Prefix = list[1]
 		}
+		j.Columns, err = m.GetColumn(j.Name.Raw, j.Prefix)
+		if err != nil {
+			return err
+		}
+
 		m.Joined = append(m.Joined, j)
 	}
 	return nil
@@ -187,7 +188,7 @@ func (m *Select) Exec(a *app.Application, args []string) error {
 	if !result {
 		return fmt.Errorf("model file \"%s\"not found", file)
 	}
-	mc, err := m.GetColumn(n.Raw)
+	mc, err := m.GetColumn(n.Raw, m.Prefix)
 	if err != nil {
 		return err
 	}
