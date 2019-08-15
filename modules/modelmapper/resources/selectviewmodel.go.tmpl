@@ -1,0 +1,81 @@
+package viewmodels
+
+import (
+    "modules/{{.Module}}/{{.ID.Lower}}/results"
+)
+
+//NewViewModel create new {{.Name.Pascal}}ViewModel
+func NewViewModel() *ViewModel{
+     return &ViewModel{}
+}
+
+//ViewModel   view model struct
+type ViewModel struct {
+    //You should rename duplicated fields.
+
+    //table {{.Name.Lower}} fields
+	{{- range .Columns.Columns}}
+	{{.Name}} {{if not .NotNull }}*{{end}}{{.ColumnType}}
+	{{- end}}
+    {{- range .Joined }}
+    {{ $Name := .Name}}
+    //table {{.Name.Lower}} fields
+    {{- range .Columns.Columns}}
+	{{$Name.Pascal}}{{.Name}} *{{.ColumnType}}
+	{{- end}}
+    {{- end }}
+
+}
+
+//Convert : convert {{.Name.Raw }} model to view model.
+//Return any error if raised.
+func (o *ViewModel) Convert(result *results.Result) error{
+    {{- $Name := .Name}}
+    //You should replace true to your own emty model checking code
+    if true{
+        //Set fields from {{$Name.Pascal}}Model
+    {{- range .Columns.Columns}}
+	    o.{{.Name}} = result.{{$Name.Pascal}}Model.{{.Name}}
+	{{- end}}
+    }
+    {{- range .Joined }}
+
+    //You should replace true to your own emty model checking code
+    if true{
+    {{- $Name := .Name}}
+        //Set fields from {{$Name.Pascal}}Model
+    {{- range .Columns.Columns}}
+        o.{{$Name.Pascal}}{{.Name}} = {{if  .NotNull }}&{{end}} result.{{$Name.Pascal}}Model.{{.Name}}
+	{{- end}}
+    }
+    {{- end }}
+    
+    return nil
+}
+
+//MustConvertViewModel  convert  {{.Name.Raw }} model to  view model .
+//Panic if any error raised.
+func MustConvertViewModel(result *results.Result) *ViewModel{
+    viewmodel:=NewViewModel()
+    err:=viewmodel.Convert(result)
+    if err!=nil{
+        panic(err)
+    }
+    return viewmodel
+}
+
+
+//MustConvertViewModelList  convert  {{.Name.Raw }} model list to  {{.Name.Raw }} view model list.
+//Panic if any error raised.
+func MustConvertViewModelList(results []*results.Result) []*ViewModel{
+    viewmodels:=make([]*ViewModel,len(results))
+    for k,v:=range results{
+        viewmodel:=NewViewModel()
+        err:=viewmodel.Convert(v)
+        if err!=nil{
+            panic(err)
+        }
+        viewmodels[k]=viewmodel
+    }
+    return viewmodels
+}

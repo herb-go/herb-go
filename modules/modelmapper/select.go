@@ -25,13 +25,14 @@ type Select struct {
 	Database string
 	Location string
 	app.BasicModule
-	QueryID        string
-	SlienceMode    bool
-	Prefix         string
-	joined         string
-	WithViewAction bool
-	WithListAction bool
-	Joined         []*SelectJoined
+	QueryID     string
+	SlienceMode bool
+	Prefix      string
+	joined      string
+	WithRead    bool
+	WithList    bool
+	WithPager   bool
+	Joined      []*SelectJoined
 }
 
 func (m *Select) ID() string {
@@ -88,6 +89,9 @@ func (m *Select) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.joined, "joined", "",
 		`joined models.Format: [location]/<tablename>|[prefix],[location]/<tablename>#[prefix]
 	`)
+	m.FlagSet().BoolVar(&m.WithRead, "withread", false, "Whether create model read code")
+	m.FlagSet().BoolVar(&m.WithList, "withlist", false, "Whether create model list code")
+	m.FlagSet().BoolVar(&m.WithPager, "withpager", false, "Whether create model pager code")
 
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
@@ -140,9 +144,25 @@ func (m *Select) ParseJoined(mp string) error {
 }
 
 func (m *Select) Question(a *app.Application) error {
+	var err error
 	if m.SlienceMode {
 		return nil
 	}
+	err = QuestionWithRead.ExecIf(a, !m.WithRead, &m.WithRead)
+	if err != nil {
+		return err
+	}
+	err = QuestionWithList.ExecIf(a, !m.WithList, &m.WithList)
+	if err != nil {
+		return err
+	}
+	if m.WithList {
+		err = QuestionWithPager.ExecIf(a, !m.WithPager, &m.WithPager)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 func (m *Select) Exec(a *app.Application, args []string) error {
@@ -234,7 +254,7 @@ func (m *Select) Render(a *app.Application, appPath string, mp string, task *too
 	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "forms"), n.Lower+"form.go")] = "selectform.go.tmpl"
 	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "actions"), n.Lower+"action.go")] = "selectaction.go.tmpl"
 	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "viewmodels"), n.Lower+"viewmodel.go")] = "selectviewmodel.go.tmpl"
-	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "models"), n.Lower+"result.go")] = "selectresult.go.tmpl"
+	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "results"), n.Lower+"result.go")] = "selectresult.go.tmpl"
 	data := map[string]interface{}{
 		"Name":      n,
 		"Columns":   mc,
@@ -242,6 +262,7 @@ func (m *Select) Render(a *app.Application, appPath string, mp string, task *too
 		"Module":    modelmodule,
 		"Joined":    m.Joined,
 		"HasJoined": len(m.Joined) > 0,
+		"Confirmed": m,
 	}
 	return task.RenderFiles(filesToRender, data)
 }

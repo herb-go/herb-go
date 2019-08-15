@@ -1,0 +1,106 @@
+package actions
+
+//Actions for database table {{.Name.Raw}} {{.ID.Raw}}.
+//You can  bind actions to  router by using below code :
+//import {{.Name.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
+//
+{{ if .Confirmed.WithList -}}
+//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}list").
+//		HandleFunc({{.Name.Lower}}actions.ActionList)
+{{- end }}
+
+{{- if .Columns.IsSinglePrimayKey }}
+{{- if .Confirmed.WithRead }}
+//	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}view/:id").
+//		HandleFunc({{.Name.Lower}}actions.ActionGet)
+{{- end -}}
+{{- end }}
+import (
+    "modules/{{.Module}}/models"
+    "modules/{{.Module}}/{{.ID.Lower}}/forms"
+    "modules/{{.Module}}/{{.ID.Lower}}/results"
+    "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
+	"net/http"
+    
+    "github.com/herb-go/herb/ui/render"
+)
+
+
+{{ if .Columns.IsSinglePrimayKey -}}
+{{ if .Confirmed.WithRead }}
+
+//ActionGet action which get {{.Name.Raw}} model by primary key in url.
+func ActionGet(w http.ResponseWriter, r *http.Request){
+    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
+    {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
+    {{ if not .Columns.FirstPrimayKey.NotNull -}}
+    if pk==nil{
+        {{else -}}
+    if pk==0{        
+        {{end -}}
+        http.Error(w,http.StatusText(404),404)
+        return
+    } 
+    {{- else -}}
+    {{ if not .Columns.FirstPrimayKey.NotNull -}}
+    if pk==nil{
+        {{else -}}
+    if pk==""{        
+        {{end -}}
+        http.Error(w,http.StatusText(404),404)
+        return
+    }
+    {{- end }}
+    modelSelect := models.{{.Name.Pascal}}.Select()
+	modelSelect.Select.AddFields(results.New().Fields())
+	results.JoinModels(modelSelect)
+	modelSelect.Where.Condition.And(models.{{.Name.Pascal}}.BuildByPrimaryKeyQuery(pk))
+    rs := results.New()
+	err := modelSelect.FindAllTo(rs)
+	if err!=nil{
+        panic(err)
+    }
+	if len(*rs) == 0 || (*rs)[0] == nil {
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	render.MustJSON(w, viewmodels.MustConvertViewModel((*rs)[0]), 200)
+}
+{{- end -}}
+{{- end }}
+
+
+
+
+
+{{ if .Confirmed.WithList -}}
+//ActionList action which list {{.Name.Raw}} models by request params.
+func ActionList(w http.ResponseWriter, r *http.Request) {
+       	render.MustJSON(w, mustListResults(r), 200)
+}
+
+func mustListResults(r *http.Request) map[string]interface{}{
+    p:=forms.MustGetParamsFromRequest(r)
+    modelsSelect:=models.{{.Name.Pascal}}.Select()
+    modelsSelect.Select.AddFields(results.New().Fields())
+    results.JoinModels(modelsSelect)
+    p.ApplyToModelsSelect(modelsSelect)
+    rs := results.New()
+	err := modelsSelect.FindAllTo(rs)
+    if err!=nil{
+        panic(err)
+    }
+    countSelect:=models.{{.Name.Pascal}}.SelectCount()
+    p.ApplyToCountSelect(countSelect)
+    result,err:=models.{{.Name.Pascal}}.FindCount(countSelect)
+    if err!=nil{
+        panic(err)
+    }
+    return map[string]interface{}{
+        "Items":viewmodels.MustConvertViewModelList(*rs),
+        "Count":result,
+    }
+}
+
+{{- end }}
+

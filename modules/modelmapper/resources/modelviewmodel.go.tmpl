@@ -42,12 +42,12 @@ func MustConvert{{.Name.Pascal}}ViewModel(model *models.{{.Name.Pascal}}Model) *
 func MustConvert{{.Name.Pascal}}ViewModelList(models []*models.{{.Name.Pascal}}Model) []*{{.Name.Pascal}}ViewModel{
     viewmodels:=make([]*{{.Name.Pascal}}ViewModel,len(models))
     for k,v:=range models{
-        o:=&{{.Name.Pascal}}ViewModel{}
-        err:=o.Convert(v)
+        viewmodel:=New{{.Name.Pascal}}ViewModel()
+        err:=viewmodel.Convert(v)
         if err!=nil{
             panic(err)
         }
-        viewmodels[k]=o
+        viewmodels[k]=viewmodel
     }
     return viewmodels
 }

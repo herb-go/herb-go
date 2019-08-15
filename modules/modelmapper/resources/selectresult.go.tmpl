@@ -1,4 +1,4 @@
-package result
+package results
 
 import (
     "database/sql"
@@ -15,8 +15,17 @@ import (
 {{- if .HasJoined }}
 
 //JoinModels join models needed to select task
+{{- $Name := .Name}}
 func JoinModels(t *modelmapper.SelectTask) {
     //put your join code here
+    {{- range .Joined }}
+    
+    t.Join.
+        LeftJoin().
+		Alias( {{.Name.Lower}}models.{{.Name.Pascal}}TableAlias,  {{.Name.Lower}}models.{{.Name.Pascal}}TableName).
+        //Replace {{$Name.Pascal}}FieldAliasFIELDNAME and .{{.Name.Pascal}}FieldAliasFIELDNAME by fields you need
+		OnEqual(models.{{$Name.Pascal}}FieldAliasFIELDNAME , {{.Name.Lower}}models.{{.Name.Pascal}}FieldAliasFIELDNAME)
+    {{- end }}
 }
 {{- end }}
 
@@ -100,7 +109,7 @@ func (r *Results) OnFinish(err error) error {
 	return  nil
 }
 
-//NewResults create new select result slice.
-func NewResults()*Results{
+//New create new select result slice.
+func New()*Results{
     return &Results{}
 }

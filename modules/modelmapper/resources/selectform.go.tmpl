@@ -1,0 +1,133 @@
+package forms
+
+{{$Name := .Name}}
+
+import (
+	"net/http"
+
+    "modules/{{.Module}}/models"
+    {{- range .Joined }}
+    {{.Name.Lower}}models "modules/{{.Name.LowerWithParentPath}}/models"
+    {{- end }}
+
+	{{- if .Columns.HasTime}}
+    "time"
+    {{- end }}
+     {{- if or (eq .Columns.FirstPrimayKey.ColumnType "int") ( .Confirmed.WithPager ) }}
+    "strconv"
+    {{- end }}
+    {{- if and (.Columns.IsSinglePrimayKey) ( .Confirmed.WithRead) }}
+    "github.com/herb-go/herb/middleware/router"
+    {{- end }}
+	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"    
+    
+)
+
+{{- if and (.Columns.IsSinglePrimayKey) ( .Confirmed.WithRead) }}
+//MustGet{{.Name.Pascal}}PrimaryKeyFromRequest : get {{.Name.Pascal}}PrimaryKey from request.
+//Panic if any error raised.
+func MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r *http.Request) models.{{.Name.Pascal}}PrimaryKey {
+    //Get primary key from request router params.
+    var pk models.{{.Name.Pascal}}PrimaryKey
+    id:=router.GetParams(r).Get("id")
+    if id == "" {
+        {{- if not .Columns.FirstPrimayKey.NotNull}}
+        return nil
+        {{- else }}
+        {{- if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") }}
+        return 0
+        {{- else }}
+        return ""
+        {{- end }}
+        {{- end}}
+    }
+    {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
+    idval,err:=strconv.Atoi(id)
+    if err!=nil{
+        {{ if not .Columns.FirstPrimayKey.NotNull -}}
+        return nil
+        {{else -}}
+        return 0
+        {{- end }}
+    }
+    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}idval)
+    {{else -}}
+    pk=models.{{.Name.Pascal}}PrimaryKey({{ if not .Columns.FirstPrimayKey.NotNull }}&{{end}}id)
+    {{end -}}
+    return pk
+}
+{{end -}}
+
+{{ if .Confirmed.WithList }}
+//SortableFields fields which  can be used for sorting.
+//Comment any field if not needed.
+var SortableFields=map[string]string{
+    {{- range .Columns.Columns }}
+    "{{.Name}}":models.{{$Name.Pascal}}FieldAlias{{.Name}},
+    {{- end -}}
+    {{- range .Joined }}
+    {{ $Name := .Name}}
+    //table {{.Name.Lower}} fields
+    {{- range .Columns.Columns}}
+	"{{$Name.Pascal}}{{.Name}}": {{$Name.Lower}}models.{{$Name.Pascal}}FieldAlias{{.Name}},
+	{{- end}}
+    {{- end }}
+}
+
+//Params  {{.Name.Raw}} request params struct
+type Params struct{
+    {{ if .Confirmed.WithPager -}}
+    Page int
+    {{- end }}
+    Sorted string
+    Asc bool
+}
+
+//ApplyToModelsSelect apply request params to models select task.
+func (p *Params) ApplyToModelsSelect(Select *modelmapper.SelectTask){
+    p.ApplyToCountSelect(Select)
+    if p.Sorted!=""{
+        Select.OrderBy.Add(p.Sorted,p.Asc)
+    }    
+    {{ if .Confirmed.WithPager -}}
+    var limit=10
+    var offset=(p.Page-1)*limit
+    if offset<0{
+        offset=0
+    }
+    Select.Limit.SetLimit(limit)
+    Select.Limit.SetOffset(offset)
+    {{- end }}
+}
+
+//ApplyToCountSelect apply request params to models count task.
+func (p *Params) ApplyToCountSelect(Select *modelmapper.SelectTask){
+
+}
+
+//MustGetParamsFromRequest get params from request;
+//Panic if any error raised.
+func MustGetParamsFromRequest(r *http.Request) (*Params) {
+    p:=&Params{}
+    {{ if .Confirmed.WithPager -}}
+    page := r.URL.Query().Get("page")
+	if page != "" {
+		pageInt, err := strconv.Atoi(page)
+		if err == nil {
+			p.Page = pageInt
+		}
+	}
+	if p.Page <1 {
+		p.Page = 1
+	}
+    {{- end }}
+    sorted:=r.URL.Query().Get("sorted")
+    if sorted!="" &&  SortableFields[sorted]!=""{
+        p.Sorted=SortableFields[sorted]
+        order:=r.URL.Query().Get("order")
+        p.Asc=(order!="desc")
+    }
+    return p
+}
+
+{{- end }}
