@@ -2,11 +2,11 @@ package actions
 
 //Actions for database table {{.Name.Raw}} {{.ID.Raw}}.
 //You can  bind actions to  router by using below code :
-//import {{.Name.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
+//import {{.Name.Lower}}{{.ID.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
 //
 {{ if .Confirmed.WithList -}}
 //	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}list").
-//		HandleFunc({{.Name.Lower}}actions.ActionList)
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionList)
 {{- end }}
 
 {{- if .Columns.IsSinglePrimayKey }}

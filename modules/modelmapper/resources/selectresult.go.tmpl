@@ -41,7 +41,7 @@ var {{.Name.Pascal}}ModelFields = {{.Name.Lower}}models.Default{{.Name.Pascal}}F
 type Result struct{
  	{{.Name.Pascal}}Model *models.{{.Name.Pascal}}Model
     {{- range .Joined }}
-    {{.Name.Pascal}}Model *{{.Name.Lower}}models.{{.Name.Pascal}}Model
+    {{.Name.Pascal}}Model *{{.Name.Lower}}models.{{.Name.Pascal}}NullableModel
     {{- end }}
     //put your own select result  here
 }
@@ -51,7 +51,7 @@ func NewResult() *Result{
     result := &Result{
         {{.Name.Pascal}}Model:models.New{{.Name.Pascal}}Model(),
     {{- range .Joined }}
-        {{.Name.Pascal}}Model:{{.Name.Lower}}models.New{{.Name.Pascal}}Model(),
+        {{.Name.Pascal}}Model:&{{.Name.Lower}}models.{{.Name.Pascal}}NullableModel{},
     {{- end }}
     }
 
@@ -97,15 +97,6 @@ func (r *Results) OnFinish(err error) error {
     if err!=nil {
         return err
     }
-    {{- range .Joined }}
-
-    //call {{.Name.Pascal}}Model AfterFind event
-    err = result.{{.Name.Pascal}}Model.AfterFind()
-    if err!=nil {
-        return err
-    }
-    {{- end }}
-
 	return  nil
 }
 

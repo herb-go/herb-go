@@ -32,12 +32,41 @@ func (f *{{.Name.Pascal}}ModelFields) BuildFields(withAlias bool, columns ...str
 		switch columns[k] {
 		{{- range .Columns.Columns}}
 		case {{$Name.Pascal}}Field{{.Name}}:
+			fields.Set(field , &f.{{.Name}})
+			{{- end}}	
+		}
+	}
+	return fields
+}
+
+//{{.Name.Pascal}}NullableModel {{.Name.Raw }} model nullable fields struct
+type {{.Name.Pascal}}NullableModel struct {
+	modelmapper.CommonQueryEvents
+	{{- range .Columns.Columns}}
+	{{.Name}} *{{.ColumnType}}
+	{{- end}}
+}
+
+//BuildFields build  querybuilder.Fields by  given columns.
+//Columns will prefixed by alias if withAlias is true.
+func (f *{{.Name.Pascal}}NullableModel) BuildFields(withAlias bool, columns ...string) *querybuilder.Fields {
+	var field string
+	fields := querybuilder.NewFields()
+	for k := range columns {
+		field = columns[k]
+		if withAlias {
+			field = {{.Name.Pascal}}.FieldAlias(field)
+		}
+		switch columns[k] {
+		{{- range .Columns.Columns}}
+		case {{$Name.Pascal}}Field{{.Name}}:
 			fields.Set(field, &f.{{.Name}})
 			{{- end}}	
 		}
 	}
 	return fields
 }
+
 const(
 	{{- range .Columns.Columns}}
 	//{{$Name.Pascal}}Field{{.Name}} model column name of field {{.Field}}
