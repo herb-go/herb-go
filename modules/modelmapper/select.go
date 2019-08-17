@@ -231,7 +231,7 @@ func (m *Select) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	task.AddJob(func() error {
-		a.Printf("ModelMapper  select \"%s %s\" created.\n", n.LowerWithParentDotSeparated, qn.Lower)
+		a.Printf("ModelMapper  select \"%s/%s\" created.\n", n.LowerWithParentDotSeparated, qn.Lower)
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()

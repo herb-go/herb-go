@@ -35,7 +35,7 @@ func (o *ViewModel) Convert(result *results.Result) error{
     if true{
         //Set fields from {{$Name.Pascal}}Model
     {{- range .Columns.Columns}}
-	    o.{{.Name}} = result.{{$Name.Pascal}}Model.{{.Name}}
+	    o.{{.Name}} = result.{{$Name.Pascal}}Model.{{$Name.Pascal}}ModelFields.{{.Name}}
 	{{- end}}
     }
     {{- range .Joined }}
