@@ -18,10 +18,10 @@ type {{.Name.Pascal}}ViewModel struct {
 
 //Convert : convert {{.Name.Raw }} model to view model.
 //Return any error if raised.
-func (o *{{.Name.Pascal}}ViewModel) Convert(model *models.{{.Name.Pascal}}Model) error{
+func (m *{{.Name.Pascal}}ViewModel) Convert(model *models.{{.Name.Pascal}}Model) error{
     {{$Name := .Name}}
     {{- range .Columns.Columns}}
-	o.{{.Name}} = model.{{$Name.Pascal}}ModelFields.{{.Name}}
+	m.{{.Name}} = model.{{$Name.Pascal}}ModelFields.{{.Name}}
 	{{- end}}
     return nil
 }

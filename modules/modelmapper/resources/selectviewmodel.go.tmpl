@@ -29,13 +29,13 @@ type ViewModel struct {
 
 //Convert : convert {{.Name.Raw }} model to view model.
 //Return any error if raised.
-func (o *ViewModel) Convert(result *results.Result) error{
+func (m *ViewModel) Convert(result *results.Result) error{
     {{- $Name := .Name}}
     //You should replace true to your own emty model checking code
     if true{
         //Set fields from {{$Name.Pascal}}Model
     {{- range .Columns.Columns}}
-	    o.{{.Name}} = result.{{$Name.Pascal}}Model.{{$Name.Pascal}}ModelFields.{{.Name}}
+	    m.{{.Name}} = result.{{$Name.Pascal}}Model.{{$Name.Pascal}}ModelFields.{{.Name}}
 	{{- end}}
     }
     {{- range .Joined }}
@@ -45,7 +45,7 @@ func (o *ViewModel) Convert(result *results.Result) error{
     {{- $Name := .Name}}
         //Set fields from {{$Name.Pascal}}Model
     {{- range .Columns.Columns}}
-        o.{{$Name.Pascal}}{{.Name}} = result.{{$Name.Pascal}}Model.{{.Name}}
+        m.{{$Name.Pascal}}{{.Name}} = result.{{$Name.Pascal}}Model.{{.Name}}
 	{{- end}}
     }
     {{- end }}
