@@ -51,7 +51,7 @@ func NewResult() *Result{
     result := &Result{
         {{.Name.Pascal}}Model:models.New{{.Name.Pascal}}Model(),
     {{- range .Joined }}
-        {{.Name.Pascal}}Model:&{{.Name.Lower}}models.{{.Name.Pascal}}NullableModel{},
+        {{.Name.Pascal}}Model:{{.Name.Lower}}models.New{{.Name.Pascal}}NullableModel(),
     {{- end }}
     }
 

@@ -86,7 +86,7 @@ func (m *Select) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
 		`table field prefix. 
 	`)
-	m.FlagSet().StringVar(&m.joined, "joined", "",
+	m.FlagSet().StringVar(&m.joined, "join", "",
 		`joined models.Format: [location]/<tablename>|[prefix],[location]/<tablename>#[prefix]
 	`)
 	m.FlagSet().BoolVar(&m.WithRead, "withread", false, "Whether create model read code")
