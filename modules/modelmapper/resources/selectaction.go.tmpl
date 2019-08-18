@@ -91,6 +91,7 @@ func mustListResults(r *http.Request) map[string]interface{}{
         panic(err)
     }
     countSelect:=models.{{.Name.Pascal}}.SelectCount()
+    results.JoinModels(countSelect)
     p.ApplyToCountSelect(countSelect)
     result,err:=models.{{.Name.Pascal}}.FindCount(countSelect)
     if err!=nil{
