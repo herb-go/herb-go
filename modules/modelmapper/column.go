@@ -59,7 +59,7 @@ func MustGetColumnName(c *Column) string {
 	return n.Pascal
 }
 func (m *ModelColumns) FirstPrimayKey() *Column {
-	return m.Columns[0]
+	return m.PrimaryKeys[0]
 }
 
 func (m *ModelColumns) HasPrimayKey() bool {
