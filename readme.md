@@ -27,6 +27,7 @@
   * modelmapperupdate 更新数据库模型代码  
   * modelmapperdatasource 创建数据库模型数据源代码  
   * modelmapperform 创建数据库模型表单代码  
+  * modelmapperselect 创建数据的select代码。一般用于接受自定义结构数据的接受。比如Join查询或者各函数的查询。
 
   * api 创建对接api接口的代码和配置
 
