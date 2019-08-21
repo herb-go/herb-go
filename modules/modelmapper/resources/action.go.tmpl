@@ -11,7 +11,9 @@ import (
 	"net/http"
     "modules/{{.Module}}/{{.ID.Lower}}/forms"
     "modules/{{.Module}}/models"
-
+{{- if .Confirmed.WithMember }}
+    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+{{- end }}
 	"github.com/herb-go/herb/ui/validator/formdata"
 	"github.com/herb-go/herb/ui/render"
 )
@@ -48,6 +50,13 @@ func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	form := forms.New{{.Name.Pascal}}Form()
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    form.SetUID(uid)
+    {{- end }}
     form.SetModel(model)
 	if formdata.MustValidateJSONRequest(r, form) {
 		 err := form.Exec(model)

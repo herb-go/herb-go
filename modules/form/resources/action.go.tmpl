@@ -1,11 +1,11 @@
 package actions
 
-//Actions for form  {{.Raw}} .
+//Actions for form {{.Name.Raw}} .
 //You can  bind actions to  router by using below code :
-//import   {{.Lower}}actions "modules/{{.LowerWithParentPath}}/actions"
+//import   {{.Name.Lower}}actions "modules/{{.LowerWithParentPath}}/actions"
 //
-//	Router.POST("/{{.Lower}}").
-//		HandleFunc({{.Lower}}actions.Action{{.Pascal}})
+//	Router.POST("/{{.Name.Lower}}").
+//		HandleFunc({{.Name.Lower}}actions.Action{{.Name.Pascal}})
 
 
 import (
@@ -14,12 +14,22 @@ import (
 	"github.com/herb-go/herb/ui/validator/formdata"
 	"github.com/herb-go/herb/ui/render"
 
-	"modules/{{.LowerWithParentPath}}/forms"
+{{- if .Confirmed.WithMember }}
+    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+{{- end }}
+	"modules/{{.Name.LowerWithParentPath}}/forms"
 )
 
-//Action{{.Pascal}} action that verify {{.Raw}} form in json format.
-func Action{{.Pascal}}(w http.ResponseWriter, r *http.Request) {
-	form := forms.New{{.Pascal}}Form()
+//Action{{.Name.Pascal}} action that verify{{.Name.Raw}} form in json format.
+func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+	form := forms.New{{.Name.Pascal}}Form()
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    form.SetUID(uid)
+    {{- end }}
 	if formdata.MustValidateJSONRequest(r, form) {
 		err:=form.Exec()
 		if err!=nil{

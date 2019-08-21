@@ -10,36 +10,47 @@ import (
 )
 
 
-//{{.Pascal}}FormFieldLabels form field labels map.
-var {{.Pascal}}FormFieldLabels = map[string]string{
+//{{.Name.Pascal}}FormFieldLabels form field labels map.
+var {{.Name.Pascal}}FormFieldLabels = map[string]string{
 	"Field1":  "Field 1",
 	"Field2":    "Field 2",
 }
 
-//{{.Pascal}}Form form struct for {{.Raw}}
-type {{.Pascal}}Form struct {
+//{{.Name.Pascal}}Form form struct for{{.Name.Raw}}
+type {{.Name.Pascal}}Form struct {
 	formdata.Form
+    {{- if .Confirmed.WithMember }}
+    uid string
+    {{- end }}
 	Field1  *string
 	Field2    *string
+
 }
 
-//{{.Pascal}}FormID form id of form {{.Raw}}
-const {{.Pascal}}FormID = "form{{.LowerWithParentDotSeparated}}"
+//{{.Name.Pascal}}FormID form id of form{{.Name.Raw}}
+const {{.Name.Pascal}}FormID = "form{{.LowerWithParentDotSeparated}}"
 
-//New{{.Pascal}}Form create new {{.Raw}} form
-func New{{.Pascal}}Form() *{{.Pascal}}Form{
-	form:=&{{.Pascal}}Form{}
+//New{{.Name.Pascal}}Form create new{{.Name.Raw}} form
+func New{{.Name.Pascal}}Form() *{{.Name.Pascal}}Form{
+	form:=&{{.Name.Pascal}}Form{}
 	return form
 }
 
+{{- if .Confirmed.WithMember }}
+//SetUID  set uid to form
+func (f *{{.Name.Pascal}}Form) SetUID(uid string) {
+    f.uid = uid
+}
+{{- end }}
+
 //ComponentID return form component id.
-func (f *{{.Pascal}}Form) ComponentID() string{
-    return {{.Pascal}}FormID 
+func (f *{{.Name.Pascal}}Form) ComponentID() string{
+    return {{.Name.Pascal}}FormID 
 }
 
 
 //Validate Validate form and return any error if raised.
-func (f *{{.Pascal}}Form) Validate() error {
+func (f *{{.Name.Pascal}}Form) Validate() error {
 	commonform.ValidateRequiredPointer(f, f.Field1, "Field1")
     commonform.ValidateRequiredPointer(f, f.Field2, "Field2")
 	if !f.HasError() {
@@ -48,16 +59,16 @@ func (f *{{.Pascal}}Form) Validate() error {
 }
 
 //Exec execwhen form validated.
-func (f *{{.Pascal}}Form) Exec()  error {
+func (f *{{.Name.Pascal}}Form) Exec()  error {
 	return nil
 }
 
-//InitWithRequest init  {{.Raw}} form  with http request.
-func (f *{{.Pascal}}Form) InitWithRequest(r *http.Request) error {
+//InitWithRequest init {{.Name.Raw}} form  with http request.
+func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
 	//Put your request form code here.
 	//such as get current user id or ip address.
 
 	//Set form labels with translated messages
-	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection({{.Pascal}}FormFieldLabels))
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "app").Collection({{.Name.Pascal}}FormFieldLabels))
 	return nil
 }

@@ -21,6 +21,9 @@ type Form struct {
 	SlienceMode bool
 	Location    string
 	WithAction  bool
+	Member      string
+	WithMember  bool
+	MemberName  *name.Name
 }
 
 func (m *Form) ID() string {
@@ -54,7 +57,9 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Location, "location", "forms",
 		`default form code location. 
 	`)
-
+	m.FlagSet().StringVar(&m.Member, "member", "",
+		`create form with given member. 
+	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -89,6 +94,22 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	if m.Member != "" {
+		m.WithMember = true
+		m.MemberName, err = name.New(true, m.Member)
+		if err != nil {
+			return err
+		}
+		result, err := tools.FileExists(mp, m.MemberName.LowerWithParentPath, "init.go")
+		if err != nil {
+			return err
+		}
+		if !result {
+			return fmt.Errorf("Member file \"%s\"not found", filepath.Join(mp, m.MemberName.LowerWithParentPath, "init.go"))
+		}
+	}
+
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
@@ -129,7 +150,11 @@ func (m *Form) Render(a *app.Application, appPath string, mp string, task *tools
 	if m.WithAction {
 		filesToRender[filepath.Join(mp, n.LowerPath("actions"), n.Lower+"action.go")] = "action.go.tmpl"
 	}
-	return task.RenderFiles(filesToRender, n)
+	data := map[string]interface{}{
+		"Name":      n,
+		"Confirmed": m,
+	}
+	return task.RenderFiles(filesToRender, data)
 }
 
 var FormModule = &Form{}
