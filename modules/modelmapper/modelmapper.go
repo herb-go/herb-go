@@ -42,6 +42,9 @@ type ModelMapper struct {
 	WithPager       bool
 	SlienceMode     bool
 	Prefix          string
+	Member          string
+	WithMember      bool
+	MemberName      *name.Name
 }
 
 func (m *ModelMapper) ID() string {
@@ -92,6 +95,9 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	`)
 	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
 		`default model code location. 
+	`)
+	m.FlagSet().StringVar(&m.Member, "member", "",
+		`create form with given member. 
 	`)
 	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
 		`table field prefix. 
@@ -225,6 +231,7 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+
 	if m.QueryID == "" {
 		return ErrUnsuportedIDRequired
 	}
@@ -232,6 +239,22 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	if m.Member != "" {
+		m.WithMember = true
+		m.MemberName, err = name.New(true, m.Member)
+		if err != nil {
+			return err
+		}
+		result, err := tools.FileExists(mp, m.MemberName.LowerWithParentPath, "init.go")
+		if err != nil {
+			return err
+		}
+		if !result {
+			return fmt.Errorf("Member file \"%s\"not found", filepath.Join(mp, m.MemberName.LowerWithParentPath, "init.go"))
+		}
+	}
+
 	mc, err := m.GetColumn(n.Raw)
 	if err != nil {
 		return err

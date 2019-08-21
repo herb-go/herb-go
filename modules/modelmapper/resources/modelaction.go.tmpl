@@ -44,6 +44,9 @@ import (
 {{- if .Confirmed.CreateForm }}
     "modules/{{.Module}}/{{.ID.Lower}}/forms"
 {{- end }}
+{{- if .Confirmed.WithMember }}
+    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+{{- end }}
     "modules/{{.Module}}/models"
     "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
     {{- if or (and  ( .Confirmed.WithCreate) ) ( and ( .Columns.IsSinglePrimayKey ) ( .Confirmed.WithUpdate)) }}
@@ -58,6 +61,13 @@ import (
 //ActionCreate{{.Name.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}Form.
 func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewCreate{{.Name.Pascal}}Form()
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    form.SetUID(uid)
+    {{- end }}
 	if formdata.MustValidateJSONRequest(r, form) {
 		model ,err:= form.Model()
         if err!=nil{
@@ -150,6 +160,13 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	form := forms.NewUpdate{{.Name.Pascal}}Form()
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    form.SetUID(uid)
+    {{- end }}
     form.SetModel(model)
 	if formdata.MustValidateJSONRequest(r, form) {
 		 err := form.Apply(model)
@@ -174,7 +191,7 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 
 //ActionDelete{{.Name.Pascal}} action which delete {{.Name.Raw}} model by primary key in url.
 func ActionDelete{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
-    var err error
+var err error
    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
@@ -221,6 +238,13 @@ func ActionList{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 
 func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
     p:=forms.MustGet{{.Name.Pascal}}ParamsFromRequest(r)
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    p.UID=uid
+    {{- end }}
     modelsSelect:=models.{{.Name.Pascal}}.SelectModel()
     p.ApplyToModelsSelect(modelsSelect)
     modellist,err:=models.{{.Name.Pascal}}.FindAll(modelsSelect)

@@ -21,6 +21,9 @@ type Form struct {
 	QueryID     string
 	SlienceMode bool
 	Prefix      string
+	Member      string
+	WithMember  bool
+	MemberName  *name.Name
 }
 
 func (m *Form) ID() string {
@@ -68,6 +71,9 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
 		`default model code location. 
 	`)
+	m.FlagSet().StringVar(&m.Member, "member", "",
+		`create form with given member. 
+	`)
 	m.FlagSet().StringVar(&m.QueryID, "id", "",
 		`moder mapper form id. 
 	`)
@@ -108,10 +114,27 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+
 	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
+
+	if m.Member != "" {
+		m.WithMember = true
+		m.MemberName, err = name.New(true, m.Member)
+		if err != nil {
+			return err
+		}
+		result, err := tools.FileExists(mp, m.MemberName.LowerWithParentPath, "init.go")
+		if err != nil {
+			return err
+		}
+		if !result {
+			return fmt.Errorf("Member file \"%s\"not found", filepath.Join(mp, m.MemberName.LowerWithParentPath, "init.go"))
+		}
+	}
+
 	file := filepath.Join(mp, n.LowerPath("models"), n.Lower+".go")
 	result, err := tools.FileExists(file)
 	if err != nil {
@@ -166,10 +189,11 @@ func (m *Form) Render(a *app.Application, appPath string, mp string, task *tools
 	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "forms"), n.Lower+"form.go")] = "form.go.tmpl"
 	filesToRender[filepath.Join(mp, n.LowerPath(id.Lower, "actions"), n.Lower+"action.go")] = "action.go.tmpl"
 	data := map[string]interface{}{
-		"Name":    n,
-		"Columns": mc,
-		"ID":      id,
-		"Module":  modelmodule,
+		"Name":      n,
+		"Columns":   mc,
+		"ID":        id,
+		"Module":    modelmodule,
+		"Confirmed": m,
 	}
 	return task.RenderFiles(filesToRender, data)
 }

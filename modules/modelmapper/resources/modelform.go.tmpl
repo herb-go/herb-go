@@ -60,7 +60,10 @@ type Create{{.Name.Pascal}}Form struct {
     {{ range .Columns.Columns -}}
     {{- if and ( not .AutoValue) ( not .PrimayKey) -}}
     {{.Name}} {{if not .NotNull}}*{{end}}{{.ColumnType}}
-    {{end -}}
+    {{ end -}}
+    {{- end -}}
+    {{- if .Confirmed.WithMember }}
+    uid string
     {{- end -}}
 }
 
@@ -90,6 +93,13 @@ func (f *Create{{.Name.Pascal}}Form) Validate() error {
 	//}
 	return nil
 }
+
+{{- if .Confirmed.WithMember }}
+//SetUID  set uid to form
+func (f *Create{{.Name.Pascal}}Form) SetUID(uid string) {
+    f.uid = uid
+}
+{{- end }}
 
 //InitWithRequest : init Create{{.Name.Pascal}}Form with request.
 func (f *Create{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
@@ -143,7 +153,18 @@ type Update{{.Name.Pascal}}Form struct {
     {{ end -}}
     {{- end -}}
     model *models.{{.Name.Pascal}}Model 
+    {{- if .Confirmed.WithMember }}
+    uid string
+    {{- end }}
 }
+
+{{- if .Confirmed.WithMember }}
+//SetUID  set uid to form
+func (f *Update{{.Name.Pascal}}Form) SetUID(uid string) {
+    f.uid = uid
+}
+{{- end }}
+
 
 //Validate  validate Update{{.Name.Pascal}}Form
 func (f *Update{{.Name.Pascal}}Form) Validate() error {
@@ -250,6 +271,9 @@ type {{.Name.Pascal}}Params struct{
     {{- end }}
     Sorted string
     Asc bool
+    {{- if .Confirmed.WithMember }}
+    UID string
+    {{- end }}
 }
 
 //ApplyToModelsSelect apply request params to models select task.

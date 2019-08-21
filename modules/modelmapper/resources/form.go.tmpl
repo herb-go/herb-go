@@ -40,6 +40,13 @@ func  (f *{{.Name.Pascal}}Form) ComponentID() string{
     return {{.Name.Pascal}}FormModelID
 }
 
+{{- if .Confirmed.WithMember }}
+//SetUID  set uid to form
+func (f *{{.Name.Pascal}}Form) SetUID(uid string) {
+    f.uid = uid
+}
+{{- end }}
+
 //{{.Name.Pascal}}Form  form for {{.Name.Raw}}  model updating.
 type {{.Name.Pascal}}Form struct {
 	formdata.Form
@@ -49,6 +56,9 @@ type {{.Name.Pascal}}Form struct {
     {{ end -}}
     {{- end -}}    
     model *models.{{.Name.Pascal}}Model
+    {{- if .Confirmed.WithMember }}
+    uid string
+    {{- end -}}
 }
 
 //Validate  validate {{.Name.Pascal}}Form

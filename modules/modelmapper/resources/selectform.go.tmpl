@@ -81,6 +81,9 @@ type Params struct{
     {{- end }}
     Sorted string
     Asc bool
+    {{- if .Confirmed.WithMember }}
+    UID string
+    {{- end }}
 }
 
 //ApplyToModelsSelect apply request params to models select task.

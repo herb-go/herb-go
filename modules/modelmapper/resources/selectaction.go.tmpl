@@ -20,6 +20,9 @@ import (
     "modules/{{.Module}}/{{.ID.Lower}}/forms"
     "modules/{{.Module}}/{{.ID.Lower}}/results"
     "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
+    {{- if .Confirmed.WithMember }}
+    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+    {{- end }}
 	"net/http"
     
     "github.com/herb-go/herb/ui/render"
@@ -31,6 +34,7 @@ import (
 
 //ActionGet action which get {{.Name.Raw}} model by primary key in url.
 func ActionGet(w http.ResponseWriter, r *http.Request){
+    var err error
     pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
@@ -53,10 +57,12 @@ func ActionGet(w http.ResponseWriter, r *http.Request){
     {{- end }}
     modelSelect := models.{{.Name.Pascal}}.Select()
 	modelSelect.Select.AddFields(results.New().Fields())
+    {{- if .HasJoined }}
 	results.JoinModels(modelSelect)
+    {{- end }}
 	modelSelect.Where.Condition.And(models.{{.Name.Pascal}}.BuildByPrimaryKeyQuery(pk))
     rs := results.New()
-	err := modelSelect.FindAllTo(rs)
+	err = modelSelect.FindAllTo(rs)
 	if err!=nil{
         panic(err)
     }
@@ -80,18 +86,30 @@ func ActionList(w http.ResponseWriter, r *http.Request) {
 }
 
 func mustListResults(r *http.Request) map[string]interface{}{
+    var err error
     p:=forms.MustGetParamsFromRequest(r)
+    {{- if .Confirmed.WithMember }}
+    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+	if err != nil {
+		panic(err)
+	}
+    p.UID=uid
+    {{- end }}
     modelsSelect:=models.{{.Name.Pascal}}.Select()
     modelsSelect.Select.AddFields(results.New().Fields())
+    {{- if .HasJoined }}
     results.JoinModels(modelsSelect)
+    {{- end }}
     p.ApplyToModelsSelect(modelsSelect)
     rs := results.New()
-	err := modelsSelect.FindAllTo(rs)
+	err = modelsSelect.FindAllTo(rs)
     if err!=nil{
         panic(err)
     }
     countSelect:=models.{{.Name.Pascal}}.SelectCount()
+    {{- if .HasJoined }}
     results.JoinModels(countSelect)
+    {{- end }}
     p.ApplyToCountSelect(countSelect)
     result,err:=models.{{.Name.Pascal}}.FindCount(countSelect)
     if err!=nil{
