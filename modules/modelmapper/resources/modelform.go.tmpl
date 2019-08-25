@@ -268,14 +268,12 @@ var {{.Name.Pascal}}SortableFields=map[string]string{
 type {{.Name.Pascal}}Params struct{
     {{ if .Confirmed.WithPager -}}
     Page int
+    Limit int
     {{- end }}
     Sorted string
     Asc bool
     {{- if .Confirmed.WithMember }}
     UID string
-    {{- end }}
-    {{- if .Confirmed.WithPager }}
-    Limit int
     {{- end }}
 }
 
