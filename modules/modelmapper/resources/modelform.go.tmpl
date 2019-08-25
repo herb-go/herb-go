@@ -274,6 +274,9 @@ type {{.Name.Pascal}}Params struct{
     {{- if .Confirmed.WithMember }}
     UID string
     {{- end }}
+    {{- if .Confirmed.WithPager }}
+    Limit int
+    {{- end }}
 }
 
 //ApplyToModelsSelect apply request params to models select task.
@@ -283,13 +286,14 @@ func (p *{{.Name.Pascal}}Params) ApplyToModelsSelect(Select *modelmapper.SelectT
         Select.OrderBy.Add(p.Sorted,p.Asc)
     }    
     {{ if .Confirmed.WithPager -}}
-    var limit=10
-    var offset=(p.Page-1)*limit
-    if offset<0{
-        offset=0
-    }
-    Select.Limit.SetLimit(limit)
-    Select.Limit.SetOffset(offset)
+    if p.Limit>0 {
+        var offset=(p.Page-1)*p.Limit
+        if offset<0{
+            offset=0
+        }
+        Select.Limit.SetLimit(p.Limit)
+        Select.Limit.SetOffset(offset)
+    }        
     {{- end }}
 }
 

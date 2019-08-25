@@ -88,6 +88,9 @@ func ActionList(w http.ResponseWriter, r *http.Request) {
 func mustListResults(r *http.Request) map[string]interface{}{
     var err error
     p:=forms.MustGetParamsFromRequest(r)
+    {{- if .Confirmed.WithPager }}
+    p.Limit =10
+    {{- end }}
     {{- if .Confirmed.WithMember }}
     uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
 	if err != nil {

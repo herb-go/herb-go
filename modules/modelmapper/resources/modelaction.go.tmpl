@@ -238,6 +238,10 @@ func ActionList{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 
 func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
     p:=forms.MustGet{{.Name.Pascal}}ParamsFromRequest(r)
+    {{- if .Confirmed.WithPager }}
+    p.Limit =10
+    {{- end }}
+
     {{- if .Confirmed.WithMember }}
     uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
 	if err != nil {
