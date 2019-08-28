@@ -12,7 +12,7 @@ package actions
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithRead }}
 //	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}view/:id").
-//		HandleFunc({{.Name.Lower}}actions.ActionGet)
+//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionGet)
 {{- end -}}
 {{- end }}
 import (

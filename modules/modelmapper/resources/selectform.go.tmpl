@@ -61,6 +61,7 @@ func MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r *http.Request) models.{{.Nam
 {{ if .Confirmed.WithList }}
 //SortableFields fields which  can be used for sorting.
 //Comment any field if not needed.
+//You should rename duplicate fields.
 var SortableFields=map[string]string{
     {{- range .Columns.Columns }}
     "{{.Name}}":models.{{$Name.Pascal}}FieldAlias{{.Name}},
