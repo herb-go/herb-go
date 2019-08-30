@@ -19,7 +19,7 @@ var {{.Name.Pascal}}FormFieldLabels = map[string]string{
 //{{.Name.Pascal}}Form form struct for{{.Name.Raw}}
 type {{.Name.Pascal}}Form struct {
 	formdata.Form
-    {{- if .Confirmed.WithMember }}
+    {{- if .Confirmed.WithUser }}
     uid string
     {{- end }}
 	Field1  *string
@@ -36,7 +36,7 @@ func New{{.Name.Pascal}}Form() *{{.Name.Pascal}}Form{
 	return form
 }
 
-{{- if .Confirmed.WithMember }}
+{{- if .Confirmed.WithUser }}
 //SetUID  set uid to form
 func (f *{{.Name.Pascal}}Form) SetUID(uid string) {
     f.uid = uid

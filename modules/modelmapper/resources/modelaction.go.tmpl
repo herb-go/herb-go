@@ -44,8 +44,8 @@ import (
 {{- if .Confirmed.CreateForm }}
     "modules/{{.Module}}/{{.ID.Lower}}/forms"
 {{- end }}
-{{- if .Confirmed.WithMember }}
-    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+{{- if .Confirmed.WithUser }}
+    "modules/{{.Confirmed.UserModule.LowerWithParentPath}}"
 {{- end }}
     "modules/{{.Module}}/models"
     "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
@@ -61,8 +61,8 @@ import (
 //ActionCreate{{.Name.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}Form.
 func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewCreate{{.Name.Pascal}}Form()
-    {{- if .Confirmed.WithMember }}
-    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+    {{- if .Confirmed.WithUser }}
+    uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)
 	}
@@ -160,8 +160,8 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
         return
 	}
 	form := forms.NewUpdate{{.Name.Pascal}}Form()
-    {{- if .Confirmed.WithMember }}
-    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+    {{- if .Confirmed.WithUser }}
+    uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)
 	}
@@ -242,8 +242,8 @@ func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
     p.Limit =10
     {{- end }}
 
-    {{- if .Confirmed.WithMember }}
-    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+    {{- if .Confirmed.WithUser }}
+    uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)
 	}

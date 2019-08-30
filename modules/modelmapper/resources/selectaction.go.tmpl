@@ -20,8 +20,8 @@ import (
     "modules/{{.Module}}/{{.ID.Lower}}/forms"
     "modules/{{.Module}}/{{.ID.Lower}}/results"
     "modules/{{.Module}}/{{.ID.Lower}}/viewmodels"
-    {{- if .Confirmed.WithMember }}
-    "modules/{{.Confirmed.MemberName.LowerWithParentPath}}"
+    {{- if .Confirmed.WithUser }}
+    "modules/{{.Confirmed.UserModule.LowerWithParentPath}}"
     {{- end }}
 	"net/http"
     
@@ -91,8 +91,8 @@ func mustListResults(r *http.Request) map[string]interface{}{
     {{- if .Confirmed.WithPager }}
     p.Limit =10
     {{- end }}
-    {{- if .Confirmed.WithMember }}
-    uid, err := {{.Confirmed.MemberName.Lower}}.Member.IdentifyRequest(r)
+    {{- if .Confirmed.WithUser }}
+    uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)
 	}

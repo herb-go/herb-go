@@ -21,9 +21,9 @@ type Form struct {
 	SlienceMode bool
 	Location    string
 	WithAction  bool
-	Member      string
+	User        string
 	WithMember  bool
-	MemberName  *name.Name
+	UserModule  *name.Name
 }
 
 func (m *Form) ID() string {
@@ -57,8 +57,8 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Location, "location", "forms",
 		`default form code location. 
 	`)
-	m.FlagSet().StringVar(&m.Member, "member", "",
-		`create form with given member. 
+	m.FlagSet().StringVar(&m.User, "user", "",
+		`create form with given user module. 
 	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
@@ -95,18 +95,18 @@ func (m *Form) Exec(a *app.Application, args []string) error {
 		return err
 	}
 
-	if m.Member != "" {
+	if m.User != "" {
 		m.WithMember = true
-		m.MemberName, err = name.New(true, m.Member)
+		m.UserModule, err = name.New(true, m.User)
 		if err != nil {
 			return err
 		}
-		result, err := tools.FileExists(mp, m.MemberName.LowerWithParentPath, "init.go")
+		result, err := tools.FileExists(mp, m.UserModule.LowerWithParentPath, "init.go")
 		if err != nil {
 			return err
 		}
 		if !result {
-			return fmt.Errorf("Member file \"%s\"not found", filepath.Join(mp, m.MemberName.LowerWithParentPath, "init.go"))
+			return fmt.Errorf("User module code \"%s\"not found", filepath.Join(mp, m.UserModule.LowerWithParentPath, "init.go"))
 		}
 	}
 

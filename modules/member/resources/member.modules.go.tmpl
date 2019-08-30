@@ -52,6 +52,13 @@ func initMemberProviders(){
 		{{- end}}
 }
 
+//IdentifyRequest Identify user in http request.
+//Return user id and any error raised.
+//If user is not logged in,returned user id will by empty string.
+func IdentifyRequest(r *http.Request) (uid string, err error) {
+	return Member.IdentifyRequest(r)
+
+
 func initMemberCache(){
 		{{if .InstallCache -}}
 		Member.StatusCache = cache.NewCollection(cachemodule.Cache, "Status", cache.DefualtTTL)

@@ -42,9 +42,9 @@ type ModelMapper struct {
 	WithPager       bool
 	SlienceMode     bool
 	Prefix          string
-	Member          string
-	WithMember      bool
-	MemberName      *name.Name
+	User            string
+	WithUser        bool
+	UserModule      *name.Name
 }
 
 func (m *ModelMapper) ID() string {
@@ -96,8 +96,8 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Location, "location", "modelmappers",
 		`default model code location. 
 	`)
-	m.FlagSet().StringVar(&m.Member, "member", "",
-		`create form with given member. 
+	m.FlagSet().StringVar(&m.User, "user", "",
+		`create form with given user module. 
 	`)
 	m.FlagSet().StringVar(&m.Prefix, "prefix", "",
 		`table field prefix. 
@@ -240,18 +240,18 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 		return err
 	}
 
-	if m.Member != "" {
-		m.WithMember = true
-		m.MemberName, err = name.New(true, m.Member)
+	if m.User != "" {
+		m.WithUser = true
+		m.UserModule, err = name.New(true, m.User)
 		if err != nil {
 			return err
 		}
-		result, err := tools.FileExists(mp, m.MemberName.LowerWithParentPath, "init.go")
+		result, err := tools.FileExists(mp, m.UserModule.LowerWithParentPath, "init.go")
 		if err != nil {
 			return err
 		}
 		if !result {
-			return fmt.Errorf("Member file \"%s\"not found", filepath.Join(mp, m.MemberName.LowerWithParentPath, "init.go"))
+			return fmt.Errorf("User module code   \"%s\"not found", filepath.Join(mp, m.UserModule.LowerWithParentPath, "init.go"))
 		}
 	}
 
