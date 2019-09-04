@@ -10,6 +10,7 @@ import (
 	"github.com/herb-go/herb-go/modules/database"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/herb-go/modules/session"
+	"github.com/herb-go/herb-go/modules/uniqueid"
 
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -22,6 +23,7 @@ type Member struct {
 	InstallCache      bool
 	InstallDatabase   bool
 	DatabaseInstalled bool
+	UniqueIDInstalled bool
 	SlienceMode       bool
 }
 
@@ -94,10 +96,17 @@ func (m *Member) Question(a *app.Application, mp string) error {
 		if result {
 			m.DatabaseInstalled = true
 		} else {
-			err = tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install user modules manually.").ExecIf(a, !m.InstallDatabase && !m.SlienceMode, &m.InstallDatabase)
+			err = tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install database modules manually.").ExecIf(a, !m.InstallDatabase && !m.SlienceMode, &m.InstallDatabase)
 			if err != nil {
 				return err
 			}
+		}
+		result, err = tools.FileExists(filepath.Join(mp, "uniqueid", "uniqueid.go"))
+		if err != nil {
+			return err
+		}
+		if result {
+			m.UniqueIDInstalled = true
 		}
 	}
 	return nil
@@ -175,6 +184,13 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 			return err
 		}
 		m.DatabaseInstalled = true
+	}
+	if !m.UniqueIDInstalled {
+		err := uniqueid.UniqueIDModule.Exec(a, []string{"-s"})
+		if err != nil {
+			return err
+		}
+		m.UniqueIDInstalled = true
 	}
 	filesToRender := map[string]string{
 		filepath.Join(mp, n.LowerPath("init.go")):                             "member.modules.go.tmpl",

@@ -1,0 +1,18 @@
+package app
+
+import (
+	"github.com/herb-go/uniqueid"
+	"github.com/herb-go/util"
+	"github.com/herb-go/util/config"
+	"github.com/herb-go/util/config/tomlconfig"
+)
+
+//UniqueID unique id module config
+var UniqueID *uniqueid.OptionConfigMap
+
+func init() {
+	config.RegisterLoader(util.ConfigFile("/uniqueid.toml"), func(configpath util.FileObject) {
+		UniqueID = uniqueid.NewOptionConfigMap()
+		util.Must(tomlconfig.Load(configpath, UniqueID))
+	})
+}

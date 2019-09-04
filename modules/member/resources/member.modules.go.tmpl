@@ -10,6 +10,7 @@ import (
 	cachemodule "modules/{{.Name.LowerWithParentPath}}/cache"	
 	{{ if .InstallSQLUser -}}	
 	"github.com/herb-go/providers/sql/sqluser"		
+	"modules/uniqueid"
 	{{- end}}
 	{{ if not .DatabaseInstalled -}}
 	"github.com/herb-go/herb/model/sql/db"
@@ -30,7 +31,7 @@ var userDb db.Database
 var userFlags = sqluser.FlagWithAccount | sqluser.FlagWithPassword | sqluser.FlagWithToken | sqluser.FlagWithUser
 
 //User sqluser component
-var User = sqluser.New(userDb,userFlags)
+var User = sqluser.New(userDb, uniqueid.GenerateID , userFlags)
 {{- end}}
 
 //Session member session.
@@ -57,7 +58,7 @@ func initMemberProviders(){
 //If user is not logged in,returned user id will by empty string.
 func IdentifyRequest(r *http.Request) (uid string, err error) {
 	return Member.IdentifyRequest(r)
-
+}
 
 func initMemberCache(){
 		{{if .InstallCache -}}
