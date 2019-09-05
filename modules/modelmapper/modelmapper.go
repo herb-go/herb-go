@@ -11,6 +11,7 @@ import (
 
 	"github.com/herb-go/herb-go/modules/module"
 	"github.com/herb-go/herb-go/modules/project"
+	"github.com/herb-go/herb-go/modules/uniqueid"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
 )
@@ -24,27 +25,39 @@ var QuestionWithList = tools.NewTrueOrFalseQuestion("Do you want to create model
 var QuestionWithPager = tools.NewTrueOrFalseQuestion("Do you want to use pager for  \"List\" component?")
 var QuestionCreateForm = tools.NewTrueOrFalseQuestion("Do you want to create model forms?")
 var QuestionCreateAction = tools.NewTrueOrFalseQuestion("Do you want to create model actions?")
-var QuestionCreateViewModel = tools.NewTrueOrFalseQuestion("Do you want to create model view model class")
+var QuestionCreateViewModel = tools.NewTrueOrFalseQuestion("Do you want to create model view model class?")
+var QuestionAutoPk = tools.NewTrueOrFalseQuestion("Do you want to auto fill model primary key with unique id ?")
+
+func NewQuestionCreatedField(field *name.Name) *tools.Question {
+	return tools.NewTrueOrFalseQuestion(fmt.Sprintf("Do you want to auto fill model field \"%s\" as created time with time.Unix() ?", field.Raw))
+}
+func NewQuestionUpdatedField(field *name.Name) *tools.Question {
+	return tools.NewTrueOrFalseQuestion(fmt.Sprintf("Do you want to auto fill model field \"%s\" as updated time with time.Unix() ?", field.Raw))
+}
 
 type ModelMapper struct {
 	app.BasicModule
-	Database        string
-	Location        string
-	QueryID         string
-	CreateForm      bool
-	CreateViewModel bool
-	CreateAction    bool
-	WithCreate      bool
-	WithRead        bool
-	WithUpdate      bool
-	WithDelete      bool
-	WithList        bool
-	WithPager       bool
-	SlienceMode     bool
-	Prefix          string
-	User            string
-	WithUser        bool
-	UserModule      *name.Name
+	Database              string
+	Location              string
+	QueryID               string
+	CreateForm            bool
+	CreateViewModel       bool
+	CreateAction          bool
+	WithCreate            bool
+	WithRead              bool
+	WithUpdate            bool
+	WithDelete            bool
+	WithList              bool
+	WithPager             bool
+	SlienceMode           bool
+	Prefix                string
+	User                  string
+	WithUser              bool
+	InstallUniqueID       bool
+	AutoPK                bool
+	CreatedTimestampField string
+	UpdatedTimestampField string
+	UserModule            *name.Name
 }
 
 func (m *ModelMapper) ID() string {
@@ -112,7 +125,13 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().BoolVar(&m.WithDelete, "withdelete", false, "Whether create model delete code")
 	m.FlagSet().BoolVar(&m.WithList, "withlist", false, "Whether create model list code")
 	m.FlagSet().BoolVar(&m.WithPager, "withpager", false, "Whether create model pager code")
-
+	m.FlagSet().BoolVar(&m.AutoPK, "autopk", false, "auto fill primay key field with unique id")
+	m.FlagSet().StringVar(&m.CreatedTimestampField, "createdtimestampfield", "",
+		`created timestamp field.model will auto fill this field 
+	`)
+	m.FlagSet().StringVar(&m.UpdatedTimestampField, "updatedtimestampfield", "",
+		`updated timestamp field.model will auto fill this field 
+	`)
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -132,8 +151,33 @@ func (m *ModelMapper) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
+	var err error
 	if m.SlienceMode {
 		return nil
+	}
+	err = QuestionAutoPk.ExecIf(a, !m.AutoPK && mc.CanAutoPK, &m.AutoPK)
+	if err != nil {
+		return err
+	}
+	if mc.CreatedTimestampField != nil && m.CreatedTimestampField == "" {
+		var result bool
+		err = NewQuestionCreatedField(mc.CreatedTimestampField).ExecIf(a, true, &result)
+		if err != nil {
+			return err
+		}
+		if result == false {
+			mc.CreatedTimestampField = nil
+		}
+	}
+	if mc.UpdatedTimestampField != nil && m.UpdatedTimestampField == "" {
+		var result bool
+		err = NewQuestionUpdatedField(mc.UpdatedTimestampField).ExecIf(a, true, &result)
+		if err != nil {
+			return err
+		}
+		if result == false {
+			mc.UpdatedTimestampField = nil
+		}
 	}
 	if mc.IsSinglePrimayKey() && (mc.PrimaryKeys[0].ColumnType == "string" || mc.PrimaryKeys[0].ColumnType == "int") {
 		crud := m.WithCreate && m.WithRead && m.WithUpdate && m.WithDelete
@@ -174,10 +218,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 			return err
 		}
 	}
-	err := QuestionWithList.ExecIf(a, !m.WithList, &m.WithList)
-	if err != nil {
-		return err
-	}
+
 	if m.WithList {
 		err = QuestionWithPager.ExecIf(a, !m.WithPager, &m.WithPager)
 		if err != nil {
@@ -206,6 +247,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 func (m *ModelMapper) Exec(a *app.Application, args []string) error {
@@ -259,6 +301,18 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	if m.CreatedTimestampField != "" {
+		mc.CreatedTimestampField, err = name.New(false, m.CreatedTimestampField)
+		if err != nil {
+			return err
+		}
+	}
+	if m.UpdatedTimestampField != "" {
+		mc.UpdatedTimestampField, err = name.New(false, m.UpdatedTimestampField)
+		if err != nil {
+			return err
+		}
+	}
 	err = m.Question(a, mc)
 	if err != nil {
 		return err
@@ -269,7 +323,6 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 	}
 
 	task := tools.NewTask(filepath.Join(app, "/modules/modelmapper/resources"), a.Cwd)
-
 	err = m.Render(a, a.Cwd, mp, task, n, qn, mc)
 	if err != nil {
 		return err
@@ -304,6 +357,18 @@ func (m *ModelMapper) Render(a *app.Application, appPath string, mp string, task
 		err = module.ModuleModule.Exec(a, []string{modelmodule})
 		if err != nil {
 			return err
+		}
+	}
+	if m.AutoPK && mc.CanAutoPK {
+		exists, err = tools.FileExists(filepath.Join(mp, "uniqueid", "uniqueid.go"))
+		if err != nil {
+			return err
+		}
+		if !exists {
+			err := uniqueid.UniqueIDModule.Exec(a, []string{"-s"})
+			if err != nil {
+				return err
+			}
 		}
 	}
 	filesToRender := map[string]string{}

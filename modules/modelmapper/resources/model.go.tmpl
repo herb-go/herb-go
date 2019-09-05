@@ -1,52 +1,73 @@
 package models
 
-import 	"database/sql"
-import	"github.com/herb-go/herb/model/sql/querybuilder"
+import "database/sql"
+import "github.com/herb-go/herb/model/sql/querybuilder"
+{{- if  and .Columns.CanAutoPK .Confirmed.AutoPK}}
+import "github.com/herb-go/uniqueid"
+{{- end }}
+{{- if  or .Columns.CreatedTimestampField .Columns.UpdatedTimestampField }}
+import "time"
+{{- end }}
 
 //{{.Name.Pascal}}Model :{{.Name.Raw }} model 
-type {{.Name.Pascal}}Model struct{
+type {{.Name.Pascal}}Model struct {
     {{.Name.Pascal}}ModelFields
 }
 
 //BeforeInsert event called before mapper insert.
 //You should call this event before your own insert query.
- func (m *{{.Name.Pascal}}Model) BeforeInsert() error {
+func (m *{{.Name.Pascal}}Model) BeforeInsert() error {
+	{{- if  and .Columns.CanAutoPK .Confirmed.AutoPK}}
+	m.{{.Columns.FirstPrimayKey.Name}} = uniqueid.MustGenerateID()
+	{{- end }}
+	{{- if  or .Columns.CreatedTimestampField .Columns.UpdatedTimestampField }}
+	var ts = time.Now().Unix()
+	{{- end }}
+	{{- if  .Columns.CreatedTimestampField }}
+	m.{{.Columns.CreatedTimestampField.Pascal}} = ts
+	{{- end }}
+	{{- if  .Columns.UpdatedTimestampField }}
+	m.{{.Columns.UpdatedTimestampField.Pascal}} = ts
+	{{- end }}
  	return nil
- }
+}
 
 //AfterInsert event called after mapper insert.
 //You should call this event before your own insert query.
- func (m *{{.Name.Pascal}}Model) AfterInsert() error {
+func (m *{{.Name.Pascal}}Model) AfterInsert() error {
  	return nil
- }
+}
 
 //BeforeUpdate event called before mapper update.
 //You should call this event before your own update query.
- func (m *{{.Name.Pascal}}Model) BeforeUpdate() error {
+func (m *{{.Name.Pascal}}Model) BeforeUpdate() error {
+	{{- if  .Columns.UpdatedTimestampField }}
+	m.{{.Columns.UpdatedTimestampField.Pascal}} = time.Now().Unix()
+	{{- end }}
  	return nil
- }
+}
 
 //AfterUpdate event called after mapper update.
 //You should call this event after your own update query.
- func (m *{{.Name.Pascal}}Model) AfterUpdate() error {
+func (m *{{.Name.Pascal}}Model) AfterUpdate() error {
  	return nil
- }
+}
 
 //AfterFind event called after mapper find.
 //You should call this event after your own find query.
- func (m *{{.Name.Pascal}}Model) AfterFind() error {
+func (m *{{.Name.Pascal}}Model) AfterFind() error {
  	return nil
- }
+}
 
 //AfterDelete event called after mapper delete.
 //You should call this event after your own delete query.
- func (m *{{.Name.Pascal}}Model) AfterDelete() error {
+func (m *{{.Name.Pascal}}Model) AfterDelete() error {
  	return nil
- }
+}
 
 //New{{.Name.Pascal}}Model create new {{.Name.Pascal}}Model
-func New{{.Name.Pascal}}Model() *{{.Name.Pascal}}Model{
-	model:=&{{.Name.Pascal}}Model{
+func New{{.Name.Pascal}}Model() *{{.Name.Pascal}}Model {
+	model := &{{.Name.Pascal}}Model{
         //put your own model init code here
     }
     return model
@@ -57,6 +78,7 @@ type {{.Name.Pascal}}ModelResult struct {
 	models []*{{.Name.Pascal}}Model
 	fields []string
 }
+
 //Fields return query builder fields to bind
 func (r *{{.Name.Pascal}}ModelResult) Fields() *querybuilder.Fields {
 	model := New{{.Name.Pascal}}Model()
@@ -67,7 +89,7 @@ func (r *{{.Name.Pascal}}ModelResult) Fields() *querybuilder.Fields {
 //OnFinish finish event called when data found or erros raised.
 func (r *{{.Name.Pascal}}ModelResult) OnFinish(err error) error {
 	if err == sql.ErrNoRows {
-		r.models[len(r.models)-1]=nil
+		r.models[len(r.models)-1] = nil
 		return nil
 	}
 	if err != nil {
@@ -76,7 +98,6 @@ func (r *{{.Name.Pascal}}ModelResult) OnFinish(err error) error {
 	model := r.models[len(r.models)-1]
 	return model.AfterFind()
 }
-
 
 //Model return first {{.Name.Raw }} model  or nil if not found.
 func (r *{{.Name.Pascal}}ModelResult) Model() *{{.Name.Pascal}}Model {

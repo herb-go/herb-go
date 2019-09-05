@@ -28,11 +28,14 @@ func (c *Column) Name() string {
 }
 
 type ModelColumns struct {
-	Columns     []*Column
-	Name        *name.Name
-	Database    string
-	PrimaryKeys []*Column
-	HasTime     bool
+	Columns               []*Column
+	Name                  *name.Name
+	Database              string
+	PrimaryKeys           []*Column
+	HasTime               bool
+	CanAutoPK             bool
+	CreatedTimestampField *name.Name
+	UpdatedTimestampField *name.Name
 }
 
 func MustGetColumnRaw(c *Column) string {
@@ -91,6 +94,8 @@ func getLoaderFormDB(conn db.Database) (columns.Loader, error) {
 }
 
 func NewModelColumns(conn db.Database, database string, table string, field_prefix string) (*ModelColumns, error) {
+	mc := &ModelColumns{}
+
 	loader, err := getLoaderFormDB(conn)
 	if err != nil {
 		return nil, err
@@ -109,6 +114,23 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 			Column:      columns[k],
 			FieldPrefix: field_prefix,
 		}
+		if columns[k].ColumnType == "int64" &&
+			columns[k].AutoValue == false &&
+			strings.Contains(strings.ToLower(columns[k].Field), "created") {
+			mc.CreatedTimestampField, err = name.New(false, c[k].Field)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if columns[k].ColumnType == "int64" &&
+			columns[k].AutoValue == false &&
+			strings.Contains(strings.ToLower(columns[k].Field), "updated") {
+			mc.UpdatedTimestampField, err = name.New(false, c[k].Field)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 	pks := []*Column{}
 	var hasTime bool
@@ -124,12 +146,13 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 	if err != nil {
 		return nil, err
 	}
-	mc := &ModelColumns{
-		Columns:     c,
-		Name:        tablename,
-		Database:    database,
-		PrimaryKeys: pks,
-		HasTime:     hasTime,
-	}
+
+	mc.Columns = c
+	mc.Name = tablename
+	mc.Database = database
+	mc.PrimaryKeys = pks
+	mc.HasTime = hasTime
+	mc.CanAutoPK = (len(pks) == 1 && pks[0].AutoValue == false && pks[0].ColumnType == "string")
+
 	return mc, nil
 }
