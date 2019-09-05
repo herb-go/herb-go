@@ -218,7 +218,10 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 			return err
 		}
 	}
-
+	err = QuestionWithList.ExecIf(a, !m.WithList, &m.WithList)
+	if err != nil {
+		return err
+	}
 	if m.WithList {
 		err = QuestionWithPager.ExecIf(a, !m.WithPager, &m.WithPager)
 		if err != nil {
