@@ -5,7 +5,7 @@ import (
 	"modules/app"
 
 	"github.com/herb-go/herb/middleware"
-	"github.com/herb-go/herb/user"
+	"github.com/herb-go/herb/httpuser"
 	"github.com/herb-go/util"
 )
 
@@ -16,7 +16,7 @@ var {{.Name.Pascal}}LoginURL="/{{.Name.Lower}}/login"
 var {{.Name.Pascal}}LoginCookieName="login-redirect-{{.Name.Lower}}"
 
 //{{.Name.Pascal}}LoginRedirector login redirector for  {{.Name.Pascal}} module. 
-var {{.Name.Pascal}}LoginRedirector  *user.LoginRedirector
+var {{.Name.Pascal}}LoginRedirector  *httpuser.LoginRedirector
 
 //Middleware{{.Name.Pascal}}LoginReqiured login required middleware for {{.Name.Pascal}} module. 
 var Middleware{{.Name.Pascal}}LoginReqiured middleware.Middleware
@@ -33,9 +33,9 @@ var MiddlewareInstall{{.Name.Pascal}}Session middleware.Middleware
 
 func init() {
 	util.RegisterInitiator(ModuleName, "{{.Name.Lower}}middlewares", func() {
-		{{.Name.Pascal}}LoginRedirector = user.NewLoginRedirector(app.HTTP.Config.BaseURL+{{.Name.Pascal}}LoginURL, {{.Name.Pascal}}LoginCookieName)
+		{{.Name.Pascal}}LoginRedirector = httpuser.NewLoginRedirector(app.HTTP.Config.BaseURL+{{.Name.Pascal}}LoginURL, {{.Name.Pascal}}LoginCookieName)
 		Middleware{{.Name.Pascal}}LoginOrRedirect ={{.Name.Pascal}}LoginRedirector.Middleware(membermodule.Member)
-		Middleware{{.Name.Pascal}}LoginReqiured = user.LoginRequiredMiddleware(membermodule.Member, nil)
+		Middleware{{.Name.Pascal}}LoginReqiured = httpuser.LoginRequiredMiddleware(membermodule.Member, nil)
         Middleware{{.Name.Pascal}}Logout=membermodule.Member.LogoutMiddleware()
         MiddlewareInstall{{.Name.Pascal}}Session=membermodule.Session.InstallMiddleware()
 	})
