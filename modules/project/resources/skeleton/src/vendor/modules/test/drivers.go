@@ -11,11 +11,11 @@ import _ "github.com/herb-go/herb/cache/drivers/syncmapcache" // syncmapcachecac
 // import _ "github.com/herb-go/providers/sql/sqlcache" //sqlcache driver
 
 //Sql drivers
-// import _ "github.com/go-sql-driver/mysql" //mysql driver
 
-// import _ "github.com/mattn/go-sqlite3" //sqlite driver
-// import _ "github.com/lib/pq" //postgresql driver
-// import _ "github.com/denisenkom/go-mssqldb" //mssql drvier
+// import _ "github.com/herb-go/herb/model/sql/querybuilder/drivers/mysql" //mysql driver
+// import _ "github.com/herb-go/herb/model/sql/querybuilder/drivers/sqlite" //sqlite driver
+// import _ "github.com/herb-go/herb/model/sql/querybuilder/drivers/postgres" //postgres driver
+// import _ "github.com/herb-go/herb/model/sql/querybuilder/drivers/mssql" //mssql driver
 
 //UniqueID Drivers
 //import _ "github.com/herb-go/uniqueid/uuid"
