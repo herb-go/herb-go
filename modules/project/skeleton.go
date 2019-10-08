@@ -1,5 +1,6 @@
 package project
 
+//AppSkeleton app skeleton map
 var AppSkeleton = func(mp string) map[string]string {
 	return map[string]string{
 		"/.gitignore":                              "/skeleton/.gitignore.example",
@@ -33,6 +34,7 @@ var AppSkeleton = func(mp string) map[string]string {
 	}
 }
 
+//HTTPSkeleton http skeleton map
 var HTTPSkeleton = func(mp string) map[string]string {
 	return map[string]string{
 		"/config/http.toml":                 "/skeleton/config/http.toml",
@@ -52,6 +54,7 @@ var HTTPSkeleton = func(mp string) map[string]string {
 	}
 }
 
+// WebsiteSkeleton website skeleton map
 var WebsiteSkeleton = func(mp string) map[string]string {
 	return map[string]string{
 		"/system/constants/website.toml":  "/skeleton/system/constants/website.toml",
@@ -66,6 +69,7 @@ var WebsiteSkeleton = func(mp string) map[string]string {
 	}
 }
 
+// JetEngineSkeleton jet engine skeleton map
 var JetEngineSkeleton = func(mp string) map[string]string {
 	return map[string]string{
 		"/resources/template.jet/views.toml":       "/skeleton/resources/template.jet/views.toml",
@@ -74,6 +78,8 @@ var JetEngineSkeleton = func(mp string) map[string]string {
 		mp + "/views/jetengine.go":                 "/skeleton/src/vendor/modules/views/jetengine.go",
 	}
 }
+
+// TmplEngineSkeleton tmpl engine skeleton map
 var TmplEngineSkeleton = func(mp string) map[string]string {
 	return map[string]string{
 		"/resources/template.tmpl/views.toml":        "/skeleton/resources/template.tmpl/views.toml",
