@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sync/atomic"
+
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"
@@ -15,11 +17,29 @@ type {{.PascalWithParents}}Config struct {
 //{{.PascalWithParents}} config instance of {{.Raw}}.
 var {{.PascalWithParents}} = &{{.PascalWithParents}}Config{}
 
+var sync{{.PascalWithParents}} atomic.Value
+
+//Store{{.PascalWithParents}} atomically store {{.Raw}} config
+func (a *appSync) Store{{.PascalWithParents}}(c *{{.PascalWithParents}}Config) {
+	sync{{.PascalWithParents}}.Store(c)
+}
+
+//Load{{.PascalWithParents}} atomically load {{.Raw}} config
+func (a *appSync) Load{{.PascalWithParents}}() *{{.PascalWithParents}}Config {
+	v := sync{{.PascalWithParents}}.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*{{.PascalWithParents}}Config)
+}
+
+
 func init() {
 	//Register loader which will be execute when Config.LoadAll func be called.
 	//You can put your init code after load.
 	//You must panic if any error rasied when init.
 	config.RegisterLoaderAndWatch(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"),func(configpath util.FileObject) {
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
+		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
 	})
 }

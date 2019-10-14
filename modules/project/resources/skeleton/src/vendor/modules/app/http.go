@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sync/atomic"
+
 	forwarded "github.com/herb-go/herb/middleware/forwarded"
 	"github.com/herb-go/herb/middleware/misc"
 	"github.com/herb-go/util"
@@ -23,9 +25,26 @@ var HTTP = &HTTPConfig{
 	Headers:   misc.Headers{},
 }
 
+var syncHTTP atomic.Value
+
+//StoreHTTP atomically store http config
+func (a *appSync) StoreHTTP(c *HTTPConfig) {
+	syncHTTP.Store(c)
+}
+
+//LoadHTTP atomically load http config
+func (a *appSync) LoadHTTP() *HTTPConfig {
+	v := syncHTTP.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*HTTPConfig)
+}
+
 func init() {
 	config.RegisterLoaderAndWatch(util.ConfigFile("/http.toml"), func(configpath util.FileObject) {
 		util.Must(tomlconfig.Load(configpath, HTTP))
+		Sync.StoreHTTP(HTTP)
 		util.SetWarning("Forwarded", HTTP.Forwarded.Warnings()...)
 	})
 }

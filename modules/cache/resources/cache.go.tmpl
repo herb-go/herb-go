@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sync/atomic"
+
 	"github.com/herb-go/herb/cache"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
@@ -9,8 +11,26 @@ import (
 //{{.PascalWithParents}} cache module
 var {{.PascalWithParents}} = &cache.OptionConfigMap{}
 
+var sync{{.PascalWithParents}} atomic.Value
+
+//Store{{.PascalWithParents}} atomically store assets config
+func (a *appSync) Store{{.PascalWithParents}}(c *cache.OptionConfigMap) {
+	sync{{.PascalWithParents}}.Store(c)
+}
+
+//Load{{.PascalWithParents}} atomically load assets config
+func (a *appSync) Load{{.PascalWithParents}}() *cache.OptionConfigMap {
+	v := sync{{.PascalWithParents}}.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*cache.OptionConfigMap)
+}
+
+
 func init() {
 	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath util.FileObject) {
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
+		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
 	})
 }

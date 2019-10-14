@@ -17,6 +17,7 @@ var AppSkeleton = func(mp string) map[string]string {
 		"/system/constants/time.toml":              "/skeleton/system/constants/time.toml",
 		"/system/config.examples/development.toml": "/skeleton/system/config.examples/development.toml",
 		"/resources/readme.md":                     "/skeleton/resources/readme.md",
+		mp + "/app/app.sync.go":                    "/skeleton/src/vendor/modules/app/app.sync.go",
 		mp + "/app/development.go":                 "/skeleton/src/vendor/modules/app/development.go",
 		mp + "/app/app_test.go":                    "/skeleton/src/vendor/modules/app/app_test.go",
 		mp + "/readme.md":                          "/skeleton/src/vendor/modules/readme.md",

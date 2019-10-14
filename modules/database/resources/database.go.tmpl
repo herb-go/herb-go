@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sync/atomic"
+
 	"github.com/herb-go/herb/model/sql/db"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
@@ -8,11 +10,29 @@ import (
 
 )
 
+//{{.PascalWithParents}}  {{.Raw}} database config
 var {{.PascalWithParents}} *db.Config
+
+var sync{{.PascalWithParents}} atomic.Value
+
+//Store{{.PascalWithParents}} atomically store {{.Raw}} database config
+func (a *appSync) Store{{.PascalWithParents}}(c *db.Config) {
+	sync{{.PascalWithParents}}.Store(c)
+}
+
+//Load{{.PascalWithParents}} atomically load {{.Raw}} database config
+func (a *appSync) Load{{.PascalWithParents}}() *db.Config {
+	v := sync{{.PascalWithParents}}.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*db.Config)
+}
 
 func init() {
 	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath util.FileObject) {
 		{{.PascalWithParents}} = db.NewConfig()
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
+		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
 	})
 }
