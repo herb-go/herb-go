@@ -2,18 +2,19 @@
 
 ## Vendor 模式
 
-通过
+通过命令
 
-herb-go new 目录名
+    herb-go new <目录名>
+
 创建
 
 必须位于 gopath
 
 ## Go Mod 模式
 
-通过
+通过命令
 
-herb-go new -gomod 目录名
+    herb-go new -gomod <目录名>
 
 创建
 
