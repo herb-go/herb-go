@@ -5,23 +5,23 @@ import (
 
 	forwarded "github.com/herb-go/herb/middleware/forwarded"
 	"github.com/herb-go/herb/middleware/misc"
+	"github.com/herb-go/herb/server"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"
-	"github.com/herb-go/util/httpserver"
 )
 
 //HTTPConfig app http config struct
 type HTTPConfig struct {
 	Forwarded forwarded.Middleware
-	Config    httpserver.Config
+	Config    server.HTTPConfig
 	Headers   misc.Headers
 }
 
 //HTTP app http config
 var HTTP = &HTTPConfig{
 	Forwarded: forwarded.Middleware{},
-	Config:    httpserver.Config{},
+	Config:    server.HTTPConfig{},
 	Headers:   misc.Headers{},
 }
 
