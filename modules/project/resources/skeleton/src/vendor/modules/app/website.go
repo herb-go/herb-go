@@ -3,6 +3,7 @@ package app
 import (
 	"sync/atomic"
 
+	"github.com/herb-go/herbconfig/configuration"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/commonconfig"
@@ -29,7 +30,7 @@ func (a *appSync) LoadWebsite() *commonconfig.WebsiteConfig {
 }
 
 func init() {
-	config.RegisterLoader(util.ConstantsFile("/website.toml"), func(configpath util.FileObject) {
+	config.RegisterLoader(util.ConstantsFile("/website.toml"), func(configpath configuration.Configuration) {
 		util.Must(tomlconfig.Load(configpath, Website))
 		Sync.StoreWebsite(Website)
 	})

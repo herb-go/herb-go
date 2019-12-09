@@ -1,0 +1,8 @@
+github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
+github.com/herb-go/herb v1.0.1 h1:a4gKhGvW6AGsppzwbxybRzpodO2srM61aMnbwnZe+Ww=
+github.com/herb-go/herb v1.0.1/go.mod h1:epDwnEWl9B23uBEKz8mLk0GuHm04MSp4rnIZev0wiwA=
+github.com/herb-go/herbconfig v0.0.0-20191209145755-0d0722c3eb63 h1:52ACt0wcxZ4LKPrxPC6enp/kGWoQd43lxBG1btmBn44=
+github.com/herb-go/herbconfig v0.0.0-20191209145755-0d0722c3eb63/go.mod h1:Ws/99AdD6PWdGzCoVvqaPMU/qgJJxJTBykFz+20sd/E=
+github.com/herb-go/util v0.0.0-20191209135211-54ea854edbab h1:WjBYvPDDXGLjfLKv/VnSo1hG/rPxXtaioHbCIjCS46c=
+github.com/herb-go/util v0.0.0-20191209135211-54ea854edbab/go.mod h1:lhVdeH5IRD13aZn8ca5h6lq/ABDC9cFbfuXJfHK3oxo=
