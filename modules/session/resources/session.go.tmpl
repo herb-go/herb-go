@@ -31,7 +31,7 @@ func (a *appSync) Load{{.PascalWithParents}}() *session.StoreConfig {
 
 
 func init() {
-	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath configuration.Configuration) {
+	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath source.Source) {
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
 		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
 	})

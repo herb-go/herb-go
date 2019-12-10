@@ -30,7 +30,7 @@ func (a *appSync) LoadTranslations() *translateconfig.Config {
 
 
 func init() {
-	config.RegisterLoader(util.SystemFile("messages", "translations.toml"), func(configpath configuration.Configuration) {
+	config.RegisterLoader(util.SystemFile("messages", "translations.toml"), func(configpath source.Source) {
 		util.Must(tomlconfig.Load(configpath, Translations))
 		Sync.StoreTranslations(Translations)
 	})

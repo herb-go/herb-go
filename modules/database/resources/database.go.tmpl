@@ -7,7 +7,7 @@ import (
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"
-	"github.com/herb-go/herbconfig/configuration"
+	"github.com/herb-go/herbconfig/source"
 
 )
 
@@ -31,7 +31,7 @@ func (a *appSync) Load{{.PascalWithParents}}() *db.Config {
 }
 
 func init() {
-	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath configuration.Configuration) {
+	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath source.Source) {
 		{{.PascalWithParents}} = db.NewConfig()
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
 		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
