@@ -30,7 +30,7 @@ func (a *appSync) LoadUniqueID() *uniqueid.OptionConfig {
 
 func init() {
 	config.RegisterLoader(util.ConfigFile("/uniqueid.toml"), func(configpath source.Source) {
-		UniqueID = uniqueid.NewOptionConfigMap()
+		UniqueID = uniqueid.NewOptionConfig()
 		util.Must(tomlconfig.Load(configpath, UniqueID))
 		Sync.StoreUniqueID(UniqueID)
 	})
