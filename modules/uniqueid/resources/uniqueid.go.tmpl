@@ -10,22 +10,22 @@ import (
 )
 
 //UniqueID unique id module config
-var UniqueID *uniqueid.OptionConfigMap
+var UniqueID *uniqueid.OptionConfig
 
 var syncUniqueID atomic.Value
 
 //StoreUniqueID atomically store unique id module config
-func (a *appSync) StoreUniqueID(c *uniqueid.OptionConfigMap) {
+func (a *appSync) StoreUniqueID(c *uniqueid.OptionConfig) {
 	syncUniqueID.Store(c)
 }
 
 //LoadUniqueID atomically load unique id module config
-func (a *appSync) LoadUniqueID() *uniqueid.OptionConfigMap {
+func (a *appSync) LoadUniqueID() *uniqueid.OptionConfig {
 	v := syncUniqueID.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*uniqueid.OptionConfigMap)
+	return v.(*uniqueid.OptionConfig)
 }
 
 func init() {
