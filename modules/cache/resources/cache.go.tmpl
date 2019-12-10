@@ -10,22 +10,22 @@ import (
 	"github.com/herb-go/herbconfig/source"
 )
 //{{.PascalWithParents}} cache module
-var {{.PascalWithParents}} = &cache.OptionConfigMap{}
+var {{.PascalWithParents}} = &cache.OptionConfig{}
 
 var sync{{.PascalWithParents}} atomic.Value
 
 //Store{{.PascalWithParents}} atomically store assets config
-func (a *appSync) Store{{.PascalWithParents}}(c *cache.OptionConfigMap) {
+func (a *appSync) Store{{.PascalWithParents}}(c *cache.OptionConfig) {
 	sync{{.PascalWithParents}}.Store(c)
 }
 
 //Load{{.PascalWithParents}} atomically load assets config
-func (a *appSync) Load{{.PascalWithParents}}() *cache.OptionConfigMap {
+func (a *appSync) Load{{.PascalWithParents}}() *cache.OptionConfig {
 	v := sync{{.PascalWithParents}}.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*cache.OptionConfigMap)
+	return v.(*cache.OptionConfig)
 }
 
 
