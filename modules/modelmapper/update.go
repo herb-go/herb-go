@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/herb-go/herb/model/sql/db"
-	"github.com/herb-go/util"
+	"github.com/herb-go/herbconfig/source"
 	"github.com/herb-go/util/cli/name"
 	"github.com/herb-go/util/config/tomlconfig"
 
@@ -58,7 +58,7 @@ func (m *Update) Group(a *app.Application) string {
 func (m *Update) GetColumn(table string) (*ModelColumns, error) {
 	conn := db.New()
 	c := db.Config{}
-	tomlconfig.MustLoad(util.File("./config/"+m.Database+".toml"), &c)
+	tomlconfig.MustLoad(source.File("./config/"+m.Database+".toml"), &c)
 	conn.SetDriver(c.Driver)
 	err := c.ApplyTo(conn)
 	if err != nil {
