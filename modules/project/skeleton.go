@@ -21,7 +21,7 @@ var AppSkeleton = func(mp string) map[string]string {
 		mp + "/app/development.go":                 "/skeleton/src/vendor/modules/app/development.go",
 		mp + "/app/app_test.go":                    "/skeleton/src/vendor/modules/app/app_test.go",
 		mp + "/readme.md":                          "/skeleton/src/vendor/modules/readme.md",
-		mp + "/go.mod":                             "/skeleton/src/vendor/modules/go.mod",
+		mp + "/go.mod.example":                     "/skeleton/src/vendor/modules/go.mod.example",
 		mp + "/app/time.go":                        "/skeleton/src/vendor/modules/app/time.go",
 		mp + "/appevents/appevents.go":             "/skeleton/src/vendor/modules/appevents/appevents.go",
 		mp + "/appevents/registeredevents.go":      "/skeleton/src/vendor/modules/appevents/registeredevents.go",

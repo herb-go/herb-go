@@ -22,7 +22,7 @@ type HTTPConfig struct {
 //HTTP app http config
 var HTTP = &HTTPConfig{
 	Forwarded: forwarded.Middleware{},
-	Config:    httpservice.Config{},
+	Config:    *httpservice.NewConfig(),
 	Headers:   misc.Headers{},
 }
 
