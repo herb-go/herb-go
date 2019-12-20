@@ -2,9 +2,7 @@ package project
 
 import (
 	"errors"
-	"io/ioutil"
 	"path/filepath"
-	"strings"
 
 	"github.com/herb-go/util/cli/app/tools"
 )
@@ -27,9 +25,9 @@ var GetModuleFolder = func(path string) (string, error) {
 		[]string{path, "system", "constants"},
 	}
 
-	var ModulesFolders = []string{
-		"src/modules",
-		"src/vendor/modules",
+	var ModulesFolders = [][]string{
+		[]string{path, "src", "modules"},
+		[]string{path, "src", "vendor", "modules"},
 	}
 	for _, v := range FilesMustExists {
 		result, err := tools.FileExists(v...)
@@ -51,25 +49,13 @@ var GetModuleFolder = func(path string) (string, error) {
 
 	}
 	for _, v := range ModulesFolders {
-		gomodpath := filepath.Join(path, v, "go.mod")
-		result, err := tools.FileExists(gomodpath)
+		result, err := tools.IsFolder(v...)
+
 		if err != nil {
 			return "", err
 		}
 		if result == true {
-			bs, err := ioutil.ReadFile(gomodpath)
-			if err != nil {
-				return "", err
-			}
-			lines := strings.Split(string(bs), "\n")
-			if len(lines) == 0 {
-				continue
-			}
-			words := strings.Split(strings.TrimSpace(lines[0]), " ")
-			if len(words) < 2 || words[0] != "module" || words[1] != "modules" {
-				continue
-			}
-			return v, nil
+			return filepath.Join(v...), nil
 		}
 	}
 	return "", ErrNotInHerbGoAPPFolder
