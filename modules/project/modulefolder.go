@@ -25,9 +25,9 @@ var GetModuleFolder = func(path string) (string, error) {
 		[]string{path, "system", "constants"},
 	}
 
-	var ModulesFolders = [][]string{
-		[]string{path, "src", "modules"},
-		[]string{path, "src", "vendor", "modules"},
+	var ModulesFolders = []string{
+		filepath.Join("src", "modules"),
+		filepath.Join("src", "vendor", "modules"),
 	}
 	for _, v := range FilesMustExists {
 		result, err := tools.FileExists(v...)
@@ -49,13 +49,13 @@ var GetModuleFolder = func(path string) (string, error) {
 
 	}
 	for _, v := range ModulesFolders {
-		result, err := tools.IsFolder(v...)
+		result, err := tools.IsFolder(path, v)
 
 		if err != nil {
 			return "", err
 		}
 		if result == true {
-			return filepath.Join(v...), nil
+			return v, nil
 		}
 	}
 	return "", ErrNotInHerbGoAPPFolder

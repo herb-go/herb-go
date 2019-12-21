@@ -2,7 +2,7 @@ package actions
 
 //Actions for form {{.Name.Raw}} .
 //You can  bind actions to  router by using below code :
-//import   {{.Name.Lower}}actions "modules/{{.LowerWithParentPath}}/actions"
+//import   {{.Name.Lower}}actions "modules/{{.Name.LowerWithParentPath}}/actions"
 //
 //	Router.POST("/{{.Name.Lower}}").
 //		HandleFunc({{.Name.Lower}}actions.Action{{.Name.Pascal}})
@@ -14,7 +14,7 @@ import (
 	"github.com/herb-go/herb/ui/validator/formdata"
 	"github.com/herb-go/herb/ui/render"
 
-{{- if .Confirmed.WithUser }}
+{{- if .Confirmed.WithMember }}
     "modules/{{.Confirmed.UserModule.LowerWithParentPath}}"
 {{- end }}
 	"modules/{{.Name.LowerWithParentPath}}/forms"
@@ -23,7 +23,7 @@ import (
 //Action{{.Name.Pascal}} action that verify{{.Name.Raw}} form in json format.
 func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	form := forms.New{{.Name.Pascal}}Form()
-    {{- if .Confirmed.WithUser }}
+    {{- if .Confirmed.WithMember }}
     uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)
