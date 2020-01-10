@@ -13,7 +13,6 @@ var AppSkeleton = func(mp string) map[string]string {
 		"/src/drivers.go":                          "/skeleton/src/drivers.go",
 		"/src/errors.go":                           "/skeleton/src/errors.go",
 		"/src/build/build-linux.sh":                "/skeleton/src/build/build-linux.sh",
-		"/src/build/build-linux-in-docker.sh":      "/skeleton/src/build/build-linux-in-docker.sh",
 		"/system/constants/time.toml":              "/skeleton/system/constants/time.toml",
 		"/system/config.examples/development.toml": "/skeleton/system/config.examples/development.toml",
 		"/resources/readme.md":                     "/skeleton/resources/readme.md",
