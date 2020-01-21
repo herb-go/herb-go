@@ -108,6 +108,9 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 	if err != nil {
 		return nil, err
 	}
+	if len(columns) == 0 {
+		return nil, ErrNoColumnsFound
+	}
 	c := make([]*Column, len(columns))
 	for k := range columns {
 		c[k] = &Column{
@@ -153,6 +156,5 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 	mc.PrimaryKeys = pks
 	mc.HasTime = hasTime
 	mc.CanAutoPK = (len(pks) == 1 && pks[0].AutoValue == false && pks[0].ColumnType == "string")
-
 	return mc, nil
 }
