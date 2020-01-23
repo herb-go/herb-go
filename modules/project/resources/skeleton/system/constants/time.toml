@@ -4,7 +4,7 @@
 
 #Timezone string value of app timezone.
 #Default value is server local time zone.
-	Timezone       = "Asia/Shanghai"
+#	Timezone       = "Asia/Shanghai"
 
 #TimeFormat default time format used in app.
 #Default value is 15:04:05
