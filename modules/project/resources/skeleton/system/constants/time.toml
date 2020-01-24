@@ -6,14 +6,14 @@
 #Default value is server local time zone.
 #	Timezone       = "Asia/Shanghai"
 
-#TimeFormat default time format used in app.
+#TimeLayout default time format used in app.
 #Default value is 15:04:05
-#	TimeFormat     = ""
+#	TimeLayout     = ""
 
-#DateFormat Default date format used in app.
+#DateLayout Default date format used in app.
 #Default value is "2006-01-02"
-#	DateFormat     =""
+#	DateLayout     =""
 
-#DatetimeFormat Default date time fromat used in app.
+#DatetimeLayout Default date time fromat used in app.
 #Default value is "2006-01-02 15:04:05"
-#	DatetimeFormat =""
+#	DatetimeLayout =""
