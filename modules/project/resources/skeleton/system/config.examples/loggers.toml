@@ -1,0 +1,11 @@
+#loggers config file
+#You can set builtin loggers or your own loggers here
+# Fatal="stderr"
+# Panic="stderr"
+# Error="stderr"
+# Print="stdout"
+# Warning="stdout"
+# Info="stdout"
+# Trace="null"
+# Debug="null"
+# mylogger="file://appdata/mylogger.log"
