@@ -15,6 +15,7 @@ const ModuleName = "100loggers"
 
 //MyLogger my logger
 // var MyLogger = logger.PrintLogger.SubLogger().SetID("mylogger")
+// var MyFormatLogger = MyLogger.ForamtLogger(logger.ReplacementFormater(""))
 
 var reopenSignals []os.Signal
 
