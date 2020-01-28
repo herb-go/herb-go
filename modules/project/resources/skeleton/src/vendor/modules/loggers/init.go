@@ -19,8 +19,8 @@ const ModuleName = "100loggers"
 var reopenSignals []os.Signal
 
 func reopenLoggers() {
-	logger.ResetBuiltinLoggers()
-	// MyLogger.Reopen()
+	logger.ReopenBuiltinLoggers()
+	// logger.Reopen(MyLogger)
 
 }
 func listenForReopenLoggers() {
