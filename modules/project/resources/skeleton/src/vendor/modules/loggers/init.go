@@ -15,7 +15,7 @@ const ModuleName = "100loggers"
 
 //MyLogger my logger
 // var MyLogger = logger.PrintLogger.SubLogger().SetID("mylogger")
-// var MyFormatLogger = MyLogger.ForamtLogger(logger.ReplacementFormater(""))
+// var MyFormatLogger = MyLogger.ForamtLogger()
 
 var reopenSignals []os.Signal
 
@@ -47,7 +47,8 @@ func init() {
 	util.RegisterModule(ModuleName, func() {
 		util.Must(app.Loggers.ApplyToBuiltinLoggers())
 		util.ErrorLogger = logger.Error
-		// util.Must(app.Loggers.ApplyTo(MyLogger, "mylogger"))
+		// util.Must(app.Loggers.ApplyTo(MyLogger, "MyLogger"))
+		// util.Must(app.Loggers.SetFormatter(MyFormatLogger, "MyLoggerFormat"))
 		if app.Development.Debug {
 			logger.EnableDevelopmengLoggers()
 		}
