@@ -113,4 +113,5 @@ var TranslationsModule = &Translations{}
 
 func init() {
 	app.Register(TranslationsModule)
+	app.Register(MessagesModule)
 }

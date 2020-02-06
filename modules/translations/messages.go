@@ -42,7 +42,7 @@ func (m *Messages) Desc(a *app.Application) string {
 	return "Install translated messages"
 }
 func (m *Messages) Group(a *app.Application) string {
-	return "Translate"
+	return "Translations"
 }
 func (m *Messages) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
@@ -156,5 +156,4 @@ func (m *Messages) Render(a *app.Application, appPath string, mp string, task *t
 var MessagesModule = &Messages{}
 
 func init() {
-	app.Register(MessagesModule)
 }
