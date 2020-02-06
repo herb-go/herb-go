@@ -1,4 +1,4 @@
-package api
+package fetcher
 
 import (
 	"fmt"
@@ -17,17 +17,17 @@ type API struct {
 }
 
 func (m *API) ID() string {
-	return "github.com/herb-go/herb-go/modules/api"
+	return "github.com/herb-go/herb-go/modules/fetcher"
 }
 
 func (m *API) Cmd() string {
-	return "api"
+	return "fetcher"
 }
 
 func (m *API) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
-	help := `Usage %s api [name].
-Create new api server and client config and go file.
+	help := `Usage %s fetcher [name].
+Create new fetcher config and go file.
 File below will be created:
 	config/[name].toml
 	system/config.examples/[name].toml
@@ -37,7 +37,7 @@ File below will be created:
 }
 
 func (m *API) Desc(a *app.Application) string {
-	return "Create config file and code to call api"
+	return "Create config file and code to do http request"
 }
 func (m *API) Group(a *app.Application) string {
 	return "Third part"
@@ -71,7 +71,7 @@ func (m *API) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -80,14 +80,14 @@ func (m *API) Exec(a *app.Application, args []string) error {
 		return err
 	}
 
-	task := tools.NewTask(filepath.Join(app, "/modules/api/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/fetcher/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
 	task.AddJob(func() error {
-		a.Printf("Api  \"%s\" created.\n", n.LowerWithParentDotSeparated)
+		a.Printf("Fetcher  \"%s\" created.\n", n.LowerWithParentDotSeparated)
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()
@@ -105,12 +105,12 @@ func (m *API) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *API) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *API) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):           "api.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):     "api.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"): "api.go.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "fetcher.toml.tmpl",
+		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "fetcher.toml.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "fetcher.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

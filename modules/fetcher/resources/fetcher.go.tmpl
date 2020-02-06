@@ -3,39 +3,32 @@ package app
 import (
 	"sync/atomic"
 
-	"github.com/herb-go/fetch"
+	"github.com/herb-go/fetcher"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"
 	"github.com/herb-go/herbconfig/source"
 )
 
-//{{.PascalWithParents}}Config {{.Raw}} config data struct.
-//Fields must can be unmarshaled by Toml lib.
-//You comment this struct if you use third party config struct.
-type {{.PascalWithParents}}Config struct {
-	fetch.Clients
-	Server fetch.Server
-}
 
 //{{.PascalWithParents}} config instance of {{.Raw}}.
-var {{.PascalWithParents}} = &{{.PascalWithParents}}Config{}
+var {{.PascalWithParents}} = &fetcher.Server{}
 
 
 var sync{{.PascalWithParents}} atomic.Value
 
 //Store{{.PascalWithParents}} atomically store {{.Raw}} config
-func (a *appSync) Store{{.PascalWithParents}}(c *{{.PascalWithParents}}Config) {
+func (a *appSync) Store{{.PascalWithParents}}(c *fetcher.Server) {
 	sync{{.PascalWithParents}}.Store(c)
 }
 
 //Load{{.PascalWithParents}}  atomically load {{.Raw}} config
-func (a *appSync) Load{{.PascalWithParents}} () *{{.PascalWithParents}}Config {
+func (a *appSync) Load{{.PascalWithParents}} () *fetcher.Server {
 	v := sync{{.PascalWithParents}}.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*{{.PascalWithParents}}Config)
+	return v.(*fetcher.Server)
 }
 
 
