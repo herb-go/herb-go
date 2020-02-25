@@ -28,14 +28,16 @@ func (c *Column) Name() string {
 }
 
 type ModelColumns struct {
-	Columns               []*Column
-	Name                  *name.Name
-	Database              string
-	PrimaryKeys           []*Column
-	HasTime               bool
-	CanAutoPK             bool
-	CreatedTimestampField *name.Name
-	UpdatedTimestampField *name.Name
+	Columns                   []*Column
+	Name                      *name.Name
+	Database                  string
+	PrimaryKeys               []*Column
+	HasTime                   bool
+	CanAutoPK                 bool
+	CreatedTimestampField     *Column
+	CreatedTimestampFieldName *name.Name
+	UpdatedTimestampField     *Column
+	UpdatedTimestampFieldName *name.Name
 }
 
 func MustGetColumnRaw(c *Column) string {
@@ -83,7 +85,28 @@ func (m *ModelColumns) PrimayKeyField() string {
 	}
 	return "*" + m.Name.Pascal + "PrimaryKey"
 }
-
+func (m *ModelColumns) findCreatedField() {
+	if m.CreatedTimestampFieldName != nil {
+		for _, v := range m.Columns {
+			if v.Column.Field == m.CreatedTimestampFieldName.Raw {
+				m.CreatedTimestampField = v
+				return
+			}
+		}
+	}
+	m.CreatedTimestampFieldName = nil
+}
+func (m *ModelColumns) findUpdatedField() {
+	if m.UpdatedTimestampFieldName != nil {
+		for _, v := range m.Columns {
+			if v.Column.Field == m.UpdatedTimestampFieldName.Raw {
+				m.UpdatedTimestampField = v
+				return
+			}
+		}
+	}
+	m.UpdatedTimestampFieldName = nil
+}
 func getLoaderFormDB(conn db.Database) (columns.Loader, error) {
 	drivername := conn.Driver()
 	driver, err := columns.Driver(drivername)
@@ -120,7 +143,7 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 		if columns[k].ColumnType == "int64" &&
 			columns[k].AutoValue == false &&
 			strings.Contains(strings.ToLower(columns[k].Field), "created") {
-			mc.CreatedTimestampField, err = name.New(false, c[k].Field)
+			mc.CreatedTimestampFieldName, err = name.New(false, c[k].Field)
 			if err != nil {
 				return nil, err
 			}
@@ -129,7 +152,7 @@ func NewModelColumns(conn db.Database, database string, table string, field_pref
 		if columns[k].ColumnType == "int64" &&
 			columns[k].AutoValue == false &&
 			strings.Contains(strings.ToLower(columns[k].Field), "updated") {
-			mc.UpdatedTimestampField, err = name.New(false, c[k].Field)
+			mc.UpdatedTimestampFieldName, err = name.New(false, c[k].Field)
 			if err != nil {
 				return nil, err
 			}

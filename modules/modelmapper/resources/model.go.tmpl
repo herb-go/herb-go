@@ -18,16 +18,22 @@ type {{.Name.Pascal}}Model struct {
 //You should call this event before your own insert query.
 func (m *{{.Name.Pascal}}Model) BeforeInsert() error {
 	{{- if  and .Columns.CanAutoPK .Confirmed.AutoPK}}
-	m.{{.Columns.FirstPrimayKey.Name}} = uniqueid.MustGenerateID()
+	var err error
+	var id string
+	id, err = uniqueid.GenerateID()
+	if err != nil {
+		return err
+	}
+	m.{{.Columns.FirstPrimayKey.Name}} = {{ if  not .Columns.FirstPrimayKey.NotNull -}}&{{- end -}} id
 	{{- end }}
 	{{- if  or .Columns.CreatedTimestampField .Columns.UpdatedTimestampField }}
 	var ts = time.Now().Unix()
 	{{- end }}
 	{{- if  .Columns.CreatedTimestampField }}
-	m.{{.Columns.CreatedTimestampField.Pascal}} = ts
+	m.{{.Columns.CreatedTimestampFieldName.Pascal}} = {{ if  not .Columns.CreatedTimestampField.NotNull -}}&{{- end -}} ts
 	{{- end }}
 	{{- if  .Columns.UpdatedTimestampField }}
-	m.{{.Columns.UpdatedTimestampField.Pascal}} = ts
+	m.{{.Columns.UpdatedTimestampFieldName.Pascal}} = {{ if  not .Columns.UpdatedTimestampField.NotNull -}}&{{- end -}} ts
 	{{- end }}
  	return nil
 }
@@ -42,7 +48,8 @@ func (m *{{.Name.Pascal}}Model) AfterInsert() error {
 //You should call this event before your own update query.
 func (m *{{.Name.Pascal}}Model) BeforeUpdate() error {
 	{{- if  .Columns.UpdatedTimestampField }}
-	m.{{.Columns.UpdatedTimestampField.Pascal}} = time.Now().Unix()
+	ts := time.Now().Unix()
+	m.{{.Columns.UpdatedTimestampFieldName.Pascal}} = {{ if  not .Columns.UpdatedTimestampField.NotNull -}}&{{- end -}} ts
 	{{- end }}
  	return nil
 }

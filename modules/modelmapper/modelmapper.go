@@ -161,7 +161,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	}
 	if mc.CreatedTimestampField != nil && m.CreatedTimestampField == "" {
 		var result bool
-		err = NewQuestionCreatedField(mc.CreatedTimestampField).ExecIf(a, true, &result)
+		err = NewQuestionCreatedField(mc.CreatedTimestampFieldName).ExecIf(a, true, &result)
 		if err != nil {
 			return err
 		}
@@ -171,7 +171,7 @@ func (m *ModelMapper) Question(a *app.Application, mc *ModelColumns) error {
 	}
 	if mc.UpdatedTimestampField != nil && m.UpdatedTimestampField == "" {
 		var result bool
-		err = NewQuestionUpdatedField(mc.UpdatedTimestampField).ExecIf(a, true, &result)
+		err = NewQuestionUpdatedField(mc.UpdatedTimestampFieldName).ExecIf(a, true, &result)
 		if err != nil {
 			return err
 		}
@@ -305,17 +305,19 @@ func (m *ModelMapper) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	if m.CreatedTimestampField != "" {
-		mc.CreatedTimestampField, err = name.New(false, m.CreatedTimestampField)
+		mc.CreatedTimestampFieldName, err = name.New(false, m.CreatedTimestampField)
 		if err != nil {
 			return err
 		}
 	}
+	mc.findCreatedField()
 	if m.UpdatedTimestampField != "" {
-		mc.UpdatedTimestampField, err = name.New(false, m.UpdatedTimestampField)
+		mc.UpdatedTimestampFieldName, err = name.New(false, m.UpdatedTimestampField)
 		if err != nil {
 			return err
 		}
 	}
+	mc.findUpdatedField()
 	err = m.Question(a, mc)
 	if err != nil {
 		return err
