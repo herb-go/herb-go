@@ -1,0 +1,27 @@
+package oversears
+
+import worker "github.com/herb-go/worker"
+
+//{{.Name.Pascal}}Overseer {{.Name.Raw}} overseer
+//You should set your own reflect type string instead of worker.DummyTeam
+var {{.Name.Pascal}}Overseer = worker.NewOrverseer("{{.Name.Lower}}", worker.DummyTeam).
+	// WithIntroduction("").
+	// WithInitFunc(func() error {
+	// 	return nil
+	// }).
+	// WithTrainFunc(func([]*worker.Worker) error {
+	// 	return nil
+	// }).
+	// WithEvaluateFunc(func(*worker.Worker) (interface{}, error) {
+	// 	return nil, nil
+	// }).
+	// WithCommandFunc(func(*worker.Worker, string) (interface{}, error) {
+	// 	return nil, worker.ErrUnknownCommand
+	// }).
+	WithEvaluationReportFunc(func(*worker.Worker) (string, error) {
+		return "", nil
+	})
+
+func init() {
+	worker.Appoint({{.Name.Pascal}}Overseer)
+}

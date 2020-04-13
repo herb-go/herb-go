@@ -1,0 +1,15 @@
+package worker
+
+import (
+	"github.com/herb-go/worker"
+)
+
+//Worker avaliable Worker
+//You should use your own new fucntion instead of "worker.NewDummyWorker"
+var Worker = worker.NewDummyWorker()
+
+//Name worker Name
+var Name = "{{.Name.Pascal}}{{.Module.Name.Pascal}}"
+
+//Introduction worker introduction
+var Introduction = ""

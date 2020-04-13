@@ -1,0 +1,14 @@
+package workers
+
+import (
+	herbworker "modules/{{.Name.Lower}}/herb-workers/{{.Module.Folder}}"
+
+	worker "github.com/herb-go/worker"
+)
+
+//{{.Name.Pascal}}{{.Module.Name.Pascal}}  worker
+var {{.Name.Pascal}}{{.Module.Name.Pascal}} = herbworker.Worker
+
+func init(){
+    worker.Hire(herbworker.Name, {{.Name.Pascal}}{{.Module.Name.Pascal}}).WithIntroduction(herbworker.Introduction)
+}

@@ -25,7 +25,7 @@ func (m *UniqueID) Cmd() string {
 func (m *UniqueID) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
 	help := `Usage %s uniqueid.
-Create sql uniqueid module and config files.
+Create uniqueid module and config files.
 File below will be created:
 	config/uniqueid.toml
 	system/confg.examples/uniqueid.toml
