@@ -1,4 +1,4 @@
-package worker
+package overseers
 
 import (
 	"fmt"
@@ -26,12 +26,10 @@ func (m *Overseer) Cmd() string {
 func (m *Overseer) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
 	help := `Usage %s overseer.
-Create sql overseer module and config files.
-File below will be created:
-	config/overseer.toml
-	system/confg.examples/overseer.toml
-	src/vendor/modules/app/overseer.go
+Create overseer module files.
+	File below will be created:
 	src/vendor/modules/overseer/init.go
+	src/vendor/modules/overseer/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -40,7 +38,7 @@ func (m *Overseer) Desc(a *app.Application) string {
 	return "Create overseer module files."
 }
 func (m *Overseer) Group(a *app.Application) string {
-	return "Overseer"
+	return "Worker"
 }
 func (m *Overseer) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
@@ -80,11 +78,11 @@ func (m *Overseer) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = InitWorkers(a, a.Cwd, mp, m.SlienceMode)
+	err = InitOverseers(a, a.Cwd, mp, m.SlienceMode)
 	if err != nil {
 		return err
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/worker/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/overseer/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd, mp, n, task)
 	if err != nil {
@@ -115,7 +113,7 @@ func (m *Overseer) Render(a *app.Application, appPath string, mp string, n *name
 		"Module": m,
 	}
 	filesToRender := map[string]string{
-		filepath.Join(mp, "workers", "overseers", n.Lower+".go"): "overseers.go.tmpl",
+		filepath.Join(mp, "overseers", n.Lower+".go"): "overseers.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, renderData)
 }

@@ -1,4 +1,4 @@
-package worker
+package overseers
 
 import (
 	"path/filepath"
@@ -7,34 +7,27 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-func InitWorkers(a *app.Application, appPath string, mp string, slienceMode bool) error {
+func InitOverseers(a *app.Application, appPath string, mp string, slienceMode bool) error {
 	var result bool
 	var err error
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/worker/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/overseer/resources"), a.Cwd)
 	filesToRender := map[string]string{}
-	result, err = tools.FileExists(filepath.Join(mp, "workers", "init.go"))
+	result, err = tools.FileExists(filepath.Join(mp, "overseers", "init.go"))
 	if err != nil {
 		return err
 	}
 	if !result {
-		filesToRender[filepath.Join(mp, "workers", "init.go")] = "workers_init.go.tmpl"
-	}
-	result, err = tools.FileExists(filepath.Join(mp, "workers", "overseers", "init.go"))
-	if err != nil {
-		return err
-	}
-	if !result {
-		filesToRender[filepath.Join(mp, "workers", "overseers", "init.go")] = "overseers_init.go.tmpl"
+		filesToRender[filepath.Join(mp, "overseers", "init.go")] = "overseers_init.go.tmpl"
 	}
 	if len(filesToRender) == 0 {
 		return nil
 	}
 	task.AddJob(func() error {
-		a.Printf("Workers inited.\n")
+		a.Printf("Overseers inited.\n")
 		return nil
 	})
 	err = task.RenderFiles(filesToRender, nil)
