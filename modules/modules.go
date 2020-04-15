@@ -26,6 +26,6 @@ import _ "github.com/herb-go/herb-go/modules/translations" //translations,messag
 
 import _ "github.com/herb-go/herb-go/modules/uniqueid" //unique id module
 
-import _ "github.com/herb-go/herb-go/modules/overseer" //overseer module
+import _ "github.com/herb-go/herb-go/modules/overseers" //overseers module
 
 import _ "github.com/herb-go/herb-go/modules/scanworkers" //scanworkers module

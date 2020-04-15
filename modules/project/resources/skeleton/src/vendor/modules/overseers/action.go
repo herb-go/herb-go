@@ -7,7 +7,6 @@ import (
 )
 
 //ActionWorker empty cache worker.
-//You should set your empter worker instead of worker.DummyTeam
 var ActionWorker = action.New(nil)
 
 //ActionOverseer cache overseer

@@ -82,6 +82,9 @@ func (m *Overseer) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	if f := OverSeerInitFuncs[n.Raw]; f != nil {
+		return f(a, a.Cwd, mp, m.SlienceMode)
+	}
 	task := tools.NewTask(filepath.Join(app, "/modules/overseer/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd, mp, n, task)

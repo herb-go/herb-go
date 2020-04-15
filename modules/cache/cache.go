@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/herb-go/herb-go/modules/overseers"
 	"github.com/herb-go/herb-go/modules/project"
+
 	"github.com/herb-go/util/cli/name"
 
 	"github.com/herb-go/util/cli/app"
@@ -84,7 +86,10 @@ func (m *Cache) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-
+	err = overseers.OverseerModule.Exec(a, []string{"-s", "cache"})
+	if err != nil {
+		return err
+	}
 	task := tools.NewTask(filepath.Join(app, "/modules/cache/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd, mp, task, n)

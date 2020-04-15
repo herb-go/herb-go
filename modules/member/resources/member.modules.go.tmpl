@@ -4,6 +4,8 @@ import (
 	"github.com/herb-go/util"
 	"github.com/herb-go/member"		
 	"github.com/herb-go/herb/cache"
+	"net/http"
+
 	{{if .InstallSession -}}
 	sessionmodule "modules/{{.Name.LowerWithParentPath}}/session"		
 	{{- end}}
