@@ -28,7 +28,7 @@ func New() router.Router {
 	//var RouterHTML = newHTMLRouter()
 	//Router.StripPrefix("/page").Use(HTMLMiddlewares()...).Handle(RouterHTML)
 
-	//Router.GET("/").Use(HTMLMiddlewares()...).HandleFunc(actions.IndexAction)
+	//Router.GET("/").Use(HTMLMiddlewares()...).Handle(actions.IndexAction)
 
 	return Router
 }

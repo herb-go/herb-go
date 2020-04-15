@@ -6,13 +6,13 @@ package actions
 //
 {{ if .Confirmed.WithList -}}
 //	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}list").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionList)
+//		Handle({{.Name.Lower}}{{.ID.Lower}}actions.ActionList)
 {{- end }}
 
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithRead }}
 //	Router.GET("/{{.Name.Lower}}{{.ID.Lower}}view/:id").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.ActionGet)
+//		Handle({{.Name.Lower}}{{.ID.Lower}}actions.ActionGet)
 {{- end -}}
 {{- end }}
 import (
@@ -24,7 +24,7 @@ import (
     "modules/{{.Confirmed.UserModule.LowerWithParentPath}}"
     {{- end }}
 	"net/http"
-    
+	"github.com/herb-go/herb/middleware/action"    
     "github.com/herb-go/herb/ui/render"
 )
 
@@ -33,7 +33,7 @@ import (
 {{ if .Confirmed.WithRead }}
 
 //ActionGet action which get {{.Name.Raw}} model by primary key in url.
-func ActionGet(w http.ResponseWriter, r *http.Request){
+var ActionGet = action.New(func(w http.ResponseWriter, r *http.Request){
     var err error
     pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
@@ -71,7 +71,7 @@ func ActionGet(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	render.MustJSON(w, viewmodels.MustConvertViewModel((*rs)[0]), 200)
-}
+})
 {{- end -}}
 {{- end }}
 
@@ -81,7 +81,7 @@ func ActionGet(w http.ResponseWriter, r *http.Request){
 
 {{ if .Confirmed.WithList -}}
 //ActionList action which list {{.Name.Raw}} models by request params.
-func ActionList(w http.ResponseWriter, r *http.Request) {
+var ActionList = action.New(func(w http.ResponseWriter, r *http.Request) {
        	render.MustJSON(w, mustListResults(r), 200)
 }
 

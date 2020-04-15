@@ -2,6 +2,7 @@ package test
 
 import (
 	"modules/app"
+	"modules/overseers"
 	"path/filepath"
 
 	"github.com/herb-go/util"
@@ -38,6 +39,7 @@ func Init() {
 	util.RegisterDataFolder()
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
+	overseers.MustInitOverseers()
 }
 
 //Run run app

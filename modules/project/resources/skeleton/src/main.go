@@ -2,6 +2,7 @@ package main
 
 import (
 	"modules/app"
+	"modules/overseers"
 
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
@@ -39,6 +40,8 @@ func Init() {
 	util.RegisterDataFolder()
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
+	overseers.MustInitOverseers()
+
 }
 
 func main() {

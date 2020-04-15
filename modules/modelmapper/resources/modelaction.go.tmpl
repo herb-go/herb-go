@@ -7,35 +7,35 @@ package actions
 {{ if .Confirmed.CreateViewModel }}
 {{- if .Confirmed.WithList -}}
 //	Router.GET("/{{.Name.Lower}}list").
-//		HandleFunc({{.Name.Lower}}actions.ActionList{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}actions.ActionList{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateViewModel }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithRead }}
 //	Router.GET("/{{.Name.Lower}}view/:id").
-//		HandleFunc({{.Name.Lower}}actions.ActionGet{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}actions.ActionGet{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateForm }}
 {{- if .Confirmed.WithCreate }}
 //	Router.POST("/{{.Name.Lower}}create").
-//		HandleFunc({{.Name.Lower}}actions.ActionCreate{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}actions.ActionCreate{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- if .Confirmed.CreateForm }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithUpdate }}
 //	Router.POST("/{{.Name.Lower}}update/:id").
-//		HandleFunc({{.Name.Lower}}actions.ActionUpdate{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}actions.ActionUpdate{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 {{- end }}
 {{- if .Columns.IsSinglePrimayKey }}
 {{- if .Confirmed.WithDelete }}
 //	Router.POST("/{{.Name.Lower}}delete/:id").
-//		HandleFunc({{.Name.Lower}}actions.ActionDelete{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}actions.ActionDelete{{.Name.Pascal}})
 {{- end }}
 {{- end }}
 
@@ -55,11 +55,12 @@ import (
     {{- end }}
     {{- end }}
 	"github.com/herb-go/herb/ui/render"
+    "github.com/herb-go/herb/middleware/action"
 )
 {{ if .Confirmed.CreateForm -}}
 {{ if .Confirmed.WithCreate -}}
 //ActionCreate{{.Name.Pascal}} action which create {{.Name.Raw}} model with Create{{.Name.Pascal}}Form.
-func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+var ActionCreate{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
 	form := forms.NewCreate{{.Name.Pascal}}Form()
     {{- if .Confirmed.WithUser }}
     uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
@@ -81,7 +82,7 @@ func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
-}
+})
 {{- end }}
 {{- end -}}
 
@@ -90,7 +91,7 @@ func ActionCreate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 {{ if .Confirmed.WithRead }}
 
 //ActionGet{{.Name.Pascal}} action which get {{.Name.Raw}} model by primary key in url.
-func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
+var ActionGet{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request){
     pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{ if or (eq .Columns.FirstPrimayKey.ColumnType "int")  (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
@@ -120,7 +121,7 @@ func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	render.MustJSON(w, viewmodels.MustConvert{{.Name.Pascal}}ViewModel(model), 200)
-}
+})
 {{- end -}}
 {{- end }}
 {{- end }}
@@ -130,7 +131,7 @@ func ActionGet{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request){
 {{ if .Confirmed.WithUpdate -}}
 
 //ActionUpdate{{.Name.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  FormUpdate{{.Name.Pascal}}.
-func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+var ActionUpdate{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
     pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
@@ -181,7 +182,7 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
-}
+})
 {{- end -}}
 {{- end -}}
 {{- end }}
@@ -190,7 +191,7 @@ func ActionUpdate{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 {{ if .Confirmed.WithDelete -}}
 
 //ActionDelete{{.Name.Pascal}} action which delete {{.Name.Raw}} model by primary key in url.
-func ActionDelete{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+var ActionDelete{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
 var err error
    pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
@@ -225,16 +226,16 @@ var err error
         panic(err)
     }
    	render.MustJSON(w, "ok", 200)
-}
+})
 {{- end }}
 {{- end }}
 
 {{ if .Confirmed.CreateViewModel -}}
 {{ if .Confirmed.WithList -}}
 //ActionList{{.Name.Pascal}} action which list {{.Name.Raw}} models by request params.
-func ActionList{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+var ActionList{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
        	render.MustJSON(w, mustList{{.Name.Pascal}}Models(r), 200)
-}
+})
 
 func mustList{{.Name.Pascal}}Models(r *http.Request) map[string]interface{}{
     p:=forms.MustGet{{.Name.Pascal}}ParamsFromRequest(r)

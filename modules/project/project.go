@@ -165,7 +165,6 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 			}
 		}
 	}
-
 	task.AddJob(func() error {
 		a.Printf("App installed in \"%s\"\n", appPath)
 		return nil
@@ -201,6 +200,10 @@ func (m *Project) createHTTP(a *app.Application, appPath string, mp string, task
 		)
 		return err
 	})
+	err = InitActionOverseer(a, appPath, mp, true)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func (m *Project) createWebsite(a *app.Application, appPath string, mp string, task *tools.Task) error {
@@ -247,8 +250,8 @@ func (m *Project) createJetEngine(a *app.Application, appPath string, mp string,
 			return err
 		}
 		_, err = tools.ReplaceLine(filepath.Join(appPath, "/src/vendor/modules/routers/routers.go"),
-			`//Router.GET("/").Use(HTMLMiddlewares()...).HandleFunc(actions.IndexAction)`,
-			"	Router.GET(\"/\").\n		Use(HTMLMiddlewares()...).\n		HandleFunc(actions.IndexAction)",
+			`//Router.GET("/").Use(HTMLMiddlewares()...).Handle(actions.IndexAction)`,
+			"	Router.GET(\"/\").\n		Use(HTMLMiddlewares()...).\n		Handle(actions.IndexAction)",
 		)
 
 		return err
@@ -270,8 +273,8 @@ func (m *Project) createTmplEngine(a *app.Application, appPath string, mp string
 			return err
 		}
 		_, err = tools.ReplaceLine(filepath.Join(appPath, "/src/vendor/modules/routers/routers.go"),
-			`//Router.GET("/").Use(HTMLMiddlewares()...).HandleFunc(actions.IndexAction)`,
-			"	Router.GET(\"/\").\n		Use(HTMLMiddlewares()...).\n		HandleFunc(actions.IndexAction)",
+			`//Router.GET("/").Use(HTMLMiddlewares()...).Handle(actions.IndexAction)`,
+			"	Router.GET(\"/\").\n		Use(HTMLMiddlewares()...).\n		Handle(actions.IndexAction)",
 		)
 
 		return err

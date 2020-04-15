@@ -78,7 +78,7 @@ func (m *Overseer) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	err = InitOverseers(a, a.Cwd, mp, m.SlienceMode)
+	err = project.InitOverseers(a, a.Cwd, mp, true)
 	if err != nil {
 		return err
 	}

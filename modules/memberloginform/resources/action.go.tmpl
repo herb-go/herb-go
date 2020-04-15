@@ -9,10 +9,12 @@ import (
 
 	"modules/{{.Name.LowerWithParentPath}}"
 	"modules/{{.Name.LowerWithParentPath}}/{{.FormID.Lower}}/forms"
+	"github.com/herb-go/herb/middleware/action"
+
 )
 
 //ActionLogin action that verify login form in json format.
-func ActionLogin(w http.ResponseWriter, r *http.Request) {
+var ActionLogin = action.New(func(w http.ResponseWriter, r *http.Request) {
 	form := forms.New{{.FormID.Pascal}}Form()
 	if formdata.MustValidateJSONRequest(r, form) {
 		util.Must({{.Name.Lower}}.Member.Login(w, r, form.UID()))
@@ -20,4 +22,4 @@ func ActionLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	} 
 	formdata.MustRenderErrorsJSON(w, form)
-}
+})

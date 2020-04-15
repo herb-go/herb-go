@@ -5,7 +5,7 @@ package actions
 //import   {{.Name.Lower}}{{.ID.Lower}}actions "modules/{{.Module}}/{{.ID.Lower}}/actions"
 //
 //	Router.POST("/{{.Name.Lower}}{{.ID.Lower}}/:id").
-//		HandleFunc({{.Name.Lower}}{{.ID.Lower}}actions.Action{{.Name.Pascal}})
+//		Handle({{.Name.Lower}}{{.ID.Lower}}actions.Action{{.Name.Pascal}})
 
 import (
 	"net/http"
@@ -16,11 +16,12 @@ import (
 {{- end }}
 	"github.com/herb-go/herb/ui/validator/formdata"
 	"github.com/herb-go/herb/ui/render"
+    "github.com/herb-go/herb/middleware/action"
 )
 
 
 //Action{{.Name.Pascal}} action which update  {{.Name.Raw}} model by primary key in url and  Form{{.Name.Pascal}}.
-func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
+var Action{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
     pk:=forms.MustGet{{.Name.Pascal}}PrimaryKeyFromRequest(r)
     {{if or (eq .Columns.FirstPrimayKey.ColumnType "int") (eq .Columns.FirstPrimayKey.ColumnType "int64") -}}
     {{ if not .Columns.FirstPrimayKey.NotNull -}}
@@ -67,4 +68,4 @@ func Action{{.Name.Pascal}}(w http.ResponseWriter, r *http.Request) {
 	} else {
 		formdata.MustRenderErrorsJSON(w, form)
 	}
-}
+})
