@@ -11,6 +11,7 @@ import (
 var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
 	"action": project.InitActionOverseer,
 	"cache":  newInitFunc("cache.go", "cache.go", "Cache"),
+	"member": newInitFunc("member.go", "member.go", "Member"),
 }
 
 func newInitFunc(dst string, src string, name string) func(a *app.Application, appPath string, mp string, slienceMode bool) error {
