@@ -63,14 +63,14 @@ func IdentifyRequest(r *http.Request) (uid string, err error) {
 }
 
 //Cache Member Cache
-var Cache = cache.NewCollection(cachemodule.Cache, "member-{{.Name.Lower}}", cache.DefualtTTL)
+var Cache = cachemodule.Cache.Proxy("member-{{.Name.Lower}}")
 
 func initMemberCache(){
-		Member.StatusCache = cache.NewCollection(Cache, "Status", cache.DefualtTTL)
-		Member.AccountsCache = cache.NewCollection(Cache, "Account", cache.DefualtTTL)
-		Member.TokenCache = cache.NewCollection(Cache, "Token", cache.DefualtTTL)
-		Member.RoleCache = cache.NewCollection(Cache, "Role", cache.DefualtTTL)
-		Member.DataCache = cache.NewCollection(Cache, "data", cache.DefualtTTL)
+		Member.StatusCache = cache.NewCollection(Cache, "Status", cache.DefaultTTL)
+		Member.AccountsCache = cache.NewCollection(Cache, "Account", cache.DefaultTTL)
+		Member.TokenCache = cache.NewCollection(Cache, "Token", cache.DefaultTTL)
+		Member.RoleCache = cache.NewCollection(Cache, "Role", cache.DefaultTTL)
+		Member.DataCache = cache.NewCollection(Cache, "data", cache.DefaultTTL)
 }
 func init() {
 	util.RegisterModule(ModuleName, func() {
