@@ -9,7 +9,7 @@ import (
 	{{if .InstallSession -}}
 	sessionmodule "modules/{{.Name.LowerWithParentPath}}/session"		
 	{{- end}}
-	cachemodule "modules/{{.Name.LowerWithParentPath}}/cache"	
+	cachemodule "modules/{{.CacheName.LowerWithParentPath}}"	
 	{{ if .InstallSQLUser -}}	
 	"github.com/herb-go/providers/sql/sqluser"		
 	"modules/uniqueid"
@@ -62,15 +62,15 @@ func IdentifyRequest(r *http.Request) (uid string, err error) {
 	return Member.IdentifyRequest(r)
 }
 
+//Cache Member Cache
+var Cache = cache.NewCollection(cachemodule.Cache, "member-{{.Name.Lower}}", cache.DefualtTTL)
+
 func initMemberCache(){
-		{{if .InstallCache -}}
-		Member.StatusCache = cache.NewCollection(cachemodule.Cache, "Status", cache.DefualtTTL)
-		Member.AccountsCache = cache.NewCollection(cachemodule.Cache, "Account", cache.DefualtTTL)
-		Member.TokenCache = cache.NewCollection(cachemodule.Cache, "Token", cache.DefualtTTL)
-		Member.RoleCache = cache.NewCollection(cachemodule.Cache, "Role", cache.DefualtTTL)
-		Member.DataCache = cache.NewNode(cachemodule.Cache, "data")
-		{{- else -}}
-		{{- end}}
+		Member.StatusCache = cache.NewCollection(Cache, "Status", cache.DefualtTTL)
+		Member.AccountsCache = cache.NewCollection(Cache, "Account", cache.DefualtTTL)
+		Member.TokenCache = cache.NewCollection(Cache, "Token", cache.DefualtTTL)
+		Member.RoleCache = cache.NewCollection(Cache, "Role", cache.DefualtTTL)
+		Member.DataCache = cache.NewCollection(Cache, "data", cache.DefualtTTL)
 }
 func init() {
 	util.RegisterModule(ModuleName, func() {

@@ -13,7 +13,7 @@ var MemberWorker = member.New()
 var MemberOverseer = worker.NewOrverseer("member", CacheWorker)
 
 func init() {
-	MemberOverseer.WithInitFunc(func() error {
+	MemberOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(MemberOverseer)
 	})
 }

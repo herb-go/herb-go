@@ -13,7 +13,7 @@ var ActionWorker = action.New(nil)
 var ActionOverseer = worker.NewOrverseer("action", ActionWorker)
 
 func init() {
-	ActionOverseer.WithInitFunc(func() error {
+	ActionOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(ActionOverseer)
 	})
 }

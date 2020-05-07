@@ -10,11 +10,12 @@ import (
 
 var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
 	"action": project.InitActionOverseer,
-	"cache":  newInitFunc("cache.go", "cache.go", "Cache"),
-	"member": newInitFunc("member.go", "member.go", "Member"),
+	"cache":  newInitFunc([]string{"cache.go", "cache.go", "cacheable.go", "cacheable.go"}, "Cache"),
+	"member": newInitFunc([]string{"member.go", "member.go"}, "Member"),
 }
 
-func newInitFunc(dst string, src string, name string) func(a *app.Application, appPath string, mp string, slienceMode bool) error {
+//files:[]{"dst","src","dst2","src2"}
+func newInitFunc(files []string, name string) func(a *app.Application, appPath string, mp string, slienceMode bool) error {
 	return func(a *app.Application, appPath string, mp string, slienceMode bool) error {
 		var result bool
 		var err error
@@ -24,15 +25,17 @@ func newInitFunc(dst string, src string, name string) func(a *app.Application, a
 		}
 		task := tools.NewTask(filepath.Join(app, "/modules/overseers/resources"), appPath)
 		filesToRender := map[string]string{}
-		result, err = tools.FileExists(filepath.Join(appPath, mp, "overseers", dst))
-		if err != nil {
-			return err
-		}
-		if !result {
-			filesToRender[filepath.Join(mp, "overseers", dst)] = src
-		}
-		if len(filesToRender) == 0 {
-			return nil
+		for i := 0; i < len(files); i = i + 2 {
+			result, err = tools.FileExists(filepath.Join(appPath, mp, "overseers", files[i]))
+			if err != nil {
+				return err
+			}
+			if !result {
+				filesToRender[filepath.Join(mp, "overseers", files[i])] = files[i+1]
+			}
+			if len(filesToRender) == 0 {
+				return nil
+			}
 		}
 		task.AddJob(func() error {
 			a.Printf("%s overseer inited.\n", name)

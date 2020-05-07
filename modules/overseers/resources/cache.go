@@ -13,7 +13,7 @@ var CacheWorker = cache.New()
 var CacheOverseer = worker.NewOrverseer("cache", CacheWorker)
 
 func init() {
-	CacheOverseer.WithInitFunc(func() error {
+	CacheOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(CacheOverseer)
 	})
 }

@@ -20,10 +20,11 @@ type Member struct {
 	app.BasicModule
 	InstallSession    bool
 	InstallSQLUser    bool
-	InstallCache      bool
 	InstallDatabase   bool
 	DatabaseInstalled bool
 	UniqueIDInstalled bool
+	Cache             string
+	CacheName         *name.Name
 	SlienceMode       bool
 }
 
@@ -31,7 +32,7 @@ type renderData struct {
 	Name              *name.Name
 	InstallSession    bool
 	InstallSQLUser    bool
-	InstallCache      bool
+	CacheName         *name.Name
 	DatabaseInstalled bool
 }
 
@@ -68,6 +69,7 @@ func (m *Member) Init(a *app.Application, args *[]string) error {
 		return nil
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
+	m.FlagSet().StringVar(&m.Cache, "cache", "cache", "cache module name")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -77,10 +79,6 @@ func (m *Member) Init(a *app.Application, args *[]string) error {
 }
 func (m *Member) Question(a *app.Application, mp string) error {
 	err := tools.NewTrueOrFalseQuestion("Do you want to install session module").ExecIf(a, !m.InstallSession && !m.SlienceMode, &m.InstallSession)
-	if err != nil {
-		return err
-	}
-	err = tools.NewTrueOrFalseQuestion("Do you want to add member cache code?\nOtherwise you have to install member cache manually.").ExecIf(a, !m.InstallCache && !m.SlienceMode, &m.InstallCache)
 	if err != nil {
 		return err
 	}
@@ -132,6 +130,20 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	m.CacheName, err = name.New(true, m.Cache)
+	if err != nil {
+		return err
+	}
+	result, err := tools.FileExists(filepath.Join(mp, m.CacheName.LowerWithParentPath, "init.go"))
+	if err != nil {
+		return err
+	}
+	if !result {
+		err = cache.Module.Exec(a, []string{m.Cache})
+		if err != nil {
+			return err
+		}
+	}
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
@@ -172,12 +184,6 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 			return err
 		}
 	}
-	if m.InstallCache {
-		err := cache.Module.Exec(a, []string{"-s", filepath.Join(n.Parents, n.Lower, "/cache")})
-		if err != nil {
-			return err
-		}
-	}
 	if m.InstallDatabase {
 		err := database.DatabaseModule.Exec(a, []string{"-s"})
 		if err != nil {
@@ -200,7 +206,7 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 		Name:              n,
 		InstallSession:    m.InstallSession,
 		InstallSQLUser:    m.InstallSQLUser,
-		InstallCache:      m.InstallCache,
+		CacheName:         m.CacheName,
 		DatabaseInstalled: m.DatabaseInstalled,
 	}
 	return task.RenderFiles(filesToRender, data)
