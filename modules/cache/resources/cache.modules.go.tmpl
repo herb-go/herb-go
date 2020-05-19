@@ -9,11 +9,11 @@ import (
 //ModuleName module name
 const ModuleName="100{{.LowerWithParentDotSeparated}}"
 
-//{{.Pascal}} app cache component.
-var {{.Pascal}} = cache.New()
+//Cache app cache component.
+var Cache = cache.New()
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must({{.Pascal}}.Init(app.{{.PascalWithParents}}))
+		util.Must(Cache.Init(app.{{.PascalWithParents}}))
 	})
 }
