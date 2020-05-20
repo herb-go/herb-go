@@ -9,9 +9,10 @@ import (
 )
 
 var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
-	"action": project.InitActionOverseer,
-	"cache":  newInitFunc([]string{"cache.go", "cache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
-	"member": newInitFunc([]string{"member.go", "member.go"}, "Member"),
+	"action":   project.InitActionOverseer,
+	"cache":    newInitFunc([]string{"cache.go", "cache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
+	"member":   newInitFunc([]string{"member.go", "member.go"}, "Member"),
+	"database": newInitFunc([]string{"database.go", "database.go"}, "Database"),
 }
 
 //files:[]{"dst","src","dst2","src2"}

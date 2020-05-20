@@ -2,6 +2,7 @@ package main
 
 import (
 	"modules/app"
+	_ "modules/drivers"
 	"modules/overseers"
 
 	"github.com/herb-go/util"

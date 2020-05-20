@@ -1,12 +1,12 @@
 package database
 
-
 import (
 	"fmt"
 	"path/filepath"
 
 	"github.com/herb-go/util/cli/name"
 
+	"github.com/herb-go/herb-go/modules/overseers"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -69,15 +69,15 @@ func (m *Database) Exec(a *app.Application, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Println("No database module name given.\"database\" is used")
-		n ,err= name.New(true,"database")
-	}else{
+		n, err = name.New(true, "database")
+	} else {
 		n, err = name.New(true, args...)
 	}
 	if err != nil {
 		return err
 	}
 
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -85,10 +85,14 @@ func (m *Database) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	err = overseers.OverseerModule.Exec(a, []string{"-s", "database"})
+	if err != nil {
+		return err
+	}
 
 	task := tools.NewTask(filepath.Join(app, "/modules/database/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -111,13 +115,13 @@ func (m *Database) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Database) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Database) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):"database.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):"database.toml.tmpl",
-		filepath.Join(mp,n.LowerPath(n.Lower+".go")):           "database.modules.go.tmpl",
-		filepath.Join(mp,"app", n.LowerWithParentDotSeparated+".go"):           "database.go.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "database.toml.tmpl",
+		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "database.toml.tmpl",
+		filepath.Join(mp, n.LowerPath(n.Lower+".go")):                                     "database.modules.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "database.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

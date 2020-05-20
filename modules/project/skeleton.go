@@ -11,7 +11,6 @@ var AppSkeleton = func(mp string) map[string]string {
 		"/system/data/readme.md":                   "/skeleton/system/data/readme.md",
 		"/test/testconfig/readme.md":               "/skeleton/test/testconfig/readme.md",
 		"/src/main.go":                             "/skeleton/src/main.go",
-		"/src/drivers.go":                          "/skeleton/src/drivers.go",
 		"/src/errors.go":                           "/skeleton/src/errors.go",
 		"/src/modules.go":                          "/skeleton/src/modules.go",
 		"/src/build/build-linux.sh":                "/skeleton/src/build/build-linux.sh",
@@ -32,13 +31,16 @@ var AppSkeleton = func(mp string) map[string]string {
 		mp + "/loggers/init.go":                    "/skeleton/src/vendor/modules/loggers/init.go",
 		mp + "/loggers/init_linux.go":              "/skeleton/src/vendor/modules/loggers/init_linux.go",
 		mp + "/test/test.go":                       "/skeleton/src/vendor/modules/test/test.go",
-		mp + "/test/drivers.go":                    "/skeleton/src/vendor/modules/test/drivers.go",
 		mp + "/test/modules.go":                    "/skeleton/src/vendor/modules/test/modules.go",
 		mp + "/test/init_test.go":                  "/skeleton/src/vendor/modules/test/init_test.go",
 		mp + "/test/readme.md":                     "/skeleton/src/vendor/modules/test/readme.md",
 		mp + "/test/tests/init.go":                 "/skeleton/src/vendor/modules/test/tests/init.go",
 		mp + "/test/tests/init_test.go":            "/skeleton/src/vendor/modules/test/tests/init_test.go",
 		mp + "/test/tests/readme.md":               "/skeleton/src/vendor/modules/test/tests/readme.md",
+		mp + "/drivers/cache.go":                   "/skeleton/src/vendor/modules/drivers/cache.go",
+		mp + "/drivers/marshaler.go":               "/skeleton/src/vendor/modules/drivers/marshaler.go",
+		mp + "/drivers/database.go":                "/skeleton/src/vendor/modules/drivers/database.go",
+		mp + "/drivers/uniqueid.go":                "/skeleton/src/vendor/modules/drivers/uniqueid.go",
 	}
 }
 

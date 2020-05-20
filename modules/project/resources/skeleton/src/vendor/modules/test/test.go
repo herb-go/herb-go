@@ -2,6 +2,7 @@ package test
 
 import (
 	"modules/app"
+	_ "modules/drivers" //drivers
 	"modules/overseers"
 	"path/filepath"
 
