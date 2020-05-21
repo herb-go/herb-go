@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "modules"
 	"modules/app"
 	_ "modules/drivers"
 	"modules/overseers"

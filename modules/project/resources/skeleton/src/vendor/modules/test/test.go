@@ -1,6 +1,7 @@
 package test
 
 import (
+	_ "modules" //modules init
 	"modules/app"
 	_ "modules/drivers" //drivers
 	"modules/overseers"
