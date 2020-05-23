@@ -18,7 +18,7 @@ var {{.Name.Pascal}}Overseer = worker.NewOrverseer("{{.Name.Lower}}", &{{.Name.P
 	WithEvaluateFunc(func(w *worker.Worker) (interface{}, error) {
 		return nil, nil
 	}).
-	WithCommandFunc(func(w *worker.Worker, []byte) (interface{}, error) {
+	WithCommandFunc(func(w *worker.Worker, cmd []byte) (interface{}, error) {
 		return nil, worker.ErrUnknownCommand
 	}).
 	WithEvaluationReportFunc(func(*worker.Worker) (string, error) {
