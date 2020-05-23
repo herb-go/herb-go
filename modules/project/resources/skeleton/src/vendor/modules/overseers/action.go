@@ -10,10 +10,11 @@ import (
 var ActionWorker = action.New(nil)
 
 //ActionOverseer cache overseer
-var ActionOverseer = worker.NewOrverseer("action", ActionWorker)
+var ActionOverseer = worker.NewOrverseer("action", &ActionWorker)
 
 func init() {
 	ActionOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(ActionOverseer)
 	})
+	worker.Appoint(ActionOverseer)
 }

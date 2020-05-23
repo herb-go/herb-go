@@ -10,10 +10,11 @@ import (
 var CacheWorker = cache.New()
 
 //CacheOverseer cache overseer
-var CacheOverseer = worker.NewOrverseer("cache", CacheWorker)
+var CacheOverseer = worker.NewOrverseer("cache", &CacheWorker)
 
 func init() {
 	CacheOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(CacheOverseer)
 	})
+	worker.Appoint(CacheOverseer)
 }

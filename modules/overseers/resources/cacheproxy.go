@@ -10,10 +10,11 @@ import (
 var CacheProxyWorker = cache.NewProxy(nil)
 
 //CacheProxyOverseer cache overseer
-var CacheProxyOverseer = worker.NewOrverseer("cacheproxy", CacheProxyWorker)
+var CacheProxyOverseer = worker.NewOrverseer("cacheproxy", &CacheProxyWorker)
 
 func init() {
 	CacheProxyOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(CacheProxyOverseer)
 	})
+	worker.Appoint(CacheProxyOverseer)
 }

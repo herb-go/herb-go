@@ -10,10 +10,11 @@ import (
 var MemberWorker = member.New()
 
 //MemberOverseer cache overseer
-var MemberOverseer = worker.NewOrverseer("member", CacheWorker)
+var MemberOverseer = worker.NewOrverseer("member", &CacheWorker)
 
 func init() {
 	MemberOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(MemberOverseer)
 	})
+	worker.Appoint(MemberOverseer)
 }

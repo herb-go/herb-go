@@ -10,10 +10,11 @@ import (
 var DatabaseWorker = db.New()
 
 //DatabaseOverseer cache overseer
-var DatabaseOverseer = worker.NewOrverseer("database", DatabaseWorker)
+var DatabaseOverseer = worker.NewOrverseer("database", &DatabaseWorker)
 
 func init() {
 	DatabaseOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().Apply(DatabaseOverseer)
 	})
+	worker.Appoint(DatabaseOverseer)
 }
