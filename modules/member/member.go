@@ -135,6 +135,10 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 			return err
 		}
 	}
+	err := tools.CopyIfNotExist(filepath.Join(task.SrcFolder, "drivers.go"), mp, "drivers", "member.go")
+	if err != nil {
+		return err
+	}
 	filesToRender := map[string]string{
 		filepath.Join(mp, n.LowerPath("init.go")):                                         "member.modules.go.tmpl",
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "member.toml.tmpl",
