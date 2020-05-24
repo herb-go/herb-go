@@ -1,0 +1,37 @@
+package app
+
+import (
+	"sync/atomic"
+
+	"github.com/herb-go/herbconfig/source"
+	"github.com/herb-go/member"
+	"github.com/herb-go/util"
+	"github.com/herb-go/util/config"
+	"github.com/herb-go/util/config/tomlconfig"
+)
+
+//{{.Name.Pascal}} member config
+var {{.Name.Pascal}} = &member.Config{}
+
+var sync{{.Name.Pascal}} atomic.Value
+
+//Store{{.Name.Pascal}} atomically store member config
+func (a *appSync) Store{{.Name.Pascal}}(m *member.Config) {
+	syncCsrf.Store(m)
+}
+
+//Load{{.Name.Pascal}} atomically load member config
+func (a *appSync) Load{{.Name.Pascal}}() *member.Config {
+	v := syncCsrf.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*member.Config)
+}
+
+func init() {
+	config.RegisterLoader(util.ConfigFile("/{{.Name.Lower}}.toml"), func(configpath source.Source) {
+		util.Must(tomlconfig.Load(configpath, Members))
+		Sync.Store{{.Name.Pascal}}({{.Name.Pascal}})
+	})
+}

@@ -1,40 +1,21 @@
 package {{.Name.Lower}}
 
 import (
-	"github.com/herb-go/util"
-	"github.com/herb-go/member"		
-	"github.com/herb-go/herb/cache"
 	"net/http"
 
+	"github.com/herb-go/member"
+	"github.com/herb-go/util"
+
+	"modules/app"
 	{{if .InstallSession -}}
 	sessionmodule "modules/{{.Name.LowerWithParentPath}}/session"		
 	{{- end}}
-	cachemodule "modules/{{.CacheName.LowerWithParentPath}}"	
-	{{ if .InstallSQLUser -}}	
-	"github.com/herb-go/providers/sql/sqluser"		
-	"modules/uniqueid"
-	{{- end}}
-	{{ if not .DatabaseInstalled -}}
-	"github.com/herb-go/herb/model/sql/db"
-	{{- end}}
-	"modules/database"		
 )
 
 //ModuleName module name
 const ModuleName="800{{.Name.LowerWithParentDotSeparated}}"
 
-{{ if .InstallSQLUser -}}	
-{{if .DatabaseInstalled -}}
-var userDb=database.SQL
-{{- else -}}
-var userDb db.Database
-{{- end}}
 
-var userFlags = sqluser.FlagWithAccount | sqluser.FlagWithPassword | sqluser.FlagWithToken | sqluser.FlagWithUser
-
-//User sqluser component
-var User = sqluser.New(userDb, uniqueid.GenerateID , userFlags)
-{{- end}}
 
 //Session member session.
 {{if .InstallSession -}}
@@ -45,15 +26,6 @@ var Session *session.Store
 
 //Member {{.Name.Lower}} member  module.
 var Member= member.New()
-func initMemberProviders(){
-		{{ if .InstallSQLUser -}}	
-		User.AddTablePrefix("{{.Name.Lower}}_")
-		Member.Install(User.Account())
-		Member.Install(User.Token())
-		Member.Install(User.User())
-		Member.Install(User.Password())
-		{{- end}}
-}
 
 //IdentifyRequest Identify user in http request.
 //Return user id and any error raised.
@@ -62,23 +34,12 @@ func IdentifyRequest(r *http.Request) (uid string, err error) {
 	return Member.IdentifyRequest(r)
 }
 
-//Cache Member Cache
-var Cache = cachemodule.Cache.Proxy("member-{{.Name.Lower}}")
-
-func initMemberCache(){
-		Member.StatusCache = cache.NewCollection(Cache, "Status", cache.DefaultTTL)
-		Member.AccountsCache = cache.NewCollection(Cache, "Account", cache.DefaultTTL)
-		Member.TokenCache = cache.NewCollection(Cache, "Token", cache.DefaultTTL)
-		Member.RoleCache = cache.NewCollection(Cache, "Role", cache.DefaultTTL)
-		Member.DataCache = cache.NewCollection(Cache, "data", cache.DefaultTTL)
-}
 func init() {
 	util.RegisterModule(ModuleName, func() {
 		//Init registered initator which registered by RegisterInitiator
 		util.Must(Member.Init(member.OptionCommon(Session)))
 		Member.ContextName = member.ContextType("{{.Name.LowerWithParentDotSeparated}}")
-		initMemberProviders()
-		initMemberCache()
+		util.Must(app.{{.Name.Pascal}}.ApplyTo(Member))
 		util.InitOrderByName(ModuleName)
 	})
 }

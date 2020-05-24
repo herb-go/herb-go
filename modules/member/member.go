@@ -6,11 +6,8 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
-	"github.com/herb-go/herb-go/modules/cache"
-	"github.com/herb-go/herb-go/modules/database"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/herb-go/modules/session"
-	"github.com/herb-go/herb-go/modules/uniqueid"
 
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -18,22 +15,14 @@ import (
 
 type Member struct {
 	app.BasicModule
-	InstallSession    bool
-	InstallSQLUser    bool
-	InstallDatabase   bool
-	DatabaseInstalled bool
-	UniqueIDInstalled bool
-	Cache             string
-	CacheName         *name.Name
-	SlienceMode       bool
+	InstallSession bool
+
+	SlienceMode bool
 }
 
 type renderData struct {
-	Name              *name.Name
-	InstallSession    bool
-	InstallSQLUser    bool
-	CacheName         *name.Name
-	DatabaseInstalled bool
+	Name           *name.Name
+	InstallSession bool
 }
 
 func (m *Member) ID() string {
@@ -69,7 +58,6 @@ func (m *Member) Init(a *app.Application, args *[]string) error {
 		return nil
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
-	m.FlagSet().StringVar(&m.Cache, "cache", "cache", "cache module name")
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -82,31 +70,7 @@ func (m *Member) Question(a *app.Application, mp string) error {
 	if err != nil {
 		return err
 	}
-	err = tools.NewTrueOrFalseQuestion("Do you want to install sqluser?\nOtherwise you have to install user modules manually.").ExecIf(a, !m.InstallSQLUser && !m.SlienceMode, &m.InstallSQLUser)
-	if err != nil {
-		return err
-	}
-	if m.InstallSQLUser {
-		result, err := tools.FileExists(filepath.Join(mp, "database", "database.go"))
-		if err != nil {
-			return err
-		}
-		if result {
-			m.DatabaseInstalled = true
-		} else {
-			err = tools.NewTrueOrFalseQuestion("Database module not found.\nDo you want to install database module?Otherwise you have to install database modules manually.").ExecIf(a, !m.InstallDatabase && !m.SlienceMode, &m.InstallDatabase)
-			if err != nil {
-				return err
-			}
-		}
-		result, err = tools.FileExists(filepath.Join(mp, "uniqueid", "uniqueid.go"))
-		if err != nil {
-			return err
-		}
-		if result {
-			m.UniqueIDInstalled = true
-		}
-	}
+
 	return nil
 }
 func (m *Member) Exec(a *app.Application, args []string) error {
@@ -130,20 +94,7 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	m.CacheName, err = name.New(true, m.Cache)
-	if err != nil {
-		return err
-	}
-	result, err := tools.FileExists(filepath.Join(mp, m.CacheName.LowerWithParentPath, "init.go"))
-	if err != nil {
-		return err
-	}
-	if !result {
-		err = cache.Module.Exec(a, []string{m.Cache})
-		if err != nil {
-			return err
-		}
-	}
+
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err
@@ -184,30 +135,16 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 			return err
 		}
 	}
-	if m.InstallDatabase {
-		err := database.DatabaseModule.Exec(a, []string{"-s"})
-		if err != nil {
-			return err
-		}
-		m.DatabaseInstalled = true
-	}
-	if !m.UniqueIDInstalled {
-		err := uniqueid.UniqueIDModule.Exec(a, []string{"-s"})
-		if err != nil {
-			return err
-		}
-		m.UniqueIDInstalled = true
-	}
 	filesToRender := map[string]string{
-		filepath.Join(mp, n.LowerPath("init.go")):                             "member.modules.go.tmpl",
-		filepath.Join(mp, "middlewares", n.LowerWithParentDotSeparated+".go"): "middleware.go.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                                         "member.modules.go.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "member.toml.tmpl",
+		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "member.toml.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "app.member.go.tmpl",
+		filepath.Join(mp, "middlewares", n.LowerWithParentDotSeparated+".go"):             "middleware.go.tmpl",
 	}
 	data := renderData{
-		Name:              n,
-		InstallSession:    m.InstallSession,
-		InstallSQLUser:    m.InstallSQLUser,
-		CacheName:         m.CacheName,
-		DatabaseInstalled: m.DatabaseInstalled,
+		Name:           n,
+		InstallSession: m.InstallSession,
 	}
 	return task.RenderFiles(filesToRender, data)
 }
