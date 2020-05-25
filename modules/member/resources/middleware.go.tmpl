@@ -38,5 +38,6 @@ func init() {
 		Middleware{{.Name.Pascal}}LoginReqiured = httpuser.LoginRequiredMiddleware(membermodule.Member, nil)
         Middleware{{.Name.Pascal}}Logout=membermodule.Member.LogoutMiddleware()
         MiddlewareInstall{{.Name.Pascal}}Session=membermodule.Session.InstallMiddleware()
+		//put your app scope member init code below
 	})
 }

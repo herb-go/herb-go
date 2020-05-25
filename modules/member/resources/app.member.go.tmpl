@@ -17,12 +17,12 @@ var sync{{.Name.Pascal}} atomic.Value
 
 //Store{{.Name.Pascal}} atomically store member config
 func (a *appSync) Store{{.Name.Pascal}}(m *member.Config) {
-	syncCsrf.Store(m)
+	sync{{.Name.Pascal}}.Store(m)
 }
 
 //Load{{.Name.Pascal}} atomically load member config
 func (a *appSync) Load{{.Name.Pascal}}() *member.Config {
-	v := syncCsrf.Load()
+	v := sync{{.Name.Pascal}}.Load()
 	if v == nil {
 		return nil
 	}
