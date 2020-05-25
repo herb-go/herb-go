@@ -1,0 +1,19 @@
+Net=          "tcp"
+#ldap host and port
+Addr=         "127.0.0.1:389"
+#ldap user pattern
+UserPattern=  "uid=%s,ou=people,dc=company"
+#ldap bind dn
+BindDN=       "cn=admin,dc=company"
+#ldap bind password
+BindPass=     "password"
+#dn to search user
+SearchDN=     "ou=people,dc=company"
+#serach user filter
+SearchFilter= "(uid=%s)"
+#user group dn
+GroupDN=      "ou=group,dc=company"
+#user group filter
+GroupFilter=  "(member=%s)"
+#user group id field
+GroupIDField= "cn"

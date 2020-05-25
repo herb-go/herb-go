@@ -64,6 +64,9 @@ var HTTPSkeleton = func(mp string) map[string]string {
 		mp + "/routers/api.go":              "/skeleton/src/vendor/modules/routers/api.go",
 		mp + "/routers/assests.go":          "/skeleton/src/vendor/modules/routers/assests.go",
 		mp + "/routers/routers.go":          "/skeleton/src/vendor/modules/routers/routers.go",
+		mp + "/overseers/action.go":         "/skeleton/src/vendor/modules/overseers/action.go",
+		mp + "/overseers/router.go":         "/skeleton/src/vendor/modules/overseers/router.go",
+		mp + "/overseers/middleware.go":     "/skeleton/src/vendor/modules/overseers/middleware.go",
 	}
 }
 

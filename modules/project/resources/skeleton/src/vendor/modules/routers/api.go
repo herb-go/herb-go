@@ -16,6 +16,9 @@ var APIMiddlewares = func() middleware.Middlewares {
 	}
 }
 
+//RouterAPI api router.
+var RouterAPI = newAPIRouter()
+
 func newAPIRouter() router.Router {
 	var Router = httprouter.New()
 	//Put your router configure code here

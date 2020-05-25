@@ -10,6 +10,9 @@ import (
 	"github.com/herb-go/util"
 )
 
+//Router base router.
+var Router = New()
+
 //New create new router.
 func New() router.Router {
 	var Router = httprouter.New()
@@ -20,7 +23,6 @@ func New() router.Router {
 			Use(AssestsMiddlewares()...).
 			HandleFunc(simplehttpserver.ServeFolder(util.Resources(app.Assets.Location)))
 	}
-	var RouterAPI = newAPIRouter()
 	Router.StripPrefix("/api").
 		Use(APIMiddlewares()...).
 		Handle(RouterAPI)

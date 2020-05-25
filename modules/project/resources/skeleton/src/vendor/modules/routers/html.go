@@ -15,6 +15,9 @@ var HTMLMiddlewares = func() middleware.Middlewares {
 	}
 }
 
+//RouterHTML html router
+var RouterHTML = newHTMLRouter()
+
 func newHTMLRouter() router.Router {
 	var Router = httprouter.New()
 	//Put your router configure code here

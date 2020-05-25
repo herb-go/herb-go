@@ -1,0 +1,38 @@
+package app
+
+import (
+	"sync/atomic"
+
+	"github.com/herb-go/herbconfig/source"
+	"github.com/herb-go/providers/ldapconn/ldapuser"
+	"github.com/herb-go/util"
+	"github.com/herb-go/util/config"
+	"github.com/herb-go/util/config/tomlconfig"
+)
+
+//{{.PascalWithParents}}  {{.Raw}} ldap config
+var {{.PascalWithParents}} *ldapuser.Config
+
+var sync{{.PascalWithParents}} atomic.Value
+
+//Store{{.PascalWithParents}} atomically store {{.Raw}} ldap config
+func (a *appSync) Store{{.PascalWithParents}}(c *ldapuser.Config) {
+	sync{{.PascalWithParents}}.Store(c)
+}
+
+//Load{{.PascalWithParents}} atomically load {{.Raw}} ldap config
+func (a *appSync) Load{{.PascalWithParents}}() *ldapuser.Config {
+	v := sync{{.PascalWithParents}}.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*ldapuser.Config)
+}
+
+func init() {
+	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath source.Source) {
+		{{.PascalWithParents}} = &ldapuser.Config{}
+		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
+		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
+	})
+}

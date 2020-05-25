@@ -1,0 +1,61 @@
+# # Cache Directive
+# [[Directives]]
+# Name="cache"
+# [Directives.Config]
+# #Cache type.Available value:"status","data","accounts","token","role".
+# #Left empty will create 5 collection with above type as prefix.
+# Type=""
+# [Directives.Config.Cache]
+# #Cache config. hired cache driver is recommanded. 
+# Driver="hiredcache"
+# [Directives.Config.Cache.Config]
+# #Real cache component id. you should run "herb-go scanworkers" first.
+# ID="cache.Cache"
+# #Cache prefix
+# Prefix=""
+# #If prefix is not empty, using cache node. Otherwise cache collection will be used.
+# AsNode=true
+
+# #Ldap user directive
+# [[Directives]]
+# Name="ldapuser"
+# [Directives.Config]
+# Net=          "tcp"
+# #ldap host and port
+# Addr=         "127.0.0.1:389"
+# #ldap user pattern
+# UserPattern=  "uid=%s,ou=people,dc=company"
+# #ldap bind dn
+# BindDN=       "cn=admin,dc=company"
+# #ldap bind password
+# BindPass=     "password"
+# #dn to search user
+# SearchDN=     "ou=people,dc=company"
+# #serach user filter
+# SearchFilter= "(uid=%s)"
+# #user group dn
+# GroupDN=      "ou=group,dc=company"
+# #user group filter
+# GroupFilter=  "(member=%s)"
+# #user group id field
+# GroupIDField= "cn"
+
+# #Sql user directive
+# [[Directives]]
+# Name="sqluser"
+# [Directives.Config]
+# #Account table.left empty to disable member sql account.
+# TableAccount="account"
+# #Password table.left empty to disable member sql password.
+# TablePassword="password"
+# #Token table.left empty to disable member sql token.
+# TableToken="token"
+# #User table.left empty to disable member sql token.
+# TableUser="user"
+# #Prefix database table prefix.
+# Prefix="members_"
+# [Directives.Config.Database]
+# #cache config. hired database driver is recommanded. 
+# "Driver"="hireddb"
+# #Real databbase component id. you should run "herb-go scanworkers" first.
+# "DataSource"="database.SQL"

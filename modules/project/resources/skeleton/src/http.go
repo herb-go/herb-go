@@ -39,6 +39,6 @@ func init() {
 	util.RegisterModule("999HTTP", func() {
 		App.
 			Use(AppMiddlewares()...).
-			Handle(routers.New())
+			Handle(routers.Router)
 	})
 }
