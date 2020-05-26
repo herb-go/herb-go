@@ -11,7 +11,7 @@ import (
 var MiddlewareWorker func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 
 //MiddlewareOverseer middleware overseer
-var MiddlewareOverseer = worker.NewOrverseer("router", &MiddlewareWorker)
+var MiddlewareOverseer = worker.NewOrverseer("middleware", &MiddlewareWorker)
 
 func init() {
 	MiddlewareOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
