@@ -7,4 +7,4 @@ import _ "github.com/herb-go/herb/cache/drivers/syncmapcache" // syncmapcachecac
 // import _ "github.com/herb-go/herb/cache/drivers/versioncache" //versioncache driver
 // import _ "github.com/herb-go/providers/redis/rediscache" //rediscache driver
 // import _ "github.com/herb-go/providers/sql/sqlcache" //sqlcache driver
-import _ "github.com/herb-go/providers/hired/hiredcache" //hired worker cache driver
+import _ "github.com/herb-go/providers/herb/hired/hiredcache" //hired worker cache driver
