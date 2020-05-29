@@ -17,6 +17,8 @@ var QueryBuilder = querybuilder.New()
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
+		//Set database optimizer factory with your factory
+		//SQL.OptimizerFactory = YourOptimizerFactory
 		util.Must(SQL.Init(app.{{.PascalWithParents}}))
 		QueryBuilder.Driver=SQL.Driver()
 		querybuilder.Debug = app.Development.Debug

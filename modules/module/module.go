@@ -13,9 +13,10 @@ import (
 
 type Module struct {
 	app.BasicModule
-	Location    string
-	Level       string
-	SlienceMode bool
+	Location        string
+	DefaultLocation string
+	Level           string
+	SlienceMode     bool
 }
 
 func (m *Module) ID() string {
@@ -52,7 +53,7 @@ func (m *Module) Init(a *app.Application, args *[]string) error {
 	m.FlagSet().StringVar(&m.Level, "level", "900",
 		`Module prefix.All modules are sorted by prefix when loading.
 		`)
-	m.FlagSet().StringVar(&m.Location, "location", "",
+	m.FlagSet().StringVar(&m.Location, "location", m.DefaultLocation,
 		`default module  location. 
 	`)
 	err := m.FlagSet().Parse(*args)
