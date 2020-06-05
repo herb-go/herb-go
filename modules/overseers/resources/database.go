@@ -3,7 +3,7 @@ package overseers
 import (
 	"github.com/herb-go/herb/model/sql/db"
 	worker "github.com/herb-go/worker"
-	overseer "github.com/herb-go/worker/overseers/dboverseer"
+	overseer "github.com/herb-go/providers/herb/overseers/cacheoverseer"
 )
 
 //DatabaseWorker empty cache worker.
