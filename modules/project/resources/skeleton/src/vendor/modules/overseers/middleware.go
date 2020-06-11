@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	worker "github.com/herb-go/worker"
-	overseer "github.com/herb-go/worker/overseers/middlewareoverseer"
+	overseer "github.com/herb-go/providers/herb/overseers/middlewareoverseer"
 )
 
 //MiddlewareWorker empty middleware worker.

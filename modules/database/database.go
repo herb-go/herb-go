@@ -119,7 +119,7 @@ func (m *Database) Render(a *app.Application, appPath string, mp string, task *t
 
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "database.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "database.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "database.toml.tmpl",
 		filepath.Join(mp, n.LowerPath(n.Lower+".go")):                                     "database.modules.go.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "database.go.tmpl",
 	}

@@ -3,7 +3,7 @@ package overseers
 import (
 	"github.com/herb-go/herb/middleware/router"
 	worker "github.com/herb-go/worker"
-	overseer "github.com/herb-go/worker/overseers/routeroverseer"
+	overseer "github.com/herb-go/providers/herb/overseers/routeroverseer"
 )
 
 //RouterWorker empty router worker.

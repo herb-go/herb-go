@@ -30,7 +30,7 @@ func (a *appSync) LoadTime() *commonconfig.TimeConfig {
 }
 
 func init() {
-	config.RegisterLoader(util.ConstantsFile("/time.toml"), func(configpath source.Source) {
+	config.RegisterLoader(util.ConfigFile("/time.toml"), func(configpath source.Source) {
 		util.Must(tomlconfig.Load(configpath, Time))
 		Sync.StoreTime(Time)
 	})

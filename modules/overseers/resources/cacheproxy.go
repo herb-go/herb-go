@@ -3,7 +3,7 @@ package overseers
 import (
 	"github.com/herb-go/herb/cache"
 	worker "github.com/herb-go/worker"
-	overseer "github.com/herb-go/worker/overseers/cacheproxyoverseer"
+	overseer "github.com/herb-go/providers/herb/overseers/cacheproxyoverseer"
 )
 
 //CacheProxyWorker empty cache worker.

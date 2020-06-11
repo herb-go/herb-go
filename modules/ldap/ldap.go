@@ -114,7 +114,7 @@ func (m *Ldap) Render(a *app.Application, appPath string, mp string, task *tools
 
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "ldap.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "ldap.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "ldap.toml.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "ldap.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)

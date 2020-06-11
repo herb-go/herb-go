@@ -30,7 +30,7 @@ func (a *appSync) LoadWebsite() *commonconfig.WebsiteConfig {
 }
 
 func init() {
-	config.RegisterLoader(util.ConstantsFile("/website.toml"), func(configpath source.Source) {
+	config.RegisterLoader(util.ConfigFile("/website.toml"), func(configpath source.Source) {
 		util.Must(tomlconfig.Load(configpath, Website))
 		Sync.StoreWebsite(Website)
 	})

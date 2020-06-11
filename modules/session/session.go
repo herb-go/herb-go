@@ -32,7 +32,7 @@ Create session module and config files.
 Default name is "session".
 File below will be created:
 	config/<name>.toml
-	system/config.examples/<name>.toml
+	system/configskeleton/<name>.toml
 	src/vendor/modules/app/<name>.go
 	src/vendor/modules/<name>/<name>.go
 `
@@ -114,7 +114,7 @@ func (m *Session) Exec(a *app.Application, args []string) error {
 func (m *Session) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):"session.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):"session.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"):"session.toml.tmpl",
 		filepath.Join(mp,n.LowerPath(n.Lower+".go")):           "session.modules.go.tmpl",
 		filepath.Join(mp,"app", n.LowerWithParentDotSeparated+".go"):           "session.go.tmpl",
 	}

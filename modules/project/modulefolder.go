@@ -21,7 +21,7 @@ var GetModuleFolder = func(path string) (string, error) {
 		[]string{path, "config"},
 		[]string{path, "appdata"},
 		[]string{path, "resources"},
-		[]string{path, "system", "config.examples"},
+		[]string{path, "system", "configskeleton"},
 		[]string{path, "system", "constants"},
 	}
 

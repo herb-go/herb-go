@@ -31,7 +31,7 @@ func (m *Config) Help(a *app.Application) string {
 Create new config file and code.
 File below will be created:
 	config/[name].toml
-	system/config.examples/[name].toml
+	system/configskeleton/[name].toml
 	src/vendor/modules/app/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
@@ -117,7 +117,7 @@ func (m *Config) Render(a *app.Application, appPath string,mp string, task *tool
 	}
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                        "config.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"):     "config.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"):     "config.toml.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"): configgopath,
 	}
 	return task.RenderFiles(filesToRender, n)

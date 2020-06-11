@@ -105,7 +105,7 @@ func (m *UniqueID) Render(a *app.Application, appPath string, mp string, task *t
 
 	filesToRender := map[string]string{
 		filepath.Join("config", "uniqueid.toml"):                    "uniqueid.toml.tmpl",
-		filepath.Join("system", "config.examples", "uniqueid.toml"): "uniqueid.toml.tmpl",
+		filepath.Join("system", "configskeleton", "uniqueid.toml"): "uniqueid.toml.tmpl",
 		filepath.Join(mp, "uniqueid/uniqueid.go"):                   "uniqueid.modules.go.tmpl",
 		filepath.Join(mp, "app", "uniqueid.go"):                     "uniqueid.go.tmpl",
 	}

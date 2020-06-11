@@ -33,7 +33,7 @@ Create cache module and config files.
 Default name is "cache".
 File below will be created:
 	config/<name>.toml
-	system/config.examples/<name>.toml
+	system/configskeleton/<name>.toml
 	src/vendor/modules/app/<name>.go
 	src/vendor/modules/<name>/<name>.go
 `
@@ -119,7 +119,7 @@ func (m *Cache) Render(a *app.Application, appPath string, mp string, task *tool
 
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "cache.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "cache.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "cache.toml.tmpl",
 		filepath.Join(mp, n.LowerPath("init.go")):                                         "cache.modules.go.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "cache.go.tmpl",
 	}

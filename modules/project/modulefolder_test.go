@@ -34,7 +34,7 @@ func TestGetModuleFolder(t *testing.T) {
 		[]string{tmpdir, "config"},
 		[]string{tmpdir, "appdata"},
 		[]string{tmpdir, "resources"},
-		[]string{tmpdir, "system", "config.examples"},
+		[]string{tmpdir, "system", "configskeleton"},
 		[]string{tmpdir, "system", "constants"},
 	}
 	for _, v := range FoldersMustExists {

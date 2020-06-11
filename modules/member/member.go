@@ -40,7 +40,7 @@ Create member module and config files.
 Default name is "member".
 File below will be created:
 	config/<name>.toml
-	system/config.examples/<name>.toml
+	system/configskeleton/<name>.toml
 	src/vendor/modules/app/<name>.go
 	src/vendor/modules/<name>/<name>.go
 `
@@ -142,7 +142,7 @@ func (m *Member) Render(a *app.Application, appPath string, mp string, task *too
 	filesToRender := map[string]string{
 		filepath.Join(mp, n.LowerPath("init.go")):                                         "member.modules.go.tmpl",
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "member.toml.tmpl",
-		filepath.Join("system", "config.examples", n.LowerWithParentDotSeparated+".toml"): "member.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "member.toml.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "app.member.go.tmpl",
 		filepath.Join(mp, "middlewares", n.LowerWithParentDotSeparated+".go"):             "middleware.go.tmpl",
 	}
