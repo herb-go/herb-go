@@ -16,17 +16,17 @@ var {{.Name.Pascal}} = &member.Config{}
 var sync{{.Name.Pascal}} atomic.Value
 
 //Store{{.Name.Pascal}} atomically store member config
-func (a *appSync) Store{{.Name.Pascal}}(m *member.Config) {
+func (a *appSync) Store{{.Name.Pascal}}(m *hiredmember.Config) {
 	sync{{.Name.Pascal}}.Store(m)
 }
 
 //Load{{.Name.Pascal}} atomically load member config
-func (a *appSync) Load{{.Name.Pascal}}() *member.Config {
+func (a *appSync) Load{{.Name.Pascal}}() *hiredmember.Config {
 	v := sync{{.Name.Pascal}}.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*member.Config)
+	return v.(*hiredmember.Config)
 }
 
 func init() {
