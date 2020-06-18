@@ -2,7 +2,7 @@ package overseers
 
 import (
 	"github.com/herb-go/member"
-	overseer "github.com/herb-go/providers/herb/overseers/memberdirectivefatoryoverseer"
+	overseer "github.com/herb-go/providers/herb/overseers/memberdirectivefactoryoverseer"
 	worker "github.com/herb-go/worker"
 )
 
