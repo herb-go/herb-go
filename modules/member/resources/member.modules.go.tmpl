@@ -34,12 +34,17 @@ func IdentifyRequest(r *http.Request) (uid string, err error) {
 	return Member.IdentifyRequest(r)
 }
 
+func mustInitMember() {
+	Member.SessionStore = Session
+	util.Must(app.Members.ApplyTo(Member))
+}
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
+		Member = member.New()
+		Member.ContextName = member.ContextType("members")
+		mustInitMember()
 		//Init registered initator which registered by RegisterInitiator
-		util.Must(Member.Init(member.OptionCommon(Session)))
-		Member.ContextName = member.ContextType("{{.Name.LowerWithParentDotSeparated}}")
-		util.Must(app.{{.Name.Pascal}}.ApplyTo(Member))
 		util.InitOrderByName(ModuleName)
 	})
 }

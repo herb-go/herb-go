@@ -1,6 +1,7 @@
 package hired
 
 import (
+	//"github.com/herb-go/member"
 	"github.com/herb-go/member/drivers/membercache"
 	"github.com/herb-go/member/drivers/uidaccount"
 	"github.com/herb-go/providers/herb/statictoml/tomluser"
@@ -22,3 +23,13 @@ var LdapUser = ldapuser.DirectiveFactory
 
 //UIDAccount  directive factroy  from "github.com/herb-go/member/drivers/uidaccount"
 var UIDAccount = uidaccount.DirectiveFactory
+
+////MyMemberDirectiveFactory put your own directive factory code here
+// var MyMemberDirectiveFactory = func(loader func(v interface{}) error) (member.Directive, error) {
+// 	d := NewMyMemberDirective()
+// 	err := loader(d)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return d, nil
+// }

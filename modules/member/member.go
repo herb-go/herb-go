@@ -6,6 +6,7 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
+	"github.com/herb-go/herb-go/modules/overseers"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/herb-go/modules/session"
 
@@ -100,6 +101,10 @@ func (m *Member) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	err = m.Question(a, mp)
+	if err != nil {
+		return err
+	}
+	err = overseers.OverseerModule.Exec(a, []string{"-s", "member"})
 	if err != nil {
 		return err
 	}
