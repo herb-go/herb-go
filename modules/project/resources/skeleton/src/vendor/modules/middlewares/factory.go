@@ -10,7 +10,7 @@ func init() {
 	//Register time condition factory.
 	middlewarefactory.DefaultContext.RegisterConditionFactory("time", middlewarefactory.NewTimeConditionFactory())
 	//Register request pattern condition factory
-	middlewarefactory.DefaultContext.RegisterConditionFactory("pattren", requestpatterncondition.NewConditionFactory())
+	middlewarefactory.DefaultContext.RegisterConditionFactory("pattern", requestpatterncondition.NewConditionFactory())
 	//Register reponse condition factory.
 	middlewarefactory.DefaultContext.RegisterFactory("response", middlewarefactory.NewResponseFactory())
 	//Register hiredmiddleware factory.
