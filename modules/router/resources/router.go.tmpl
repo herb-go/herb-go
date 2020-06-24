@@ -10,12 +10,10 @@ import (
 var {{.Pascal}}Middlewares = func() middleware.Middlewares {
 	return middleware.Middlewares{}
 }
-//Router{{.Pascal}} router {{.raw}}.
-var Router{{.Pascal}}=new{{.Pascal}}Router()
-//new{{.Pascal}}Router create new {{.Raw}} Router
 
-func new{{.Pascal}}Router() router.Router {
+//Router{{.Pascal}}Factory api router factory.
+var Router{{.Pascal}}Factory = router.NewFactory(func() router.Router {
 	var Router = httprouter.New()
 	//Put your router configure code here
 	return Router
-}
+})

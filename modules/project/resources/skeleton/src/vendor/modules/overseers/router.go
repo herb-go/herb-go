@@ -2,19 +2,19 @@ package overseers
 
 import (
 	"github.com/herb-go/herb/middleware/router"
-	worker "github.com/herb-go/worker"
 	overseer "github.com/herb-go/providers/herb/overseers/routeroverseer"
+	worker "github.com/herb-go/worker"
 )
 
-//RouterWorker empty router worker.
-var RouterWorker router.Router
+//RouterFactoryWorker empty router factory worker.
+var RouterFactoryWorker *router.Factory
 
-//RouterOverseer router overseer
-var RouterOverseer = worker.NewOrverseer("router", &RouterWorker)
+//RouterFactoryOverseer router overseer
+var RouterFactoryOverseer = worker.NewOrverseer("router", &RouterFactoryWorker)
 
 func init() {
-	RouterOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(RouterOverseer)
+	RouterFactoryOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
+		return overseer.New().Apply(RouterFactoryOverseer)
 	})
-	worker.Appoint(RouterOverseer)
+	worker.Appoint(RouterFactoryOverseer)
 }

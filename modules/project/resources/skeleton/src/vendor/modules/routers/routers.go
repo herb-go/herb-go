@@ -10,11 +10,8 @@ import (
 	"github.com/herb-go/util"
 )
 
-//Router base router.
-var Router = New()
-
-//New create new router.
-func New() router.Router {
+//RouterFactory base router factory.
+var RouterFactory = router.NewFactory(func() router.Router {
 	var Router = httprouter.New()
 
 	//Only host assests folder if folder exisits
@@ -25,7 +22,7 @@ func New() router.Router {
 	}
 	Router.StripPrefix("/api").
 		Use(APIMiddlewares()...).
-		Handle(RouterAPI)
+		Handle(RouterAPIFactory.CreateRouter())
 
 	//var RouterHTML = newHTMLRouter()
 	//Router.StripPrefix("/page").Use(HTMLMiddlewares()...).Handle(RouterHTML)
@@ -33,4 +30,4 @@ func New() router.Router {
 	//Router.GET("/").Use(HTMLMiddlewares()...).Handle(actions.IndexAction)
 
 	return Router
-}
+})
