@@ -2,8 +2,8 @@ package overseers
 
 import (
 	"github.com/herb-go/herb/cache"
-	worker "github.com/herb-go/worker"
 	overseer "github.com/herb-go/providers/herb/overseers/cacheoverseer"
+	worker "github.com/herb-go/worker"
 )
 
 //CacheWorker empty cache worker.
@@ -14,7 +14,7 @@ var CacheOverseer = worker.NewOrverseer("cache", &CacheWorker)
 
 func init() {
 	CacheOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(CacheOverseer)
+		return overseer.New().ApplyTo(CacheOverseer)
 	})
 	worker.Appoint(CacheOverseer)
 }

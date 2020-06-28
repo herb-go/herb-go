@@ -14,7 +14,7 @@ var RouterFactoryOverseer = worker.NewOrverseer("router", &RouterFactoryWorker)
 
 func init() {
 	RouterFactoryOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(RouterFactoryOverseer)
+		return overseer.New().ApplyTo(RouterFactoryOverseer)
 	})
 	worker.Appoint(RouterFactoryOverseer)
 }

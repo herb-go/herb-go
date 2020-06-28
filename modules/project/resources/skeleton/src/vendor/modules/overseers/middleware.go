@@ -3,8 +3,8 @@ package overseers
 import (
 	"net/http"
 
-	worker "github.com/herb-go/worker"
 	overseer "github.com/herb-go/providers/herb/overseers/middlewareoverseer"
+	worker "github.com/herb-go/worker"
 )
 
 //MiddlewareWorker empty middleware worker.
@@ -15,7 +15,7 @@ var MiddlewareOverseer = worker.NewOrverseer("middleware", &MiddlewareWorker)
 
 func init() {
 	MiddlewareOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(MiddlewareOverseer)
+		return overseer.New().ApplyTo(MiddlewareOverseer)
 	})
 	worker.Appoint(MiddlewareOverseer)
 }

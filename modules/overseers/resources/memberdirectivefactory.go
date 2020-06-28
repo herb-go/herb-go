@@ -14,7 +14,7 @@ var MemberDirectiveFactoryOverseer = worker.NewOrverseer("memberdirectivefactory
 
 func init() {
 	MemberOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(MemberDirectiveFactoryOverseer)
+		return overseer.New().ApplyTo(MemberDirectiveFactoryOverseer)
 	})
 	worker.Appoint(MemberDirectiveFactoryOverseer)
 }

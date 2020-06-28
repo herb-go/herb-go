@@ -2,8 +2,8 @@ package overseers
 
 import (
 	"github.com/herb-go/herb/middleware/action"
-	worker "github.com/herb-go/worker"
 	overseer "github.com/herb-go/providers/herb/overseers/actionoverseer"
+	worker "github.com/herb-go/worker"
 )
 
 //ActionWorker empty cache worker.
@@ -14,7 +14,7 @@ var ActionOverseer = worker.NewOrverseer("action", &ActionWorker)
 
 func init() {
 	ActionOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(ActionOverseer)
+		return overseer.New().ApplyTo(ActionOverseer)
 	})
 	worker.Appoint(ActionOverseer)
 }

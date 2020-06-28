@@ -14,7 +14,7 @@ var DatabaseOverseer = worker.NewOrverseer("database", &DatabaseWorker)
 
 func init() {
 	DatabaseOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(DatabaseOverseer)
+		return overseer.New().ApplyTo(DatabaseOverseer)
 	})
 	worker.Appoint(DatabaseOverseer)
 }

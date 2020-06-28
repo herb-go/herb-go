@@ -14,7 +14,7 @@ var MemberOverseer = worker.NewOrverseer("member", &MemberWorker)
 
 func init() {
 	MemberOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
-		return overseer.New().Apply(MemberOverseer)
+		return overseer.New().ApplyTo(MemberOverseer)
 	})
 	worker.Appoint(MemberOverseer)
 }
