@@ -11,6 +11,7 @@ import (
 //MustInitOverseers init overseers.
 //Panic if any error raised
 func MustInitOverseers() {
+	worker.Debug = app.Development.Debug
 	util.Must(app.PresetWorkers.Apply())
 	util.Must(app.Workers.Apply())
 	util.Must(worker.InitOverseers())
