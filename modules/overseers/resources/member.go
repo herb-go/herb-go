@@ -6,10 +6,10 @@ import (
 	worker "github.com/herb-go/worker"
 )
 
-//MemberWorker empty cache worker.
+//MemberWorker empty member worker.
 var MemberWorker = member.New()
 
-//MemberOverseer cache overseer
+//MemberOverseer member overseer
 var MemberOverseer = worker.NewOrverseer("member", &MemberWorker)
 
 func init() {

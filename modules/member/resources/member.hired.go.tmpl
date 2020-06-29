@@ -9,17 +9,27 @@ import (
 	"github.com/herb-go/providers/sql/sqluser"
 )
 
+//WORKER(MemberCache):Member cache directive
+
 //MemberCache member directive factroy  from "github.com/herb-go/member/drivers/membercache"
 var MemberCache = membercache.DirectiveFactory
+
+//WORKER(SQLUser):Member sql user directive
 
 //SQLUser member directive factroy  from "github.com/herb-go/providers/sql/sqluser"
 var SQLUser = sqluser.DirectiveFactory
 
+//WORKER(TOMlUser):Member ldap user directive
+
 //TOMlUser member directive factroy  from "github.com/herb-go/providers/herb/statictoml/tomluser"
 var TOMlUser = tomluser.DirectiveFactory
 
+//WORKER(LdapUser):Member ldap user directive
+
 //LdapUser member directive factroy  from "github.com/herb-go/providers/ldapconn/ldapuser"
 var LdapUser = ldapuser.DirectiveFactory
+
+//WORKER(UIDAccount):Member uid as account  directive
 
 //UIDAccount  directive factroy  from "github.com/herb-go/member/drivers/uidaccount"
 var UIDAccount = uidaccount.DirectiveFactory

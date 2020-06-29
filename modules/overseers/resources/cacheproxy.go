@@ -6,10 +6,10 @@ import (
 	worker "github.com/herb-go/worker"
 )
 
-//CacheProxyWorker empty cache worker.
+//CacheProxyWorker empty cacheproxy worker.
 var CacheProxyWorker = cache.NewProxy(nil)
 
-//CacheProxyOverseer cache overseer
+//CacheProxyOverseer cacheproxy overseer
 var CacheProxyOverseer = worker.NewOrverseer("cacheproxy", &CacheProxyWorker)
 
 func init() {

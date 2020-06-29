@@ -6,10 +6,10 @@ import (
 	worker "github.com/herb-go/worker"
 )
 
-//DatabaseWorker empty cache worker.
+//DatabaseWorker empty database worker.
 var DatabaseWorker = db.New()
 
-//DatabaseOverseer cache overseer
+//DatabaseOverseer database overseer
 var DatabaseOverseer = worker.NewOrverseer("database", &DatabaseWorker)
 
 func init() {
