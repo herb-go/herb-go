@@ -83,7 +83,7 @@ var ActionGet = action.New(func(w http.ResponseWriter, r *http.Request){
 //ActionList action which list {{.Name.Raw}} models by request params.
 var ActionList = action.New(func(w http.ResponseWriter, r *http.Request) {
        	render.MustJSON(w, mustListResults(r), 200)
-}
+})
 
 func mustListResults(r *http.Request) map[string]interface{}{
     var err error
