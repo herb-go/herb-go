@@ -1,3 +1,3 @@
 #!/bin/bash
 
-go build  -o ../../bin/app ../
+go build  --trimpath -o ../../bin/app ../
