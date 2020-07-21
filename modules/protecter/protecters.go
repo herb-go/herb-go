@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/herb-go/util/cli/name"
-
 	"github.com/herb-go/herb-go/modules/httpinfo"
 	"github.com/herb-go/herb-go/modules/overseers"
 	"github.com/herb-go/herb-go/modules/project"
@@ -13,23 +11,23 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-type Protecter struct {
+type Protecters struct {
 	app.BasicModule
 	SlienceMode bool
 }
 
-func (m *Protecter) ID() string {
+func (m *Protecters) ID() string {
 	return "github.com/herb-go/herb-go/modules/protecter"
 }
 
-func (m *Protecter) Cmd() string {
-	return "protecter"
+func (m *Protecters) Cmd() string {
+	return "protecters"
 }
 
-func (m *Protecter) Help(a *app.Application) string {
+func (m *Protecters) Help(a *app.Application) string {
 	m.Init(a, &[]string{})
-	help := `Usage %s protecter <name>.
-Create protecter module and config files.
+	help := `Usage %s protecters <name>.
+Create protecters module and config files.
 Default name is "protecter".
 File below will be created:
 	config/<name>.toml
@@ -40,13 +38,13 @@ File below will be created:
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
 
-func (m *Protecter) Desc(a *app.Application) string {
-	return "Create protecter module and config files."
+func (m *Protecters) Desc(a *app.Application) string {
+	return "Create protecters module and config files."
 }
-func (m *Protecter) Group(a *app.Application) string {
+func (m *Protecters) Group(a *app.Application) string {
 	return "Auth"
 }
-func (m *Protecter) Init(a *app.Application, args *[]string) error {
+func (m *Protecters) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
@@ -58,21 +56,18 @@ func (m *Protecter) Init(a *app.Application, args *[]string) error {
 	*args = m.FlagSet().Args()
 	return nil
 }
-func (m *Protecter) Question(a *app.Application) error {
+func (m *Protecters) Question(a *app.Application) error {
 	return nil
 }
-func (m *Protecter) Exec(a *app.Application, args []string) error {
+func (m *Protecters) Exec(a *app.Application, args []string) error {
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
 	}
-	var n *name.Name
 
-	if len(args) == 0 {
-		fmt.Println("No protecter module name given.\"protecter\" is used")
-		n, err = name.New(true, "protecter")
-	} else {
-		n, err = name.New(true, args...)
+	if len(args) != 0 {
+		a.PrintModuleHelp(m)
+		return nil
 	}
 	if err != nil {
 		return err
@@ -103,12 +98,12 @@ func (m *Protecter) Exec(a *app.Application, args []string) error {
 	}
 	task := tools.NewTask(filepath.Join(app, "/modules/protecter/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd, mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task)
 	if err != nil {
 		return err
 	}
 	task.AddJob(func() error {
-		a.Printf("Protecter  \"%s\" created.\n", n.LowerWithParentDotSeparated)
+		a.Printf("Protecters  created.\n")
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()
@@ -126,22 +121,23 @@ func (m *Protecter) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Protecter) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
+func (m *Protecters) Render(a *app.Application, appPath string, mp string, task *tools.Task) error {
 	err := tools.CopyIfNotExist(filepath.Join(task.SrcFolder, "hired.authenticator.go.tmpl"), mp, "hired", "authenticator.go")
 	if err != nil {
 		return err
 	}
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "protecter.toml.tmpl",
-		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "protecter.toml.tmpl",
-		filepath.Join(mp, n.LowerPath(n.Lower+".go")):                                    "protecter.go.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "app.protecter.go.tmpl",
+		filepath.Join("config", "protecters.toml"):                   "protecters.toml.tmpl",
+		filepath.Join("system", "configskeleton", "protecters.toml"): "protecters.toml.tmpl",
+		filepath.Join(mp, "protecters", "init.go"):                   "protecters.go.tmpl",
+		filepath.Join(mp, "app", "protecters.go"):                    "app.protecters.go.tmpl",
+		filepath.Join(mp, "protecters.go"):                           "modules.go.tmpl",
 	}
-	return task.RenderFiles(filesToRender, n)
+	return task.RenderFiles(filesToRender, nil)
 }
 
-var ProtecterModule = &Protecter{}
+var ProtectersModule = &Protecters{}
 
 func init() {
-	app.Register(ProtecterModule)
+	app.Register(ProtectersModule)
 }

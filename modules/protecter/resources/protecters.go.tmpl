@@ -1,0 +1,34 @@
+package protecters
+
+import (
+	"modules/app"
+	"net/http"
+
+	"github.com/herb-go/protecter/protectermanager"
+
+	"github.com/herb-go/protecter"
+
+	"github.com/herb-go/util"
+)
+
+//ModuleName module name
+const ModuleName = "200protecters"
+
+//ProtectMiddleware protect middleware
+func ProtectMiddleware(name string) func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	return protecter.ProtectMiddleware(protectermanager.Register(name))
+}
+
+//ProtectWith protect given handler with Protecter
+func ProtectWith(name string, h http.Handler) http.Handler {
+	return protecter.ProtectWith(protectermanager.Register(name), h)
+}
+
+func init() {
+	util.RegisterModule(ModuleName, func() {
+		//Init registered initator which registered by RegisterInitiator
+		//util.RegisterInitiator(ModuleName, "func", func(){})
+		util.Must(app.Protecters.Apply())
+		util.InitOrderByName(ModuleName)
+	})
+}
