@@ -13,7 +13,7 @@ var MemberDirectiveFactoryWorker func(loader func(v interface{}) error) (member.
 var MemberDirectiveFactoryOverseer = worker.NewOrverseer("memberdirectivefactory", &MemberDirectiveFactoryWorker)
 
 func init() {
-	MemberOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
+	MemberDirectiveFactoryOverseer.WithInitFunc(func(t *worker.OverseerTranning) error {
 		return overseer.New().ApplyTo(MemberDirectiveFactoryOverseer)
 	})
 	worker.Appoint(MemberDirectiveFactoryOverseer)

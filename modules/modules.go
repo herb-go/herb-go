@@ -30,3 +30,6 @@ import _ "github.com/herb-go/herb-go/modules/overseers" //overseers module
 
 import _ "github.com/herb-go/herb-go/modules/scanworkers" //scanworkers module
 import _ "github.com/herb-go/herb-go/modules/ldap"        //ldap module
+
+import _ "github.com/herb-go/herb-go/modules/httpinfo"  //httpinfo module
+import _ "github.com/herb-go/herb-go/modules/protecter" //protecter module

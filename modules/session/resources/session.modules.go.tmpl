@@ -9,11 +9,11 @@ import (
 //ModuleName module name
 const ModuleName="100{{.LowerWithParentDotSeparated}}"
 
-//{{.Pascal}} app session component.
-var {{.Pascal}} = session.New()
+//Session app session component.
+var Session = session.New()
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must({{.Pascal}}.Init(app.{{.PascalWithParents}}))
+		util.Must(Session.Init(app.{{.PascalWithParents}}))
 	})
 }

@@ -1,0 +1,17 @@
+#Presethttpinfo config file
+[[Extractors]]
+Name="appidheader"
+Type="header"
+[Extractors.Config]
+Field="appid"
+[[Extractors]]
+Name="secretheader"
+Type="header"
+[Extractors.Config]
+Field="secret"
+[[Fields]]
+Name="appidheader"
+Extractor="appidheader"
+[[Fields]]
+Name="secretheader"
+Extractor="secretheader"
