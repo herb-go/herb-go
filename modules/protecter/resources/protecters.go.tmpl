@@ -28,6 +28,7 @@ func init() {
 	util.RegisterModule(ModuleName, func() {
 		//Init registered initator which registered by RegisterInitiator
 		//util.RegisterInitiator(ModuleName, "func", func(){})
+		protectermanager.Debug = app.Development.Debug
 		util.Must(app.Protecters.Apply())
 		util.InitOrderByName(ModuleName)
 	})
