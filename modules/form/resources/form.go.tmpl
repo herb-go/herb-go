@@ -65,6 +65,11 @@ func (f *{{.Name.Pascal}}Form) Exec()  error {
 
 //InitWithRequest init {{.Name.Raw}} form  with http request.
 func (f *{{.Name.Pascal}}Form) InitWithRequest(r *http.Request) error {
+	{{- if .Confirmed.Manual}}
+	//Parsing form.
+	//Put your manual form parse code here
+	{{- end}}
+
 	//Put your request form code here.
 	//such as get current user id or ip address.
 

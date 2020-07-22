@@ -31,7 +31,11 @@ var Action{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Requ
 	}
     form.SetUID(uid)
     {{- end }}
+	{{- if .Confirmed.Manual}}
+	if formdata.MustValidate(r, form) {
+	{{- else -}}
 	if formdata.MustValidateJSONRequest(r, form) {
+	{{- end }}
 		err:=form.Exec()
 		if err!=nil{
 			panic(err)

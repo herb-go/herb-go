@@ -22,6 +22,7 @@ type Form struct {
 	Location    string
 	WithAction  bool
 	User        string
+	Manual      bool
 	WithMember  bool
 	UserModule  *name.Name
 }
@@ -53,6 +54,7 @@ func (m *Form) Init(a *app.Application, args *[]string) error {
 		return nil
 	}
 	m.FlagSet().BoolVar(&m.SlienceMode, "s", false, "Slience mode")
+	m.FlagSet().BoolVar(&m.Manual, "m", false, "Manual parse form")
 	m.FlagSet().BoolVar(&m.WithAction, "withaction", false, "Whether create form action")
 	m.FlagSet().StringVar(&m.Location, "location", "forms",
 		`default form code location. 
