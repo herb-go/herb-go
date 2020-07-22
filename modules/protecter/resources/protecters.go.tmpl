@@ -24,6 +24,11 @@ func ProtectWith(name string, h http.Handler) http.Handler {
 	return protecter.ProtectWith(protectermanager.Register(name), h)
 }
 
+//Get get protecter by given name.
+func Get(name string) *protecter.Protecter {
+	return protectermanager.Register(name)
+}
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
 		//Init registered initator which registered by RegisterInitiator
