@@ -2,7 +2,7 @@ package overseers
 
 import (
 	"github.com/herb-go/herb/model/sql/db"
-	overseer "github.com/herb-go/providers/herb/overseers/dboverseer"
+	overseer "github.com/herb-go/herb-drivers/overseers/dboverseer"
 	worker "github.com/herb-go/worker"
 )
 

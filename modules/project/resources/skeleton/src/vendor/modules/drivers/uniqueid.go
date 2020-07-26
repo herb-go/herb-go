@@ -1,5 +1,5 @@
 package drivers
 
 //UniqueID Drivers
-//import _ "github.com/herb-go/uniqueid/uuid"
-//import _ "github.com/herb-go/uniqueid/snowflake"
+//import _ "github.com/herb-go/uniqueid-drivers/uuid"
+//import _ "github.com/herb-go/uniqueid-drivers/snowflake"

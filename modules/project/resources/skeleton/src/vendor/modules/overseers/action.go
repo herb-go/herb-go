@@ -2,7 +2,7 @@ package overseers
 
 import (
 	"github.com/herb-go/herb/middleware/action"
-	overseer "github.com/herb-go/providers/herb/overseers/actionoverseer"
+	overseer "github.com/herb-go/herb-drivers/overseers/actionoverseer"
 	worker "github.com/herb-go/worker"
 )
 

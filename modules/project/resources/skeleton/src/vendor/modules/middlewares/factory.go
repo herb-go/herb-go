@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"github.com/herb-go/herb/middleware/middlewarefactory"
-	"github.com/herb-go/providers/herb/hired/hiredmiddleware"
-	"github.com/herb-go/providers/herb/requestpattern/requestpatterncondition"
+	"github.com/herb-go/herb-drivers/middleware/hiredmiddleware"
+	"github.com/herb-go/herb-drivers/middlewarecondition/requestpatterncondition"
 )
 
 func init() {

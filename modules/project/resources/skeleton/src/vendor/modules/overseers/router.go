@@ -1,8 +1,8 @@
 package overseers
 
 import (
+	overseer "github.com/herb-go/herb-drivers/overseers/routeroverseer"
 	"github.com/herb-go/herb/middleware/router"
-	overseer "github.com/herb-go/providers/herb/overseers/routeroverseer"
 	worker "github.com/herb-go/worker"
 )
 

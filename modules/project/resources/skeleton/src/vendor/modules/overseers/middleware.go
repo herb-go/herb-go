@@ -3,7 +3,7 @@ package overseers
 import (
 	"net/http"
 
-	overseer "github.com/herb-go/providers/herb/overseers/middlewareoverseer"
+	overseer "github.com/herb-go/herb-drivers/overseers/middlewareoverseer"
 	worker "github.com/herb-go/worker"
 )
 
