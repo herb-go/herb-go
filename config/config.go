@@ -7,7 +7,7 @@ var Config = app.NewApplicationConfig()
 func InitConfig() {
 	Config.Name = "Herb-go cli tool"
 	Config.Cmd = "herb-go"
-	Config.Version = "0.1.0"
+	Config.Version = "1.0.0"
 	Config.IntroTemplate = "{{.Config.Name}} Version {{.Config.Version}}\nCli tool to create herb-go app.\n"
 }
 

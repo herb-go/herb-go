@@ -6,6 +6,7 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
+	"github.com/herb-go/herb-go/modules/http"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -68,7 +69,7 @@ func (m *Router) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -76,10 +77,21 @@ func (m *Router) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
+	result, err := tools.FileExists(mp, "routers", "routers.go")
+	if err != nil {
+		return err
+	}
+	if !result {
+		err = http.RoutersModule.Exec(a, []string{"-s"})
+		if err != nil {
+			return err
+		}
+
+	}
 
 	task := tools.NewTask(filepath.Join(app, "/modules/router/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -102,10 +114,10 @@ func (m *Router) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Router) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Router) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join(mp,"routers", n.LowerWithParentDotSeparated+".go"):           "router.go.tmpl",
+		filepath.Join(mp, "routers", n.LowerWithParentDotSeparated+".go"): "router.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

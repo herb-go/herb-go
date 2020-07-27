@@ -25,8 +25,8 @@ func initModules() {
 
 //Main app run func.
 var run = func() {
-	//Replace next line "panic(errFuncWhenRunFuncNotRewrited)" with your own app run function
-	panic(errFuncWhenRunFuncNotRewrited)
+	//Put your run code here
+	util.WaitingQuit()
 }
 
 //Init init app

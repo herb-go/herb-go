@@ -1,0 +1,52 @@
+package http
+
+import (
+	"modules/app"
+	"modules/middlewares"
+	"modules/routers"
+
+	"github.com/herb-go/herb/middleware"
+	"github.com/herb-go/util"
+	"github.com/herb-go/util/httpserver"
+)
+
+//ModuleName module name
+const ModuleName = "999{{.LowerWithParentDotSeparated}}"
+
+//App Main applactions. to serve http
+var App = middleware.New()
+
+//Middlewares middlewares which should be used in whole app
+var Middlewares = func() middleware.Middlewares {
+	return middleware.Middlewares{
+		app.{{.PascalWithParents}}.Forwarded.ServeMiddleware,
+		middlewares.MiddlewareErrorPage.ServeMiddleware,
+		httpserver.RecoverMiddleware(nil),
+		app.{{.PascalWithParents}}.Headers.ServeMiddleware,
+	}
+}
+
+//Start start app as http server
+var Start = func() {
+	if app.{{.PascalWithParents}}.Config.Disabled {
+		return
+	}
+	var Server = app.{{.PascalWithParents}}.Config.Server()
+	httpserver.MustListenAndServeHTTP(Server, &app.{{.PascalWithParents}}.Config, App)
+	util.WaitingQuit()
+	defer util.Bye()
+	httpserver.ShutdownHTTP(Server)
+
+}
+
+func init() {
+
+	util.RegisterModule(ModuleName, func() {
+		//Init registered initator which registered by RegisterInitiator
+		//util.RegisterInitiator(ModuleName, "func", func(){})
+		App.
+			Use(Middlewares()...).
+			Handle(routers.RouterFactory.CreateRouter())
+		go Start()
+	})
+}
