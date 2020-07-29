@@ -27,6 +27,9 @@ func initModules() {
 var run = func() {
 	//Put your run code here
 	util.WaitingQuit()
+	//Delay util.QuitDelayDuration for modules quit.
+	util.DelayAndQuit()
+
 }
 
 //Init init app
