@@ -13,6 +13,7 @@ var AppSkeleton = func(mp string) map[string]string {
 		"/test/testconfig/readme.md":                      "/skeleton/test/testconfig/readme.md",
 		"/src/main.go":                                    "/skeleton/src/main.go",
 		"/src/build/build-linux.sh":                       "/skeleton/src/build/build-linux.sh",
+		"/src/build/publish-linux.sh":                     "/skeleton/src/build/publish-linux.sh",
 		"/system/constants/presetworkers.toml":            "/skeleton/system/constants/presetworkers.toml",
 		"/system/defaultconfig/time.toml":                 "/skeleton/system/defaultconfig/time.toml",
 		"/system/defaultconfig/examples/time.toml":        "/skeleton/system/defaultconfig/examples/time.toml",

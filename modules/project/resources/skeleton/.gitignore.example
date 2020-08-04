@@ -28,6 +28,7 @@ _testmain.go
 /src/debug
 /bin/
 /appdata/
+/logs/
 /test/testconfig/*.json
 /test/testconfig/*.toml
 /test/appdate

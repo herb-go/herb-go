@@ -14,7 +14,7 @@ import (
 const ModuleName = "100loggers"
 
 //MyLogger my logger
-// var MyLogger = logger.PrintLogger.SubLogger().SetID("mylogger")
+// var MyLogger = logger.PrintLogger.SubLogger().SetPrefixs(logger.DefaultTimePrefix).SetID("mylogger")
 // var MyFormatLogger = MyLogger.ForamtLogger()
 
 var reopenSignals []os.Signal
@@ -45,6 +45,7 @@ func listenForReopenLoggers() {
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
+		util.MakeLoggerFolderIfNotExist()
 		util.Must(app.Loggers.ApplyToBuiltinLoggers())
 		util.ErrorLogger = logger.Error
 		// util.Must(app.Loggers.ApplyTo(MyLogger, "MyLogger"))
