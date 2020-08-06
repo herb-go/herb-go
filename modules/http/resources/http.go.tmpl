@@ -20,6 +20,7 @@ var App = middleware.New()
 var Middlewares = func() middleware.Middlewares {
 	return middleware.Middlewares{
 		app.{{.PascalWithParents}}.Forwarded.ServeMiddleware,
+		app.{{.PascalWithParents}}.Hosts.ServeMiddleware,
 		middlewares.MiddlewareErrorPage.ServeMiddleware,
 		httpserver.RecoverMiddleware(nil),
 		app.{{.PascalWithParents}}.Headers.ServeMiddleware,

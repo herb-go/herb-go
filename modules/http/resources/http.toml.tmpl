@@ -51,3 +51,14 @@ ForwardedTokenValue="token"
 [Headers]
 "X-Powered-By"="Herb-go"
 "X-Frame-Options"="SAMEORIGIN"
+#Hosts server hosts
+[Hosts]
+#Patterns limited hostnames.
+#Patterns have 3 mode.
+#Normal mode:hostname must equal to any pattern
+#Wildcard mode(pattern start with "*"):Host must have suffix after first "*".
+#Subdomain mode(pattern start with ".")：Host must be 1 level subdomain to pattern.
+Patterns=[
+    # "127.0.0.1",
+    # "localhost",
+]
