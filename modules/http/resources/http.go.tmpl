@@ -24,6 +24,7 @@ var Middlewares = func() middleware.Middlewares {
 		middlewares.MiddlewareErrorPage.ServeMiddleware,
 		httpserver.RecoverMiddleware(nil),
 		app.{{.PascalWithParents}}.Headers.ServeMiddleware,
+		app.{{.PascalWithParents}}.ErrorPages.Middleware(),
 	}
 }
 

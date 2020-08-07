@@ -62,3 +62,14 @@ Patterns=[
     # "127.0.0.1",
     # "localhost",
 ]
+#Errorpages Config
+[ErrorPages]
+#ErrorPage default error page filepath (status code bettween 399 and 600).
+#Left empty if not need.
+ErrorPage=""
+#IgnoredStatusCode ignored status code list
+IgnoredStatusCodes=[422]
+#Error page filepath per status code
+[[ErrorPages.StatusCodePages]]
+StatusCode=404
+Path=""
