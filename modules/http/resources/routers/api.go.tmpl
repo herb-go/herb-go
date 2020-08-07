@@ -4,6 +4,7 @@ import (
 	"modules/middlewares"
 
 	"github.com/herb-go/herb/middleware"
+	"github.com/herb-go/herb/middleware/errorpage"
 	"github.com/herb-go/herb/middleware/router"
 	"github.com/herb-go/herb/middleware/router/httprouter"
 )
@@ -12,7 +13,7 @@ import (
 var APIMiddlewares = func() middleware.Middlewares {
 	return middleware.Middlewares{
 		middlewares.MiddlewareCsrfVerifyHeader,
-		middlewares.MiddlewareErrorPage.MiddlewareDisable,
+		errorpage.MiddlewareDisable,
 	}
 }
 
