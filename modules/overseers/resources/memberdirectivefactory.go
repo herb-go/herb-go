@@ -1,8 +1,8 @@
 package overseers
 
 import (
-	"github.com/herb-go/member"
-	overseer "github.com/herb-go/member-drivers/overseers/memberdirectivefactoryoverseer"
+	"github.com/herb-go/deprecated/member"
+	overseer "github.com/herb-go/deprecated/member-drivers/overseers/memberdirectivefactoryoverseer"
 	worker "github.com/herb-go/worker"
 )
 
