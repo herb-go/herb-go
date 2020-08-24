@@ -84,6 +84,15 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	if result {
 		return fmt.Errorf("\"%s\" exists.Create app fail", appPath)
 	}
+	var confirmed bool
+
+	err = tools.NewTrueOrFalseQuestion("Do you want to install herb app in ("+appPath+")?").ExecIf(a, true, &confirmed)
+	if err != nil {
+		return err
+	}
+	if !confirmed {
+		return nil
+	}
 	app, err := tools.FindLib(a.Getenv("GOPATH"), "github.com/herb-go/herb-go")
 	if err != nil {
 		return err

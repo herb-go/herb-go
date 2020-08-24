@@ -11,7 +11,7 @@ import (
 var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
 	"action":        project.InitActionOverseer,
 	"cache":         newInitFunc([]string{"cache.go", "cache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
-	"member":        newInitFunc([]string{"member.go", "member.go", "memberdirectivefactory.go", "memberdirectivefactory.go"}, "Member"),
+	"usersystem":    newInitFunc([]string{"usersystemdirectivefactory.go", "usersystemdirectivefactory.go"}, "UserSystem"),
 	"authenticator": newInitFunc([]string{"authenticatorfactory.go", "authenticatorfactory.go"}, "Authenticator"),
 	"database":      newInitFunc([]string{"database.go", "database.go"}, "Database"),
 	"identifier":    newInitFunc([]string{"identifier.go", "identifier.go"}, "Identifier"),

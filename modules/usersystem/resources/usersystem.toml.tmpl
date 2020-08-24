@@ -1,0 +1,37 @@
+# toml Directive
+# [[Directives]]
+# ID="hired.TOMlUser"
+# [Directives.Config]
+# Source        ="appdata/users.static.toml"
+# ProfileFields =["field1","field2"]
+# ServePassword =true
+# ServeStatus   =true
+# ServeAccounts =true
+# ServeRoles    =true
+# ServeTerm     =true
+# ServeProfile  =true
+# HashMode="md5"
+
+# # herbsession Directive
+# [[Directives]]
+# ID="hired.HerbSession"
+# [Directives.Config]
+# DriverName = "cache"
+# TokenLifetime = "1h"
+# TokenMaxLifetime = "168h"
+# TokenContextName = "token"
+# CookieName = "herb-go-{{.Name.PascalWithParents}}"
+# CookiePath = "/"
+# CookieSecure = false
+# UpdateActiveIntervalInSecond = 100
+# TokenLength = 32
+# [Directives.Config.Cache]
+# Driver = "syncmapcache"
+# TTL = 3600
+
+# # memactives Directive
+# [[Directives]]
+# ID="hired.MemActives"
+# [Directives.Config]
+# [Directives.Config.Durations]
+# "web"="60m"
