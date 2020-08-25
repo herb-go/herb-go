@@ -1,0 +1,138 @@
+package forms
+
+import (
+	usermodule "modules/{{.Name.LowerWithParentPath}}"
+	"net/http"
+	"strings"
+
+	"github.com/herb-go/herb/ui"
+	"github.com/herb-go/herb/ui/validator/formdata"
+	"github.com/herb-go/herb/user"
+	"github.com/herb-go/usersystem-drivers/userform"
+	"github.com/herb-go/util/form/commonform"
+
+)
+
+{{ if not (eq .AccountKeyword "" )}}
+//AccountKeyword account keyword used to login.
+const AccountKeyword = "{{.AccountKeyword}}"
+{{- end }}
+
+//{{.FormID.Pascal}}FormFieldLabels form field labels map.
+var {{.FormID.Pascal}}FormFieldLabels = map[string]string{
+	"Username": "Username",
+	"Password": "Password",
+}
+
+//{{.FormID.Pascal}}Form form struct for login
+type {{.FormID.Pascal}}Form struct {
+	formdata.Form
+	Username string
+	Password string
+	uid      string
+}
+
+//{{.FormID.Pascal}}FormID form id of  login form
+const {{.FormID.Pascal}}FormID = "form{{.Name.Lower}}.{{.FormID.Lower}}"
+
+
+
+//New{{.FormID.Pascal}}Form create new login form
+func New{{.FormID.Pascal}}Form() *{{.FormID.Pascal}}Form {
+	form := &{{.FormID.Pascal}}Form{}
+	return form
+}
+
+//ComponentID return form component id.
+func (f *{{.FormID.Pascal}}Form) ComponentID() string{
+    return {{.FormID.Pascal}}FormID
+}
+
+//UID return form uid
+func (f *{{.FormID.Pascal}}Form) UID() string {
+	return f.uid
+}
+
+//ValidateUserStatus validate user status
+func (f *{{.FormID.Pascal}}Form) ValidateUserStatus() error {
+	a, err := usermodule.Status.IsUserAvaliable(f.uid)
+	if err == user.ErrUserNotExists {
+		f.ValidateFieldMessagef(true, "Username", userform.MsgIncorrectUsernameOrPassword)
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if f.HasError() {
+		return nil
+	}
+	f.ValidateFieldMessagef(a, "Username", userform.MsgUserNotAvailable)
+	return nil
+
+}
+
+//GetUserID get user id from username field
+//Return user id and any error if raised
+{{- if eq .AccountKeyword "" }}
+func (f *{{.FormID.Pascal}}Form) GetUserID() (string, error) {
+	f.uid = f.Username
+	return f.uid, nil
+}
+{{- else }}
+func (f *{{.FormID.Pascal}}Form) GetUserID() (string, error) {
+	account := user.NewAccount()
+	account.Keyword = AccountKeyword
+	account.Account = f.Username
+	uid, err := usermodule.Account.AccountToUID(account)
+	if err != nil {
+		return "", err
+	}
+	f.uid = uid
+	return f.uid, nil
+}
+{{- end}}
+
+//Validate Validate form and return any error if raised.
+func (f *{{.FormID.Pascal}}Form) Validate() error {
+	var uid string
+	var err error
+
+	 {{- if .Caseinsensitive }}
+	f.Username = strings.ToLower(f.Username)
+	{{- end }}
+	f.Username = strings.TrimSpace(f.Username)
+	commonform.ValidateRequiredString(f, f.Username, "Username")
+    commonform.ValidateRequiredString(f, f.Password, "Password")
+	if !f.HasError() {
+		uid, err = f.GetUserID()
+		if err != nil {
+			return err
+		}
+		f.ValidateFieldMessagef(uid != "", "Username", userform.MsgUserNotAvailable)
+	}
+	if !f.HasError() {
+		err = f.ValidateUserStatus()
+		if err != nil {
+			return err
+		}
+	}	
+	if !f.HasError() {
+		result, err := usermodule.Password.VerifyPassword(uid, f.Password)
+		if err != nil {
+			return err
+		}
+		f.ValidateFieldMessagef(result == true, "Username",userform.MsgIncorrectUsernameOrPassword)
+	}
+	return nil
+}
+
+//InitWithRequest init  login form  with http request.
+func (f *{{.FormID.Pascal}}Form) InitWithRequest(r *http.Request) error {
+	//Put your request form code here.
+	//such as get current user id or ip address.
+
+	//Set form labels with translated messages
+	f.SetComponentLabels(ui.GetMessages(f.Lang(), "herbgo.member").Collection({{.FormID.Pascal}}FormFieldLabels))
+
+	return nil
+}

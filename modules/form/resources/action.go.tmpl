@@ -24,7 +24,7 @@ import (
 //Action{{.Name.Pascal}} action that verify{{.Name.Raw}} form in json format.
 var Action{{.Name.Pascal}} = action.New(func(w http.ResponseWriter, r *http.Request) {
 	form := forms.New{{.Name.Pascal}}Form()
-    {{- if .Confirmed.WithMember }}
+    {{ if .Confirmed.WithMember -}}
     uid, err := {{.Confirmed.UserModule.Lower}}.IdentifyRequest(r)
 	if err != nil {
 		panic(err)

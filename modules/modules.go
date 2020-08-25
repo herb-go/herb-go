@@ -19,7 +19,9 @@ import _ "github.com/herb-go/herb-go/modules/form" //form module
 
 // import _ "github.com/herb-go/herb-go/modules/member"          //member module
 // import _ "github.com/herb-go/herb-go/modules/memberloginform" //member login form module
-import _ "github.com/herb-go/herb-go/modules/usersystem" //user module
+
+import _ "github.com/herb-go/herb-go/modules/usersystem"    //user module
+import _ "github.com/herb-go/herb-go/modules/userloginform" //user login form module
 
 import _ "github.com/herb-go/herb-go/modules/modelmapper" //modelmapper module
 
