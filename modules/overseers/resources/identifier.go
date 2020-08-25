@@ -2,7 +2,7 @@ package overseers
 
 import (
 	overseer "github.com/herb-go/herb-drivers/overseers/identifieroverseer"
-	"github.com/herb-go/herb/user/httpuser"
+	"github.com/herb-go/deprecated/httpuser"
 	worker "github.com/herb-go/worker"
 )
 
