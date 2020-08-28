@@ -34,6 +34,16 @@ var LdapUser = ldapuser.DirectiveFactory
 //UIDAccount  directive factroy  from "github.com/herb-go/deprecated/member/drivers/uidaccount"
 var UIDAccount = uidaccount.DirectiveFactory
 
+//WORKER(PayloadLogintime):User login time payload directive
+
+//PayloadLogintime  login time payload directive factory  from "github.com/herb-go/usersystem-drivers/commonpayload"
+var PayloadLogintime = commonpayload.LoginPayload
+
+//WORKER(PayloadHTTPIp):User http id payload  directive
+
+//PayloadHTTPIp  http ip payload directive factory  from "github.com/herb-go/usersystem-drivers/commonpayload"
+var PayloadHTTPIp = commonpayload.HTTPIpPayload
+
 ////MyMemberDirectiveFactory put your own directive factory code here
 // var MyMemberDirectiveFactory = func(loader func(v interface{}) error) (member.Directive, error) {
 // 	d := NewMyMemberDirective()
