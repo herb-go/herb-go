@@ -40,3 +40,5 @@ import _ "github.com/herb-go/herb-go/modules/protecter" //protecter module
 import _ "github.com/herb-go/herb-go/modules/http"    //http module
 import _ "github.com/herb-go/herb-go/modules/website" //website module
 import _ "github.com/herb-go/herb-go/modules/cors"    //website module
+
+import _ "github.com/herb-go/herb-go/modules/persist" //persist module

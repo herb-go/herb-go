@@ -13,6 +13,7 @@ var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp s
 	"cache":         newInitFunc([]string{"cache.go", "cache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
 	"usersystem":    newInitFunc([]string{"usersystemdirectivefactory.go", "usersystemdirectivefactory.go"}, "UserSystem"),
 	"authenticator": newInitFunc([]string{"authenticatorfactory.go", "authenticatorfactory.go"}, "Authenticator"),
+	"persist":       newInitFunc([]string{"persistfactory.go", "persistfactory.go"}, "Persist"),
 	"database":      newInitFunc([]string{"database.go", "database.go"}, "Database"),
 	"identifier":    newInitFunc([]string{"identifier.go", "identifier.go"}, "Identifier"),
 }
