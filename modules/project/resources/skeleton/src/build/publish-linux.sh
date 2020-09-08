@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #settings
-binname="filebuckets"
+binname="app"
 buildername="build-linux.sh"
 
 
