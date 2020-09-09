@@ -10,8 +10,8 @@ import (
 )
 
 //{{.PascalWithParents}}Config {{.Raw}} config data struct.
-//Fields must can be unmarshaled by Toml lib.
-//You comment this struct if you use third party config struct.
+//Struct must  unmarshaleable by Toml lib.
+//You should comment this struct if you use third party config struct.
 type {{.PascalWithParents}}Config struct {
 }
 
