@@ -1,8 +1,8 @@
 package overseers
 
 import (
-	"github.com/herb-go/herb/model/sql/db"
-	overseer "github.com/herb-go/herb-drivers/overseers/dboverseer"
+	"github.com/herb-go/datasource/sql/db"
+	overseer "github.com/herb-go/datasource-drivers/overseers/dboverseer"
 	worker "github.com/herb-go/worker"
 )
 

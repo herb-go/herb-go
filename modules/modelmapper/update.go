@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/herb-go/herb/model/sql/db"
+	"github.com/herb-go/datasource/sql/db"
 	"github.com/herb-go/herbconfig/source"
 	"github.com/herb-go/util/cli/name"
 	"github.com/herb-go/util/config/tomlconfig"
