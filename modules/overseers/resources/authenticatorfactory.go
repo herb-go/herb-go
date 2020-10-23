@@ -1,8 +1,8 @@
 package overseers
 
 import (
-	overseer "github.com/herb-go/herbmodule-drivers/protecter-drivers/overseers/authenticatorfactoryoverseer"
-	"github.com/herb-go/herbmodules/protecter/authenticator"
+	overseer "github.com/herb-go/herbmodule-drivers/herbmodule-drivers/protecter-drivers/overseers/authenticatorfactoryoverseer"
+	"github.com/herb-go/herbmodules/herbmodules/protecter/authenticator"
 	worker "github.com/herb-go/worker"
 )
 

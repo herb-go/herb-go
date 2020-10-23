@@ -96,7 +96,7 @@ func (m *Protecters) Exec(a *app.Application, args []string) error {
 		}
 
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/protecter/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/herbmodules/protecter/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd, mp, task)
 	if err != nil {
