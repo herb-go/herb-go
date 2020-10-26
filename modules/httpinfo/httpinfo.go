@@ -99,13 +99,14 @@ func (m *HTTPInfo) Exec(a *app.Application, args []string) error {
 func (m *HTTPInfo) Render(a *app.Application, appPath string, mp string, task *tools.Task) error {
 
 	filesToRender := map[string]string{
-		filepath.Join(mp, "drivers", "httpinfo.go"):                 "driver.go.tmpl",
-		filepath.Join(mp, "httpinfo.go"):                            "module.go.tmpl",
-		filepath.Join(mp, "httpinfo", "init.go"):                    "httpinfo.init.go.tmpl",
-		filepath.Join(mp, "app", "httpinfo.go"):                     "app.httpinfo.go.tmpl",
-		filepath.Join(mp, "app", "presethttpinfo.go"):               "app.presethttpinfo.go.tmpl",
-		filepath.Join("config", "httpinfo.toml"):                    "httpinfo.toml.tmpl",
-		filepath.Join("system", "constants", "presethttpinfo.toml"): "presethttpinfo.toml.tmpl",
+		filepath.Join(mp, "drivers", "httpinfo.go"):                           "driver.go.tmpl",
+		filepath.Join(mp, "httpinfo.go"):                                      "module.go.tmpl",
+		filepath.Join(mp, "httpinfo", "init.go"):                              "httpinfo.init.go.tmpl",
+		filepath.Join(mp, "app", "httpinfo.go"):                               "app.httpinfo.go.tmpl",
+		filepath.Join(mp, "app", "presethttpinfo.go"):                         "app.presethttpinfo.go.tmpl",
+		filepath.Join("system", "defaultconfig", "httpinfo.toml"):             "httpinfo.toml.tmpl",
+		filepath.Join("system", "defaultconfig", "examples", "httpinfo.toml"): "httpinfo.toml.tmpl",
+		filepath.Join("system", "constants", "presethttpinfo.toml"):           "presethttpinfo.toml.tmpl",
 	}
 	return task.RenderFiles(filesToRender, nil)
 }
