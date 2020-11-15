@@ -1,3 +1,3 @@
 package drivers
 
-import _ "github.com/herb-go/herb/cache/marshalers/msgpackmarshaler" // msgpack driver
+import _ "github.com/herb-go/deprecated/cache/marshalers/msgpackmarshaler" // msgpack driver

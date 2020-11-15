@@ -2,7 +2,7 @@ package overseers
 
 import (
 	overseer "github.com/herb-go/herb-drivers/overseers/cacheproxyoverseer"
-	"github.com/herb-go/herb/cache"
+	"github.com/herb-go/deprecated/cache"
 	worker "github.com/herb-go/worker"
 )
 
