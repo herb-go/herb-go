@@ -18,18 +18,37 @@
 # [[Directives]]
 # ID="hired.HerbSession"
 # [Directives.Config]
-# DriverName = "cache"
-# TokenLifetime = "1h"
-# TokenMaxLifetime = "168h"
-# TokenContextName = "token"
-# CookieName = "herb-go-{{.Name.PascalWithParents}}"
-# CookiePath = "/"
-# CookieSecure = false
-# UpdateActiveIntervalInSecond = 100
-# TokenLength = 32
-# [Directives.Config.Cache]
-# Driver = "syncmapcache"
-# TTL = 3600
+# AutoStart=true
+# Timeout=3600
+# MaxLifetime=72000
+# LastActiveInterval=100
+# Engine="aes"
+# Installer="cookie"
+# [Directives.Config.EngineConfig]
+# Secret="SECRET"
+# [Directives.Config.InstallerConfig]
+# Name = "herb-go-Members"
+# Path = "/"
+
+
+# # herbsession Directive
+# [[Directives]]
+# ID="hired.HerbSession"
+# [Directives.Config]
+# AutoStart=true
+# Timeout=3600
+# MaxLifetime=72000
+# LastActiveInterval=100
+# Engine="keyvalue"
+# Installer="cookie"
+# [Directives.Config.EngineConfig]
+# TokenSize=32
+# DBDriver="freecache"
+# [Directives.Config.EngineConfig.DBConfig]
+# Size=50000000
+# [Directives.Config.InstallerConfig]
+# Name = "herb-go-Members"
+# Path = "/"
 
 # # memactives Directive
 # [[Directives]]
