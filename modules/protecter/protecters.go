@@ -96,14 +96,14 @@ func (m *Protecters) Exec(a *app.Application, args []string) error {
 		}
 
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/herbmodules/protecter/resources"), a.Cwd)
+	task := tools.NewTask(filepath.Join(app, "/modules/protecter/resources"), a.Cwd)
 
 	err = m.Render(a, a.Cwd, mp, task)
 	if err != nil {
 		return err
 	}
 	task.AddJob(func() error {
-		a.Printf("Protecters  created.\n")
+		a.Printf("Protecters created.\n")
 		return nil
 	})
 	err = task.ErrosIfAnyFileExists()
