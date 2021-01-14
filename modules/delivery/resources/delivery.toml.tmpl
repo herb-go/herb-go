@@ -1,2 +1,34 @@
-# persist config
-ID="hired.LocalPersist"
+#Delivery center config
+
+[[Server]]
+Delivery="logger"
+Description="logger delivery server for debug"
+Disabled=false
+DeliveryType="logger"
+[Server.DeliveryConfig]
+Logger="debug"
+
+[[Server]]
+Delivery="null"
+Description="null delivery server for debug"
+Disabled=false
+DeliveryType="null"
+
+# [[Server]]
+# Delivery="wechatwork"
+# Description="wechat work delivery server"
+# Disabled=false
+# DeliveryType="wechatwork"
+# [Server.DeliveryConfig]
+# AgentID=0
+# CorpID="corpid"
+# Secret="secret"
+
+# [[Server]]
+# Delivery="wechattm"
+# Description="wechat template message delivery server"
+# Disabled=false
+# DeliveryType="wechattm"
+# [Server.DeliveryConfig]
+# AppID="appid"
+# AppSecret="appsecret"
