@@ -1,0 +1,38 @@
+package  {{.Name.Lower}}
+
+
+import (
+	"github.com/herb-go/notification"
+	"github.com/herb-go/notification/notificationdelivery"
+	"github.com/herb-go/util"
+
+	"modules/app"
+)
+
+//ModuleName module name
+const ModuleName="800{{.Name.LowerWithParentDotSeparated}}"
+
+//Center delivery center
+var Center = notificationdelivery.NewAtomicDeliveryCenter()
+
+
+//Deliver delivery content with given keyword
+//Return delivery status,receipt and any error if raised.
+func Deliver(delivery string, content notification.Content) (status notificationdelivery.DeliveryStatus, receipt string, err error) {
+	return notificationdelivery.Deliver(Center, delivery, content)
+}
+
+//DeliverNotification delivery content with given keyword
+//Return delivery status,receipt and any error if raised.
+func DeliverNotification(n *notification.Notification) (status notificationdelivery.DeliveryStatus, receipt string, err error) {
+	return notificationdelivery.DeliverNotification(Center, n)
+}
+
+func init() {
+	util.RegisterModule(ModuleName, func() {
+		var err error
+		c, err := app.{{.Name.Pascal}}.CreateDeliveryCenter()
+		util.Must(err)
+		Center.SetDeliveryCenter(c)
+	})
+}

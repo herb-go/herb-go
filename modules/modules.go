@@ -42,3 +42,5 @@ import _ "github.com/herb-go/herb-go/modules/website" //website module
 import _ "github.com/herb-go/herb-go/modules/cors"    //website module
 
 import _ "github.com/herb-go/herb-go/modules/persist" //persist module
+
+import _ "github.com/herb-go/herb-go/modules/delivery" //delivery module
