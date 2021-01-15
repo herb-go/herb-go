@@ -1,5 +1,4 @@
-#Delivery center config
-
+# delivery center config
 [[Server]]
 Delivery="logger"
 Description="logger delivery server for debug"
@@ -13,6 +12,18 @@ Delivery="null"
 Description="null delivery server for debug"
 Disabled=false
 DeliveryType="null"
+
+# [[Server]]
+# Delivery="mock"
+# Description="mock delivery server for debug"
+# Disabled=false
+# DeliveryType="mock"
+# [Server.DeliveryConfig]
+# Logger="debug"
+# DelayMinDuration="3s"
+# DelayMaxDuration="20s"
+# FailPercent=5
+# ErrorPercent=1
 
 # [[Server]]
 # Delivery="wechatwork"
@@ -31,4 +42,4 @@ DeliveryType="null"
 # DeliveryType="wechattm"
 # [Server.DeliveryConfig]
 # AppID="appid"
-# AppSecret="appsecret"
+# AppSecret="secret"
