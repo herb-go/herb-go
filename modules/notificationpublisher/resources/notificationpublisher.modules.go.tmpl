@@ -17,8 +17,13 @@ var Publisher = notificationqueue.NewPublisher()
 func initPublisher() {
 	Publisher.IDGenerator = uniqueid.GenerateID
 	Publisher.Recover = util.Recover
+
+	//Publisher.DeliveryCenter = delivery.Center
+
 	Publisher.OnDeliverTimeout = notificationqueue.NopExecutionHandler
 	Publisher.OnRetryTooMany = notificationqueue.NopExecutionHandler
+	Publisher.OnExecution = notificationqueue.NopExecutionHandler
+	Publisher.OnReceipt = notificationqueue.NopReceiptHanlder
 	Publisher.OnNotification = notificationqueue.NopNotificationHandler
 }
 
