@@ -8,7 +8,7 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-var OverSeerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
+var OverseerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
 	"action":        project.InitActionOverseer,
 	"cache":         newInitFunc([]string{"cache.go", "cache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
 	"usersystem":    newInitFunc([]string{"usersystemdirectivefactory.go", "usersystemdirectivefactory.go"}, "UserSystem"),

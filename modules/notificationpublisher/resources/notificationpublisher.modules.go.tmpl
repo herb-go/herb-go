@@ -1,0 +1,35 @@
+package  {{.Name.Lower}}
+
+import (
+	"github.com/herb-go/notification/notificationdelivery/notificationqueue"
+	"github.com/herb-go/uniqueid"
+	"github.com/herb-go/util"
+
+	"modules/app"
+)
+
+//ModuleName module name
+const ModuleName="800{{.Name.LowerWithParentDotSeparated}}"
+
+//Publisher notification publisher
+var Publisher = notificationqueue.NewPublisher()
+
+func initPublisher() {
+	Publisher.IDGenerator = uniqueid.GenerateID
+	Publisher.Recover = util.Recover
+	Publisher.OnDeliverTimeout = notificationqueue.NopExecutionHandler
+	Publisher.OnRetryTooMany = notificationqueue.NopExecutionHandler
+	Publisher.OnNotification = notificationqueue.NopNotificationHandler
+}
+
+func init() {
+	util.RegisterModule(ModuleName, func() {
+		var err error
+		Publisher.Reset()
+		initPublisher()
+		err = app.Notificationpublisher.ApplyTo(Publisher)
+		util.Must(err)
+		util.Must(Publisher.Start())
+		util.OnQuitAndLogError(Publisher.Stop)
+	})
+}
