@@ -3,24 +3,25 @@ Directive="common"
 [Directives.DirectiveConfig]
 Workers=50
 
+
 [[Directives]]
 Directive="embeddeddraftbox"
 [Directives.DirectiveConfig]
 Limit=10
 Driver="leveldb"
 [Directives.DirectiveConfig.Config]
-Database="appdata/draftbox"
+Database="appdata/draftbox.leveldb"
 
 [[Directives]]
 Directive="embeddedqueue"
 [Directives.DirectiveConfig]
-Retry=["300s","1200s","3600s"]
-[Directives.DirectiveConfig.Store]
+Retry=["300s","1800s","3600s"]
+[Directives.DirectiveConfig.Engine]
 Driver="leveldb"
-
-[Directives.DirectiveConfig.Store.Config]
-Database="appdata/queue"
+[Directives.DirectiveConfig.Engine.Config]
+Database="appdata/queue.leveldb"
 [Directives.DirectiveConfig.Queue]
 TimeoutDuration="60s"
-IntervalDuration="300s"
+IntervalDuration="120s"
 ExecuteCount=10
+

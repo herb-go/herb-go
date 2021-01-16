@@ -1,4 +1,4 @@
 package drivers
 
-import _ "github.com/herb-go/notification-drivers/queue/cronqueue/embeddedstore" //embeddedqueue notification queue
-import _ "github.com/herb-go/notification-drivers/draftbox/embeddeddraftbox"     //embeddeddraftbox notification draft box
+import _ "github.com/herb-go/notification-drivers/queue/cronqueue/embeddedqueue"        //embeddedqueue notification queue
+import _ "github.com/herb-go/notification-drivers/store/embeddedstore/embeddeddraftbox" //embeddeddraftbox notification draft box
