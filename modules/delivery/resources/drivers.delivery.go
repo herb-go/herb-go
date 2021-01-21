@@ -6,3 +6,4 @@ import _ "github.com/herb-go/notification-drivers/delivery/emaildelivery"       
 import _ "github.com/herb-go/notification-drivers/delivery/wechattmdelivery"        //wechattm delivery
 import _ "github.com/herb-go/notification-drivers/delivery/wechatworkdelivery"      //wechatwork delivery
 import _ "github.com/herb-go/notification-drivers/delivery/tencentcloudsmsdelivery" //tencentcloudsms delivery
+import _ "github.com/herb-go/notification-drivers/delivery/aliyunsmsdelivery"       //aliyunsmsdelivery delivery
