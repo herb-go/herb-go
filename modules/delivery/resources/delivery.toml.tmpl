@@ -21,9 +21,9 @@ DeliveryType="null"
 # [Server.DeliveryConfig]
 # Logger="debug"
 # DelayMinDuration="3s"
-# DelayMaxDuration="20s"
-# FailPercent=5
-# ErrorPercent=1
+# DelayMaxDuration="80s"
+# FailPercent=10
+# ErrorPercent=2
 
 # [[Server]]
 # Delivery="wechatwork"
@@ -43,3 +43,46 @@ DeliveryType="null"
 # [Server.DeliveryConfig]
 # AppID="appid"
 # AppSecret="secret"
+
+
+# [[Server]]
+# Delivery="tencentcloudsms"
+# Description="tencent cloud sms delivery server"
+# Disabled=false
+# DeliveryType="tencentcloudsms"
+# [Server.DeliveryConfig]
+# SdkAppid="$SdkAppid"
+# SecretID="$SecretID"
+# SecretKey="$SecretKey"
+
+# [[Server]]
+# Delivery="aliyunsms"
+# Description="aliyun cloud sms delivery server"
+# Disabled=false
+# DeliveryType="aliyunsms"
+# [Server.DeliveryConfig]
+# AccessKeyID="$AccessKeyID"
+# AccessKeySecret="$AccessKeySecret"
+
+# [[Server]]
+# Delivery="tencentminiprogramum"
+# Description="tencent miniprogram uniform message"
+# Disabled=false
+# DeliveryType="tencentminiprogramum"
+# [Server.DeliveryConfig]
+# AppID="$AppID"
+# AppSecret="$AppSecret"
+
+# [[Server]]
+# Delivery="noitificationapi"
+# Description="notificationapi"
+# Disabled=false
+# DeliveryType="noitificationapi"
+# [Server.DeliveryConfig]
+# RequiredContent=["title"]
+# DeliveryType="api"
+# [Server.DeliveryConfig.Server]
+# URL="http://www.example.com"
+# [Server.DeliveryConfig.Server.Header]
+# "appid"=["appid"]
+# "secret"=["secret"]
