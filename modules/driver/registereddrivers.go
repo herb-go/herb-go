@@ -16,7 +16,8 @@ func GetRegisteredDrivers() []string {
 }
 
 var DriverInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
-	"kvdb": newInitFunc([]string{"kvdb.go", "kvdb.go"}, "Kvdb"),
+	"kvdb":         newInitFunc([]string{"kvdb.go", "kvdb.go"}, "Kvdb"),
+	"texttemplate": newInitFunc([]string{"texttemplate.go", "texttemplate.go"}, "TextTemplate"),
 }
 
 //files:[]{"dst","src","dst2","src2"}
