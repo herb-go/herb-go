@@ -111,11 +111,13 @@ func (m *View) Exec(a *app.Application, args []string) error {
 	if !ok {
 		return nil
 	}
-	err = driver.DriverModule.Exec(a, []string{"-s", "texttemplate"})
+	driver.DriverModule.Reset()
+	err = driver.DriverModule.Exec(a, []string{"-s", "notificationview"})
 	if err != nil {
 		return err
 	}
-	err = driver.DriverModule.Exec(a, []string{"-s", "notificationview"})
+	driver.DriverModule.Reset()
+	err = driver.DriverModule.Exec(a, []string{"-s", "texttemplate"})
 	if err != nil {
 		return err
 	}
