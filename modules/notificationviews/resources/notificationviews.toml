@@ -1,32 +1,34 @@
-[[Templates]]
+[[Views]]
 Name="testtemplate"
 Description="test dsec"
+Type="template"
+[Views.Config]
 Topic="test Topic"
 Disabled=false
 TTLInSeconds=3600
 Delivery="tencentcloudsms"
 Engine="handlebars"
-[Templates.Constants]
+[Views.Config.Constants]
 "a"="15"
 "b"="22"
-[[Templates.Params]]
+[[Views.Config.Params]]
 Source="userinfo"
 target="user"
 Parser="json"
 Description="用户信息"
 Example='''{"id":12345,"name":"abcd"}'''
-[[Templates.Params]]
+[[Views.Config.Params]]
 Source="mobile"
 Description="手机号"
 Example="13500000000"
-[[Templates.Params]]
+[[Views.Config.Params]]
 Source="usercode"
 Target="code"
 Description="验证码"
 Example="abcdefg"
-[Templates.HeaderTemplate]
+[Views.Config.HeaderTemplate]
 "target"="{{{user.id}}}"
-[Templates.ContentTemplate]
+[Views.Config.ContentTemplate]
 "templatecode"="123456"
 "phonenumbers"="+86{{{commaescape mobile}}}"
 "templatparams"="{{{commaescape code}}}"

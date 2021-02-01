@@ -1,0 +1,46 @@
+package  {{.Name.Lower}}
+
+
+import (
+	"github.com/herb-go/notification"
+	"github.com/herb-go/notification/notificationview"
+	"github.com/herb-go/util"
+
+	"modules/app"
+)
+
+//ModuleName module name
+const ModuleName="200{{.Name.LowerWithParentDotSeparated}}"
+
+//Center render center
+var Center = notificationview.NewAtomicViewCenter()
+
+//Render render notification with given name and data
+func Render(name string, message notificationview.Message) (*notification.Notification, error) {
+	renderer, err := Center.Get(name)
+	if err != nil {
+		return nil, err
+	}
+	return renderer.Render(message)
+}
+
+//RenderAndSend render notification with given name and data,then send it.
+func RenderAndSend(name string, message notificationview.Message, sender notification.Sender) error {
+	n, err := Render(name, message)
+	if err != nil {
+		return err
+	}
+	if n == nil {
+		return nil
+	}
+	return sender.Send(n)
+}
+
+func init() {
+	util.RegisterModule(ModuleName, func() {
+		var err error
+		c, err := app.{{.Name.Pascal}}.CreateViewCenter()
+		util.Must(err)
+		Center.SetViewCenter(c)
+	})
+}

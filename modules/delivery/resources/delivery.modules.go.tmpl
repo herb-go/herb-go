@@ -28,6 +28,12 @@ func DeliverNotification(n *notification.Notification) (status notificationdeliv
 	return notificationdelivery.DeliverNotification(Center, n)
 }
 
+//Sender delivery sender
+var Sender = notification.SenderFunc(func(n *notification.Notification) error {
+	_, _, err := DeliverNotification(n)
+	return err
+})
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
 		var err error
