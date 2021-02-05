@@ -27,6 +27,12 @@ func initPublisher() {
 	Publisher.OnNotification = notificationqueue.NopNotificationHandler
 }
 
+//Sender publisher sender
+var Sender = notification.SenderFunc(func(n *notification.Notification) error {
+	_, _, err := Publisher.PublishNotification(n)
+	return err
+})
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
 		var err error
