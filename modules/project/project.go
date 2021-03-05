@@ -104,6 +104,15 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		if err != nil {
 			return err
 		}
+		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/modules/go.mod", n)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/modules/go.mod.example", n)
+		if err != nil {
+			return err
+		}
 	}
 	err = m.createApp(a, appPath, mp, task)
 	if err != nil {

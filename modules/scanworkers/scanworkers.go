@@ -90,9 +90,10 @@ func (m *ScanWorkers) Exec(a *app.Application, args []string) error {
 		return err
 	}
 	c := workertools.NewContext()
+	c.GomodFolder = filepath.Join(a.Cwd, "src")
 	c.Root = filepath.Join(a.Cwd, mp)
 	c.Writer = os.Stdout
-	c.MustLoadOverseers(filepath.Join("modules/overseers"))
+	c.MustLoadOverseers("modules/overseers")
 	c.MustCheckFolder(filepath.Join(a.Cwd, "src"))
 	c.MustRenderAndWrite()
 	return nil

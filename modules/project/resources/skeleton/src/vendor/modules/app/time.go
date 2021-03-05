@@ -2,6 +2,7 @@ package app
 
 import (
 	"sync/atomic"
+	_ "time/tzdata" //embed timezone data
 
 	"github.com/herb-go/herbconfig/source"
 	"github.com/herb-go/util"
