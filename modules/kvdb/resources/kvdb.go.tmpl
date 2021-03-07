@@ -3,35 +3,35 @@ package app
 import (
 	"sync/atomic"
 
-	"github.com/herb-go/herb/middleware/cors"
 	"github.com/herb-go/herbconfig/source"
+	"github.com/herb-go/herbdata/kvdb"
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/config/tomlconfig"
 )
 
-//{{.PascalWithParents}} {{.PascalWithParents}} module
-var {{.PascalWithParents}} *cors.CORS
+//{{.PascalWithParents}} {{.PascalWithParents}} key-value databae config
+var {{.PascalWithParents}} *kvdb.Config
 
 var sync{{.PascalWithParents}} atomic.Value
 
 //Store{{.PascalWithParents}} atomically store assets config
-func (a *appSync) Store{{.PascalWithParents}}(c *cors.CORS) {
+func (a *appSync) Store{{.PascalWithParents}}(c *kvdb.Config) {
 	sync{{.PascalWithParents}}.Store(c)
 }
 
 //Load{{.PascalWithParents}} atomically load assets config
-func (a *appSync) Load{{.PascalWithParents}}() *cors.CORS {
+func (a *appSync) Load{{.PascalWithParents}}() *kvdb.Config {
 	v := sync{{.PascalWithParents}}.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*cors.CORS)
+	return v.(*kvdb.Config)
 }
 
 func init() {
 	config.RegisterLoader(util.ConfigFile("/{{.LowerWithParentDotSeparated}}.toml"), func(configpath source.Source) {
-		{{.PascalWithParents}}=cors.New()
+		{{.PascalWithParents}}=&kvdb.Config{}
 		util.Must(tomlconfig.Load(configpath, {{.PascalWithParents}}))
 		Sync.Store{{.PascalWithParents}}({{.PascalWithParents}})
 	})

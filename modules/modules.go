@@ -48,3 +48,5 @@ import _ "github.com/herb-go/herb-go/modules/notificationpublisher" //notificati
 import _ "github.com/herb-go/herb-go/modules/notificationviews"     //notificationviews module
 
 import _ "github.com/herb-go/herb-go/modules/driver" //driver module
+
+import _ "github.com/herb-go/herb-go/modules/kvdb" //kvdb module

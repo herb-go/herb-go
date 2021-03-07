@@ -109,7 +109,7 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 			return err
 		}
 	} else {
-		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/modules/go.mod.example", n)
+		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/vendor/modules/go.mod.example", n)
 		if err != nil {
 			return err
 		}
