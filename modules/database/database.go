@@ -118,10 +118,10 @@ func (m *Database) Exec(a *app.Application, args []string) error {
 func (m *Database) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "database.toml.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "database.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "database.toml.tmpl",
-		filepath.Join(mp, n.LowerPath(n.Lower+".go")):                                     "database.modules.go.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "database.go.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                                        "database.modules.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "database.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/herb-go/herb-go/modules/driver"
 	"github.com/herb-go/herb-go/modules/project"
 
 	"github.com/herb-go/util/cli/name"
@@ -106,7 +107,16 @@ func (m *KVDB) Exec(a *app.Application, args []string) error {
 	if !ok {
 		return nil
 	}
-	return task.Exec()
+	err = task.Exec()
+	if err != nil {
+		return err
+	}
+	driver.DriverModule.Reset()
+	err = driver.DriverModule.Exec(a, []string{"-s", "kvdb"})
+	if err != nil {
+		return err
+	}
+	return nil
 
 }
 
@@ -115,6 +125,7 @@ func (m *KVDB) Render(a *app.Application, appPath string, mp string, task *tools
 	filesToRender := map[string]string{
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "kvdb.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "kvdb.toml.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                                        "kvdb.modules.go.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "kvdb.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)

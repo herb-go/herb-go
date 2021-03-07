@@ -1,0 +1,23 @@
+package {{.Lower}}
+
+import (
+	"modules/app"
+
+	"github.com/herb-go/herbdata/kvdb"
+
+	"github.com/herb-go/util"
+)
+
+//ModuleName module name
+const ModuleName = "100{{.LowerWithParentDotSeparated}}"
+
+//DB key-value database
+var DB = kvdb.New()
+
+func init() {
+	util.RegisterModule(ModuleName, func() {
+        util.Must(app.{{.PascalWithParents}}.ApplyTo(DB))
+		util.Must(DB.Start())
+		util.OnQuitAndLogError(DB.Stop)
+	})
+}
