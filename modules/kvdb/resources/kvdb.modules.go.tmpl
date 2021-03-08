@@ -14,9 +14,17 @@ const ModuleName = "100{{.LowerWithParentDotSeparated}}"
 //DB key-value database
 var DB = kvdb.New()
 
+//RequiredFeatures required features set
+const RequiredFeatures = kvdb.FeaturesSetEmpty
+
+//IncompatibleFeatures incompatible features set
+const IncompatibleFeatures = kvdb.FeaturesSetEmpty
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
         util.Must(app.{{.PascalWithParents}}.ApplyTo(DB))
+		util.Must(DB.ShouldSupport(RequiredFeatures))
+		util.Must(DB.ShouldNotSupport(IncompatibleFeatures))
 		util.Must(DB.Start())
 		util.OnQuitAndLogError(DB.Stop)
 	})

@@ -69,8 +69,8 @@ func (m *KVDB) Exec(a *app.Application, args []string) error {
 	}
 	var n *name.Name
 	if len(args) == 0 {
-		a.Println("No kvdb module name given.\"kvdb\" is used")
-		n, err = name.New(true, "kvdb")
+		a.Println("No kvdb module name given.\"keyvaluedb\" is used")
+		n, err = name.New(true, "keyvaluedb")
 	} else {
 		n, err = name.New(true, args...)
 	}
