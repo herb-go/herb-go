@@ -17,6 +17,6 @@
 [Loggers.Debug]
 #URI="null"
 [Loggers.MyLogger]
-#URI="file://appdata/mylogger.log"
+#URI="file://logs/mylogger.log"
 [Formats]
 #MyLoggerFormat=""
