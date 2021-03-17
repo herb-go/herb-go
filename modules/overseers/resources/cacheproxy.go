@@ -1,8 +1,8 @@
 package overseers
 
 import (
-	overseer "github.com/herb-go/herb-drivers/overseers/cacheproxyoverseer"
 	"github.com/herb-go/deprecated/cache"
+	overseer "github.com/herb-go/deprecated/herb-drivers/overseers/cacheproxyoverseer"
 	worker "github.com/herb-go/worker"
 )
 

@@ -1,4 +1,8 @@
-Driver="syncmapcache"
-TTL=60   
-[Config]
+VersionTTL=3600
+[Cache]
+Driver="freecache"
+[Cache.Config]
 Size=50000000
+[VersionStore]
+Driver="inmemory"
+[VersionStore.Config]

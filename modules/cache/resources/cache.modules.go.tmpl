@@ -2,7 +2,9 @@ package {{.Lower}}
 
 import (
 	"modules/app"
-	"github.com/herb-go/herb/cache"
+
+	"github.com/herb-go/datamodules/ncache"
+
 	"github.com/herb-go/util"
 )
 
@@ -10,10 +12,12 @@ import (
 const ModuleName="100{{.LowerWithParentDotSeparated}}"
 
 //Cache app cache component.
-var Cache = cache.New()
+var Cache = ncache.New()
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must(Cache.Init(app.{{.PascalWithParents}}))
+		util.Must(app.{{.PascalWithParents}}.ApplyTo(Cache))
+		util.Must(Cache.Start())
+		util.OnQuitAndLogError(Cache.Stop)
 	})
 }

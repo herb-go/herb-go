@@ -6,6 +6,8 @@ import (
 	_ "modules/drivers"
 	"modules/overseers"
 
+	"github.com/herb-go/worker"
+
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 )
@@ -47,7 +49,7 @@ func Init() {
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
 	overseers.MustInitOverseers()
-
+	util.OnQuit(worker.ExecDefered)
 }
 
 func main() {

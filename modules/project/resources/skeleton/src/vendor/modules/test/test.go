@@ -10,6 +10,7 @@ import (
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/testingtools"
+	"github.com/herb-go/worker"
 )
 
 func loadConfigs() {
@@ -42,9 +43,15 @@ func Init() {
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
 	overseers.MustInitOverseers()
+	util.OnQuit(worker.ExecDefered)
+
 }
 
 //Run run app
 func Run() {
+	//Put your run code here
+	util.WaitingQuit()
+	//Delay util.QuitDelayDuration for modules quit.
+	util.DelayAndQuit()
 
 }

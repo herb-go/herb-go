@@ -49,9 +49,9 @@ var AppSkeleton = func(mp string) map[string]string {
 		mp + "/test/tests/init.go":            "/skeleton/src/vendor/modules/test/tests/init.go",
 		mp + "/test/tests/init_test.go":       "/skeleton/src/vendor/modules/test/tests/init_test.go",
 		mp + "/test/tests/readme.md":          "/skeleton/src/vendor/modules/test/tests/readme.md",
-		mp + "/drivers/cache.go":              "/skeleton/src/vendor/modules/drivers/cache.go",
-		mp + "/drivers/marshaler.go":          "/skeleton/src/vendor/modules/drivers/marshaler.go",
-		mp + "/drivers/database.go":           "/skeleton/src/vendor/modules/drivers/database.go",
-		mp + "/drivers/uniqueid.go":           "/skeleton/src/vendor/modules/drivers/uniqueid.go",
+		// mp + "/drivers/cache.go":              "/skeleton/src/vendor/modules/drivers/cache.go",
+		// mp + "/drivers/marshaler.go":          "/skeleton/src/vendor/modules/drivers/marshaler.go",
+		mp + "/drivers/database.go": "/skeleton/src/vendor/modules/drivers/database.go",
+		mp + "/drivers/uniqueid.go": "/skeleton/src/vendor/modules/drivers/uniqueid.go",
 	}
 }

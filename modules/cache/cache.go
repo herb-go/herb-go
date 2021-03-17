@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/herb-go/herb-go/modules/driver"
 	"github.com/herb-go/herb-go/modules/overseers"
 	"github.com/herb-go/herb-go/modules/project"
 
@@ -111,17 +112,25 @@ func (m *Cache) Exec(a *app.Application, args []string) error {
 	if !ok {
 		return nil
 	}
-	return task.Exec()
-
+	err = task.Exec()
+	if err != nil {
+		return err
+	}
+	driver.DriverModule.Reset()
+	err = driver.DriverModule.Exec(a, []string{"-s", "kvdb"})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m *Cache) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "cache.toml.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "cache.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "cache.toml.tmpl",
-		filepath.Join(mp, n.LowerPath("init.go")):                                         "cache.modules.go.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "cache.go.tmpl",
+		filepath.Join(mp, n.LowerPath("init.go")):                                        "cache.modules.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "cache.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }
