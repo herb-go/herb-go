@@ -10,7 +10,6 @@ import (
 	"github.com/herb-go/util"
 	"github.com/herb-go/util/config"
 	"github.com/herb-go/util/testingtools"
-	"github.com/herb-go/worker"
 )
 
 func loadConfigs() {
@@ -36,15 +35,14 @@ func Init() {
 	util.AppDataPath = filepath.Join(util.RootPath, "test", "testappdata")
 	util.MustChRoot()
 	loadConfigs()
+	overseers.MustInitOverseers()
 	initModules()
 	app.Development.TestingOrPanic()
 	//Auto created appdata folder if not exists
 	util.RegisterDataFolder()
 	util.MustLoadRegisteredFolders()
 	app.Development.InitializeAndPanicIfNeeded()
-	overseers.MustInitOverseers()
-	util.OnQuit(worker.ExecDefered)
-
+	overseers.MustTrainWorkers()
 }
 
 //Run run app

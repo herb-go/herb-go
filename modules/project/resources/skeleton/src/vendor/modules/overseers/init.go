@@ -15,5 +15,11 @@ func MustInitOverseers() {
 	util.Must(app.PresetWorkers.Apply())
 	util.Must(app.Workers.Apply())
 	util.Must(worker.InitOverseers())
+	worker.Start()
+	util.OnQuit(worker.Stop)
+}
+
+//MustTrainWorkers with workers config
+func MustTrainWorkers() {
 	util.Must(worker.TrainWorkers())
 }
