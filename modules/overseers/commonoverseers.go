@@ -10,7 +10,7 @@ import (
 
 var OverseerInitFuncs = map[string]func(a *app.Application, appPath string, mp string, slienceMode bool) error{
 	"action":        project.InitActionOverseer,
-	"cache":         newInitFunc([]string{"ncache.go", "ncache.go", "cacheproxy.go", "cacheproxy.go"}, "Cache"),
+	"cache":         newInitFunc([]string{"herbcache.go", "herbcache.go"}, "Cache"),
 	"usersystem":    newInitFunc([]string{"usersystemdirectivefactory.go", "usersystemdirectivefactory.go"}, "UserSystem"),
 	"authenticator": newInitFunc([]string{"authenticatorfactory.go", "authenticatorfactory.go"}, "Authenticator"),
 	"persist":       newInitFunc([]string{"persistfactory.go", "persistfactory.go"}, "Persist"),
