@@ -3,21 +3,24 @@ package {{.Lower}}
 import (
 	"modules/app"
 
-	"github.com/herb-go/datamodules/ncache"
-
+	"github.com/herb-go/datamodules/herbcache"
 	"github.com/herb-go/util"
 )
 
 //ModuleName module name
-const ModuleName="100{{.LowerWithParentDotSeparated}}"
+const ModuleName = "100{{.LowerWithParentDotSeparated}}"
+
+//Storage cache storage
+var Storage = herbcache.NewStorage()
 
 //Cache app cache component.
-var Cache = ncache.New()
+var Cache = herbcache.Prepare(Storage)
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must(app.{{.PascalWithParents}}.ApplyTo(Cache))
-		util.Must(Cache.Start())
-		util.OnQuitAndLogError(Cache.Stop)
+		util.Must(app.{{.PascalWithParents}}.ApplyTo(Storage))
+		util.Must(Cache.Ready())
+		util.Must(Storage.Start())
+		util.OnQuitAndLogError(Storage.Stop)
 	})
 }
