@@ -13,13 +13,12 @@ const ModuleName = "100{{.LowerWithParentDotSeparated}}"
 //Storage cache storage
 var Storage = herbcache.NewStorage()
 
-//Cache app cache component.
-var Cache = herbcache.Prepare(Storage)
+//Cache cache component.
+var Cache = herbcache.New().OverrideStorage(Storage)
 
 func init() {
 	util.RegisterModule(ModuleName, func() {
 		util.Must(app.{{.PascalWithParents}}.ApplyTo(Storage))
-		util.Must(Cache.Ready())
 		util.Must(Storage.Start())
 		util.OnQuitAndLogError(Storage.Stop)
 	})
