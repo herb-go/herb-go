@@ -6,10 +6,10 @@ import (
 	worker "github.com/herb-go/worker"
 )
 
-//NCacheWorker empty cache worker.
+//HerbCacheWorker empty cache worker.
 var HerbCacheWorker = herbcache.New()
 
-//NCacheOverseer ncache overseer
+//HerbCacheOverseer herbcache overseer
 var HerbCacheOverseer = worker.NewOrverseer("cache", &HerbCacheWorker)
 
 func init() {
