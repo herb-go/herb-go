@@ -1,8 +1,8 @@
 package overseers
 
 import (
+	overseer "github.com/herb-go/datamodule-drivers/overseers/herbcacheoverseer"
 	"github.com/herb-go/datamodules/herbcache"
-	overseer "github.com/herb-go/herb-drivers/overseers/herbcacheoverseer"
 	worker "github.com/herb-go/worker"
 )
 
