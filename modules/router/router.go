@@ -6,7 +6,6 @@ import (
 
 	"github.com/herb-go/util/cli/name"
 
-	"github.com/herb-go/herb-go/modules/http"
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
@@ -77,17 +76,17 @@ func (m *Router) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	result, err := tools.FileExists(mp, "routers", "routers.go")
-	if err != nil {
-		return err
-	}
-	if !result {
-		err = http.RoutersModule.Exec(a, []string{"-s"})
-		if err != nil {
-			return err
-		}
+	// result, err := tools.FileExists(mp, "routers", "routers.go")
+	// if err != nil {
+	// 	return err
+	// }
+	// if !result {
+	// 	err = http.RoutersModule.Exec(a, []string{"-s"})
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-	}
+	// }
 
 	task := tools.NewTask(filepath.Join(app, "/modules/router/resources"), a.Cwd)
 
