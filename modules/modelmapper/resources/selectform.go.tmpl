@@ -19,7 +19,7 @@ import (
     {{- if and (.Columns.IsSinglePrimayKey) ( .Confirmed.WithRead) }}
     "github.com/herb-go/herb/middleware/router"
     {{- end }}
-	"github.com/herb-go/herb/model/sql/querybuilder/modelmapper"    
+	"github.com/herb-go/datasource/sql/querybuilder/modelmapper"    
     
 )
 
