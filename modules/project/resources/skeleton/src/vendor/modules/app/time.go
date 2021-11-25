@@ -2,6 +2,7 @@ package app
 
 import (
 	"sync/atomic"
+	"time"
 	_ "time/tzdata" //embed timezone data
 
 	"github.com/herb-go/herbconfig/source"
@@ -33,6 +34,7 @@ func (a *appSync) LoadTime() *commonconfig.TimeConfig {
 func init() {
 	config.RegisterLoader(util.ConfigFile("/time.toml"), func(configpath source.Source) {
 		util.Must(tomlconfig.Load(configpath, Time))
+		time.Local = Time.Location()
 		Sync.StoreTime(Time)
 	})
 }
