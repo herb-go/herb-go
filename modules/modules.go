@@ -50,3 +50,5 @@ import _ "github.com/herb-go/herb-go/modules/notificationviews"     //notificati
 import _ "github.com/herb-go/herb-go/modules/driver" //driver module
 
 import _ "github.com/herb-go/herb-go/modules/kvdb" //kvdb module
+
+import _ "github.com/herb-go/herb-go/modules/version" //version module

@@ -1,0 +1,25 @@
+package version
+
+import (
+	"fmt"
+
+	"github.com/herb-go/misc/version"
+)
+
+const Major = 0
+const Minor = 1
+const Patch = 0
+const Build = ""
+
+const Message = "Version %s\n"
+
+var Version = &version.Semver{
+	Major: Major,
+	Minor: Minor,
+	Patch: Patch,
+	Build: Build,
+}
+
+func init() {
+	fmt.Printf(Message, Version.FullVersionCode())
+}
