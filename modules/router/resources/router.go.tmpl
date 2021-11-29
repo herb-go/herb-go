@@ -11,6 +11,11 @@ var {{.Pascal}}Middlewares = func() middleware.Middlewares {
 	return middleware.Middlewares{}
 }
 
+//You shou add below code to use router
+//	Router.StripPrefix("/{{.Lower}}").
+//		Use({{.Pascal}}Middlewares()...).
+//		Handle(Router{{.Pascal}}Factory.CreateRouter())
+
 //Router{{.Pascal}}Factory {{.Raw}} router factory.
 var Router{{.Pascal}}Factory = router.NewFactory(func() router.Router {
 	var Router = httprouter.New()

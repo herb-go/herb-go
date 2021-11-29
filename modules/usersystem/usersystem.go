@@ -129,6 +129,7 @@ func (m *UserSystem) Render(a *app.Application, appPath string, mp string, task 
 		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "usersystem.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "usersystem.toml.tmpl",
 		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "app.usersystem.go.tmpl",
+		filepath.Join(mp, n.LowerPath("middleware.go")):                                  "middleware.go.tmpl",
 	}
 	data := renderData{
 		Name: n,

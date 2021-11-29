@@ -3,45 +3,54 @@ package {{.Name.Lower}}
 import (
 	"github.com/herb-go/herbsystem"
 	"github.com/herb-go/usersystem"
-	"github.com/herb-go/usersystem/httpusersystem/modules/websession"
-	"github.com/herb-go/usersystem/modules/useraccount"
-	"github.com/herb-go/usersystem/modules/userpassword"
-	"github.com/herb-go/usersystem/modules/userprofile"
-	"github.com/herb-go/usersystem/modules/userrole"
-	"github.com/herb-go/usersystem/modules/userstatus"
-	"github.com/herb-go/usersystem/modules/userterm"
+
+	// "github.com/herb-go/usersystem/httpusersystem/modules/websession"
+	// "github.com/herb-go/usersystem/modules/useraccount"
+	// "github.com/herb-go/usersystem/modules/userpassword"
+	// "github.com/herb-go/usersystem/modules/userprofile"
+	// "github.com/herb-go/usersystem/modules/userrole"
+	// "github.com/herb-go/usersystem/modules/userstatus"
+	// "github.com/herb-go/usersystem/modules/userterm"
 	"github.com/herb-go/util"
 
 	"modules/app"
 )
 
 //ModuleName module name
-const ModuleName="800{{.Name.LowerWithParentDotSeparated}}"
+const ModuleName = "800{{.Name.LowerWithParentDotSeparated}}"
 
 //User {{.Name.Lower}} user system  module.
-var User= usersystem.New().WithKeyword("{{.Name.PascalWithParents}}")
+var User = usersystem.New().WithKeyword("{{.Name.PascalWithParents}}")
 
-//Status user status module.Comment if not use.
-var Status = userstatus.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER STATUS MODULE
+////Status user status module.Comment if not use.
+//var Status = userstatus.MustNewAndInstallTo(User)
 
-//Account user account module.Comment if not use.
-var Account = useraccount.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER ACCOUNT MODULE
+////Account user account module.Comment if not use.
+//var Account = useraccount.MustNewAndInstallTo(User)
 
-//Password  user password module.Comment if not use.
-var Password = userpassword.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER PASSWORD MODULE
+////Password  user password module.Comment if not use.
+//var Password = userpassword.MustNewAndInstallTo(User)
 
-//Role user role module.Comment if not use.
-var Role = userrole.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER ROLE MODULE
+////Role user role module.Comment if not use.
+//var Role = userrole.MustNewAndInstallTo(User)
 
-//Term user session term module.Comment if not use.
-var Term = userterm.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER TERM MODULE
+////Term user session term module.Comment if not use.
+//var Term = userterm.MustNewAndInstallTo(User)
 
-//Profile user profile module.Comment if not use.
-var Profile = userprofile.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER PROFILE MODULE
+////Profile user profile module.Comment if not use.
+//var Profile = userprofile.MustNewAndInstallTo(User)
 
-//WebSession user web session module.Comment if not use.
-var WebSession = websession.MustNewAndInstallTo(User)
+//UNCOMMENT BELOW CODE TO ENABLE USER WEBSESSION MODULE
+////WebSession user web session module.
+//var WebSession = websession.MustNewAndInstallTo(User)
 
+//UNCOMMENT BELOW CODE TO ENABLE USER ActiveSessions MODULE
 ////ActiveSessions user active sessions module.Comment if not used.
 //var ActiveSessions = activesessions.MustNewAndInstallTo(User)
 
