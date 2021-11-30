@@ -3,7 +3,10 @@ package {{.Lower}}
 import (
 	"modules/app"
 
+	"github.com/herb-go/herbdata/dataencoding/msgpackencoding"
+
 	"github.com/herb-go/datamodules/herbcache"
+	"github.com/herb-go/datamodules/herbcache/cachepreset"
 	"github.com/herb-go/util"
 )
 
@@ -16,9 +19,16 @@ var Storage = herbcache.NewStorage()
 //Cache cache component.
 var Cache = herbcache.New().OverrideStorage(Storage)
 
+//Encoding cache encoding
+var Encoding = msgpackencoding.Encoding
+
+//Preset cache preset
+var Preset = cachepreset.New(cachepreset.Cache(Cache), cachepreset.Encoding(Encoding), &app.{{.PascalWithParents}}.Preset)
+
+
 func init() {
 	util.RegisterModule(ModuleName, func() {
-		util.Must(app.{{.PascalWithParents}}.ApplyTo(Storage))
+		util.Must(app.{{.PascalWithParents}}.Storage.ApplyTo(Storage))
 		util.Must(Storage.Start())
 		util.OnQuitAndLogError(Storage.Stop)
 	})

@@ -3,7 +3,7 @@ package app
 import (
 	"sync/atomic"
 
-	"github.com/herb-go/datamodule-drivers/storageconfig"
+	"github.com/herb-go/datamodule-drivers/cacheconfig"
 
 	"github.com/herb-go/herbconfig/source"
 	"github.com/herb-go/util"
@@ -12,22 +12,22 @@ import (
 )
 
 //{{.PascalWithParents}} cache stroage config
-var {{.PascalWithParents}} = &storageconfig.Directive{}
+var {{.PascalWithParents}} = &cacheconfig.Config{}
 
 var sync{{.PascalWithParents}} atomic.Value
 
 //Store{{.PascalWithParents}} atomically store cache config
-func (a *appSync) Store{{.PascalWithParents}}(c *storageconfig.Directive) {
+func (a *appSync) Store{{.PascalWithParents}}(c *cacheconfig.Config) {
 	sync{{.PascalWithParents}}.Store(c)
 }
 
 //Load{{.PascalWithParents}} atomically load cache config
-func (a *appSync) Load{{.PascalWithParents}}() *storageconfig.Directive {
+func (a *appSync) Load{{.PascalWithParents}}() *cacheconfig.Config {
 	v := sync{{.PascalWithParents}}.Load()
 	if v == nil {
 		return nil
 	}
-	return v.(*storageconfig.Directive)
+	return v.(*cacheconfig.Config)
 }
 
 
