@@ -14,6 +14,20 @@
 # ServeProfile  =true
 # HashMode="md5"
 
+# # sqlusersystem directive
+# [[Directives]]
+# ID="hired.SQLUserSystem"
+# [Directives.Config]
+# TableAccount="account"
+# TablePassword="password"
+# TableToken="token"
+# TableUser="user"
+# Prefix=""
+# [Directives.Config.Database]
+# "Driver"="hireddb"
+# #Real databbase component id. you should run "herb-go scanworkers" first.
+# "DataSource"="database.SQL"
+
 # # herbsession Directive
 # [[Directives]]
 # ID="hired.HerbSession"

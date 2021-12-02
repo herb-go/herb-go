@@ -61,7 +61,7 @@ func init() {
 		util.Must(app.{{.Name.PascalWithParents}}.ApplyTo(User))
 		herbsystem.MustStart(User)
 		util.OnQuit(func() {
-			herbsystem.MustStart(User)
+			herbsystem.MustStop(User)
 		})
 	})
 }
