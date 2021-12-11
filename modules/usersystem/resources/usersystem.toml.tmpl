@@ -95,3 +95,27 @@
 # # payload http ip Directive
 # [[Directives]]
 # ID="hired.PayloadHTTPIp"
+
+# # usercache Directive
+# # you should put usercache config in last directive in config file
+# [[Directives]]
+# ID="hired.UserCache"
+# [Directives.Config]
+# PrefixStatus="status"
+# PrefixTerm="term"
+# PrefixAccount="account"
+# [Directives.Config.Cache.Preset]
+# TTL=1800
+# Namspace=""
+# Prefix=""
+# [Directives.Config.Cache.Storage]
+# ID=""
+# [Directives.Config.Cache.Storage.Engine]
+# VersionTTL=3600
+# [Directives.Config.Cache.Storage.Engine.Cache]
+# Driver="freecache"
+# [Directives.Config.Cache.Storage.Engine.Cache.Config]
+# Size=50000000
+# [Directives.Config.Cache.Storage.Engine.VersionStore]
+# Driver="inmemory"
+# [Directives.Config.Cache.Storage.Engine.VersionStore.Config]
