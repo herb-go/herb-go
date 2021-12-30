@@ -2,6 +2,7 @@ package scanworkerss
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/herb-go/herb-go/modules/project"
 	"github.com/herb-go/util/cli/app"
 	"github.com/herb-go/util/cli/app/tools"
+	"golang.org/x/mod/modfile"
 )
 
 var QuestionConfirmBackup = tools.NewTrueOrFalseQuestion("Have you backed up or committed your code?")
@@ -93,7 +95,16 @@ func (m *ScanWorkers) Exec(a *app.Application, args []string) error {
 	c.GomodFolder = filepath.Join(a.Cwd, "src")
 	c.Root = filepath.Join(a.Cwd, mp)
 	c.Writer = os.Stdout
-	c.MustLoadOverseers("modules/overseers")
+	modpath := filepath.Join(c.GomodFolder, "go.mod")
+	moddata, err := ioutil.ReadFile(modpath)
+	if err != nil {
+		return err
+	}
+	mf, err := modfile.Parse(modpath, moddata, nil)
+	if err != nil {
+		return err
+	}
+	c.MustLoadOverseers(filepath.Join(mf.Module.Mod.Path, "modules/overseers"))
 	c.MustCheckFolder(filepath.Join(a.Cwd, "src"))
 	c.MustRenderAndWrite()
 	return nil
