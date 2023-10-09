@@ -31,7 +31,7 @@ Create new fetcher config and go file.
 File below will be created:
 	config/[name].toml
 	system/configskeleton/[name].toml
-	src/vendor/modules/app/[name].go
+	src/modules/app/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -108,9 +108,9 @@ func (m *API) Exec(a *app.Application, args []string) error {
 func (m *API) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "fetcher.toml.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "fetcher.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "fetcher.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "fetcher.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "fetcher.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

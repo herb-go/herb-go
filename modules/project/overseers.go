@@ -14,7 +14,7 @@ func InitOverseers(a *app.Application, appPath string, mp string, slienceMode bo
 	if err != nil {
 		return err
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/project/resources/skeleton/src/vendor/modules/overseers"), appPath)
+	task := tools.NewTask(filepath.Join(app, "/modules/project/resources/skeleton/src/modules/overseers"), appPath)
 	filesToRender := map[string]string{}
 	result, err = tools.FileExists(filepath.Join(appPath, mp, "overseers", "init.go"))
 	if err != nil {
@@ -51,7 +51,7 @@ func InitActionOverseer(a *app.Application, appPath string, mp string, slienceMo
 	if err != nil {
 		return err
 	}
-	task := tools.NewTask(filepath.Join(app, "/modules/project/resources/skeleton/src/vendor/modules/overseers"), appPath)
+	task := tools.NewTask(filepath.Join(app, "/modules/project/resources/skeleton/src/modules/overseers"), appPath)
 	filesToRender := map[string]string{}
 	result, err = tools.FileExists(filepath.Join(appPath, mp, "overseers", "action.go"))
 	if err != nil {

@@ -34,7 +34,7 @@ Default name is "kvdb".
 File below will be created:
 	config/<name>.toml
 	system/configskeleton/<name>.toml
-	src/vendor/modules/app/<name>.go
+	src/modules/app/<name>.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

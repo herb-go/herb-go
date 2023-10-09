@@ -32,8 +32,8 @@ Default name is "ldap".
 File below will be created:
 	config/<name>.toml
 	system/confg.examples/<name>.toml
-	src/vendor/modules/app/<name>.go
-	src/vendor/modules/<name>/<name>.go
+	src/modules/app/<name>.go
+	src/modules/<name>/<name>.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -113,9 +113,9 @@ func (m *Ldap) Exec(a *app.Application, args []string) error {
 func (m *Ldap) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                    "ldap.toml.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "ldap.toml.tmpl",
 		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "ldap.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                     "ldap.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "ldap.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

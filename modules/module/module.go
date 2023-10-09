@@ -32,7 +32,7 @@ func (m *Module) Help(a *app.Application) string {
 	help := `Usage %s module [name].
 Create module.
 File below will be created:
-	src/vendor/modules/<name>/init.go
+	src/modules/<name>/init.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

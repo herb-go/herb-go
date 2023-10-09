@@ -31,7 +31,7 @@ Create new defaultconfig file and code.
 File below will be created:
 	system/defaultconfig/[name].toml
 	system/defaultconfig/examples/[name].toml
-	src/vendor/modules/app/[name].go
+	src/modules/app/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

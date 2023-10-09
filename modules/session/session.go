@@ -1,6 +1,5 @@
 package session
 
-
 import (
 	"fmt"
 	"path/filepath"
@@ -33,8 +32,8 @@ Default name is "session".
 File below will be created:
 	config/<name>.toml
 	system/configskeleton/<name>.toml
-	src/vendor/modules/app/<name>.go
-	src/vendor/modules/<name>/<name>.go
+	src/modules/app/<name>.go
+	src/modules/<name>/<name>.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -69,15 +68,15 @@ func (m *Session) Exec(a *app.Application, args []string) error {
 
 	if len(args) == 0 {
 		fmt.Println("No session module name given.\"session\" is used")
-		n ,err= name.New(true,"session")
-	}else{
+		n, err = name.New(true, "session")
+	} else {
 		n, err = name.New(true, args...)
 	}
 	if err != nil {
 		return err
 	}
 
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -88,7 +87,7 @@ func (m *Session) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/session/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -111,12 +110,12 @@ func (m *Session) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Session) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Session) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 	filesToRender := map[string]string{
-		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):"session.toml.tmpl",
-		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"):"session.toml.tmpl",
-		filepath.Join(mp,n.LowerPath(n.Lower+".go")):           "session.modules.go.tmpl",
-		filepath.Join(mp,"app", n.LowerWithParentDotSeparated+".go"):           "session.go.tmpl",
+		filepath.Join("config", n.LowerWithParentDotSeparated+".toml"):                   "session.toml.tmpl",
+		filepath.Join("system", "configskeleton", n.LowerWithParentDotSeparated+".toml"): "session.toml.tmpl",
+		filepath.Join(mp, n.LowerPath(n.Lower+".go")):                                    "session.modules.go.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):                    "session.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, n)
 }

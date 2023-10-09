@@ -32,8 +32,8 @@ Default name is "protecter".
 File below will be created:
 	config/<name>.toml
 	system/configskeleton/<name>.toml
-	src/vendor/modules/app/<name>.go
-	src/vendor/modules/<name>/init.go
+	src/modules/app/<name>.go
+	src/modules/<name>/init.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

@@ -73,7 +73,7 @@ func (m *ModelMapper) Help(a *app.Application) string {
 	help := `Usage %s modelmapper <name>.
 Create model module and config files.
 File below will be created:
-	src/vendor/modules/<name>/<name>.go
+	src/modules/<name>/<name>.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

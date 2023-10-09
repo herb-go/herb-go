@@ -35,5 +35,6 @@ _testmain.go
 .directory
 node_modules
 
-# /src/vendor/*/*
-!/src/vendor/modules/*
+# /src/*/*
+!/src/modules/*
+go.work

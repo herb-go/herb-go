@@ -29,8 +29,8 @@ Create uniqueid module and config files.
 File below will be created:
 	config/uniqueid.toml
 	system/confg.examples/uniqueid.toml
-	src/vendor/modules/app/uniqueid.go
-	src/vendor/modules/uniqueid/init.go
+	src/modules/app/uniqueid.go
+	src/modules/uniqueid/init.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -104,10 +104,10 @@ func (m *UniqueID) Exec(a *app.Application, args []string) error {
 func (m *UniqueID) Render(a *app.Application, appPath string, mp string, task *tools.Task) error {
 
 	filesToRender := map[string]string{
-		filepath.Join("config", "uniqueid.toml"):                    "uniqueid.toml.tmpl",
+		filepath.Join("config", "uniqueid.toml"):                   "uniqueid.toml.tmpl",
 		filepath.Join("system", "configskeleton", "uniqueid.toml"): "uniqueid.toml.tmpl",
-		filepath.Join(mp, "uniqueid/uniqueid.go"):                   "uniqueid.modules.go.tmpl",
-		filepath.Join(mp, "app", "uniqueid.go"):                     "uniqueid.go.tmpl",
+		filepath.Join(mp, "uniqueid/uniqueid.go"):                  "uniqueid.modules.go.tmpl",
+		filepath.Join(mp, "app", "uniqueid.go"):                    "uniqueid.go.tmpl",
 	}
 	return task.RenderFiles(filesToRender, nil)
 }

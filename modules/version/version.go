@@ -37,8 +37,8 @@ func (m *Version) Help(a *app.Application) string {
 Create version module.
 Default name is "persist".
 File below will be created:
-	src/vendor/modules/version/version.go
-	src/vendor/modules/version.go
+	src/modules/version/version.go
+	src/modules/version.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

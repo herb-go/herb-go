@@ -28,8 +28,8 @@ func (m *Overseer) Help(a *app.Application) string {
 	help := `Usage %s overseer.
 Create overseer module files.
 	File below will be created:
-	src/vendor/modules/overseer/init.go
-	src/vendor/modules/overseer/[name].go
+	src/modules/overseer/init.go
+	src/modules/overseer/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

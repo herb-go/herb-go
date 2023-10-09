@@ -33,7 +33,7 @@ func (m *Initializer) Help(a *app.Application) string {
 	help := `Usage %s moduleinitializer [name].
 Create new module initializer code.
 File below will be created:
-	src/vendor/modules/[name]/initializer.go
+	src/modules/[name]/initializer.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

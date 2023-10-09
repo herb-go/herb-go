@@ -33,8 +33,8 @@ func (m *LoginForm) Help(a *app.Application) string {
 	help := `Usage %s memberloginform [name].
 Create new member login form and action.
 File below will be created:
-	src/vendor/modules/[name]/[id]/forms/login.form
-	src/vendor/modules/[name]/[id]/actions/login.action
+	src/modules/[name]/[id]/forms/login.form
+	src/modules/[name]/[id]/actions/login.action
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

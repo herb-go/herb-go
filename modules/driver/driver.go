@@ -26,7 +26,7 @@ func (m *Driver) Help(a *app.Application) string {
 	help := `Usage %s driver.
 Add driver file.
 	File below will be created:
-	src/vendor/modules/driver/[name].go
+	src/modules/driver/[name].go
 
 Supported drivers:
 	%s

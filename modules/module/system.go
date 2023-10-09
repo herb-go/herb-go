@@ -23,7 +23,7 @@ func (m *Systems) Help(a *app.Application) string {
 	help := `Usage %s systems [name].
 Create module with default location "systems".
 File below will be created:
-	src/vendor/modules/systems/<name>/init.go
+	src/modules/systems/<name>/init.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

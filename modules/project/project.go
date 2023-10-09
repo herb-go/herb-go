@@ -2,9 +2,12 @@ package project
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 
+	"github.com/herb-go/util"
 	"github.com/herb-go/util/cli/name"
 
 	"github.com/herb-go/util/cli/app"
@@ -54,7 +57,8 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	if m.FlagSet().Parsed() {
 		return nil
 	}
-	m.FlagSet().BoolVar(&m.GoMod, "gomod", false, "use go mod folder struct")
+	// m.FlagSet().BoolVar(&m.GoMod, "gomod", false, "use go mod folder struct")
+	m.GoMod = true
 	err := m.FlagSet().Parse(*args)
 	if err != nil {
 		return err
@@ -63,7 +67,7 @@ func (m *Project) Init(a *app.Application, args *[]string) error {
 	return nil
 }
 func (m *Project) Exec(a *app.Application, args []string) error {
-	mp := "src/vendor/modules"
+	mp := "src/modules"
 	err := m.Init(a, &args)
 	if err != nil {
 		return err
@@ -100,16 +104,16 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 	task := tools.NewTask(filepath.Join(app, "/modules/project/resources"), appPath)
 	if m.GoMod {
 		mp = "src/modules"
-		err = task.Render("/skeleton/src/go.mod.example", "/src/go.mod", n)
-		if err != nil {
-			return err
-		}
-		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/modules/go.mod", n)
+		// err = task.Render("/skeleton/src/go.mod", "/src/go.mod", n)
+		// if err != nil {
+		// 	return err
+		// }
+		err = task.Render("/skeleton/src/modules/go.mod", "/src/modules/go.mod", n)
 		if err != nil {
 			return err
 		}
 	} else {
-		err = task.Render("/skeleton/src/vendor/modules/go.mod.example", "/src/vendor/modules/go.mod.example", n)
+		err = task.Render("/skeleton/src/modules/go.mod", "/src/modules/go.mod", n)
 		if err != nil {
 			return err
 		}
@@ -123,8 +127,31 @@ func (m *Project) Exec(a *app.Application, args []string) error {
 		a.Printf("App installed in \"%s\"\n", appPath)
 		return nil
 	})
-	return task.Exec()
-
+	err = task.Exec()
+	if err != nil {
+		return err
+	}
+	cmdGoMod := exec.Command("go", "mod", "init", "herb-go-app")
+	cmdGoMod.Dir = path.Join(appPath, "src")
+	err = cmdGoMod.Run()
+	if err != nil {
+		return err
+	}
+	gomodcontent, err := os.ReadFile(path.Join(appPath, "src", "go.mod"))
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(path.Join(appPath, "src", "go.mod"), []byte(string(gomodcontent)+"\nreplace modules => ./modules\n"), util.DefaultFileMode)
+	if err != nil {
+		return err
+	}
+	cmdGoWork := exec.Command("go", "work", "init", "src")
+	cmdGoWork.Dir = appPath
+	err = cmdGoWork.Run()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m *Project) createApp(a *app.Application, appPath string, mp string, task *tools.Task) error {

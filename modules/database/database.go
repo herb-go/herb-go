@@ -33,8 +33,8 @@ Default name is "database".
 File below will be created:
 	config/<name>.toml
 	system/confg.examples/<name>.toml
-	src/vendor/modules/app/<name>.go
-	src/vendor/modules/<name>/<name>.go
+	src/modules/app/<name>.go
+	src/modules/<name>/<name>.go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }

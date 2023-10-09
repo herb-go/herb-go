@@ -31,7 +31,7 @@ func (m *Constants) Help(a *app.Application) string {
 Create new constant file and code.
 File below will be created:
 	system/constant/[name].toml
-	src/vendor/modules/app/[name].go
+	src/modules/app/[name].go
 `
 	return fmt.Sprintf(help, a.Config.Cmd)
 }
@@ -72,7 +72,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 	if err != nil {
 		return err
 	}
-	mp,err := project.GetModuleFolder(a.Cwd)
+	mp, err := project.GetModuleFolder(a.Cwd)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 
 	task := tools.NewTask(filepath.Join(app, "/modules/config/resources"), a.Cwd)
 
-	err = m.Render(a, a.Cwd,mp, task, n)
+	err = m.Render(a, a.Cwd, mp, task, n)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (m *Constants) Exec(a *app.Application, args []string) error {
 
 }
 
-func (m *Constants) Render(a *app.Application, appPath string,mp string, task *tools.Task, n *name.Name) error {
+func (m *Constants) Render(a *app.Application, appPath string, mp string, task *tools.Task, n *name.Name) error {
 	var configgopath string
 	if m.Watch {
 		configgopath = "constantswatch.go.tmpl"
@@ -114,8 +114,8 @@ func (m *Constants) Render(a *app.Application, appPath string,mp string, task *t
 		configgopath = "constants.go.tmpl"
 	}
 	filesToRender := map[string]string{
-		filepath.Join("system", "constants", n.LowerWithParentDotSeparated+".toml"):           "config.toml.tmpl",
-		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"): configgopath,
+		filepath.Join("system", "constants", n.LowerWithParentDotSeparated+".toml"): "config.toml.tmpl",
+		filepath.Join(mp, "app", n.LowerWithParentDotSeparated+".go"):               configgopath,
 	}
 	return task.RenderFiles(filesToRender, n)
 }

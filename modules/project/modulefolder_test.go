@@ -1,10 +1,10 @@
 package project
 
 import (
-	"path/filepath"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"testing"
 
 	"github.com/herb-go/util"
@@ -18,7 +18,7 @@ func TestGetModuleFolder(t *testing.T) {
 	defer func() {
 		os.RemoveAll(tmpdir)
 	}()
-	mpath,err :=GetModuleFolder(tmpdir)
+	mpath, err := GetModuleFolder(tmpdir)
 	if err != ErrNotInHerbGoAPPFolder {
 		t.Fatal(err)
 	}
@@ -38,79 +38,79 @@ func TestGetModuleFolder(t *testing.T) {
 		[]string{tmpdir, "system", "constants"},
 	}
 	for _, v := range FoldersMustExists {
-		mpath,err = GetModuleFolder(tmpdir)
+		mpath, err = GetModuleFolder(tmpdir)
 		if err != ErrNotInHerbGoAPPFolder {
 			t.Fatal(err)
 		}
 		err = os.MkdirAll(path.Join(v...), util.DefaultFolderMode)
 		if err != nil {
 			t.Fatal(err)
-		} 
+		}
 	}
-	mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != ErrNotInHerbGoAPPFolder {
 		t.Fatal(err)
 	}
-	gomodpath:=filepath.Join(tmpdir,"src","modules","go.mod")
-	err=os.MkdirAll(filepath.Dir(gomodpath),util.DefaultFolderMode)
+	gomodpath := filepath.Join(tmpdir, "src", "modules", "go.mod")
+	err = os.MkdirAll(filepath.Dir(gomodpath), util.DefaultFolderMode)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err=ioutil.WriteFile(gomodpath,[]byte{},util.DefaultFileMode)
+	err = ioutil.WriteFile(gomodpath, []byte{}, util.DefaultFileMode)
 	if err != nil {
 		t.Fatal(err)
 	}
-	mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != ErrNotInHerbGoAPPFolder {
 		t.Fatal(err)
 	}
-	err=ioutil.WriteFile(gomodpath,[]byte("module modules"),util.DefaultFileMode)
+	err = ioutil.WriteFile(gomodpath, []byte("module modules"), util.DefaultFileMode)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err != nil {
 		t.Fatal(err)
 	}
-	mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if mpath!="src/modules"{
+	if mpath != "src/modules" {
 		t.Fatal(mpath)
 	}
-	err=os.Remove(gomodpath)
-	if err!=nil{
+	err = os.Remove(gomodpath)
+	if err != nil {
 		t.Fatal(err)
 	}
-		mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != ErrNotInHerbGoAPPFolder {
 		t.Fatal(err)
 	}
-	gomodpath=filepath.Join(tmpdir,"src","vendor","modules","go.mod")
-	err=os.MkdirAll(filepath.Dir(gomodpath),util.DefaultFolderMode)
+	gomodpath = filepath.Join(tmpdir, "src", "vendor", "modules", "go.mod")
+	err = os.MkdirAll(filepath.Dir(gomodpath), util.DefaultFolderMode)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err=ioutil.WriteFile(gomodpath,[]byte{},util.DefaultFileMode)
+	err = ioutil.WriteFile(gomodpath, []byte{}, util.DefaultFileMode)
 	if err != nil {
 		t.Fatal(err)
 	}
-	mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != ErrNotInHerbGoAPPFolder {
 		t.Fatal(err)
 	}
-	err=ioutil.WriteFile(gomodpath,[]byte("module modules"),util.DefaultFileMode)
+	err = ioutil.WriteFile(gomodpath, []byte("module modules"), util.DefaultFileMode)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err != nil {
 		t.Fatal(err)
 	}
-	mpath,err = GetModuleFolder(tmpdir)
+	mpath, err = GetModuleFolder(tmpdir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if mpath!="src/vendor/modules"{
+	if mpath != "src/modules" {
 		t.Fatal(mpath)
 	}
 }
