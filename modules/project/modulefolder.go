@@ -7,11 +7,11 @@ import (
 	"github.com/herb-go/util/cli/app/tools"
 )
 
-//ErrNotInHerbGoAPPFolder err rasied when not in herb go app folder
+// ErrNotInHerbGoAPPFolder err rasied when not in herb go app folder
 var ErrNotInHerbGoAPPFolder = errors.New("current folder is not a herb-go app folder")
 
-//GetModuleFolder get module folder with given.
-//Return module folder and any error rasied.
+// GetModuleFolder get module folder with given.
+// Return module folder and any error rasied.
 var GetModuleFolder = func(path string) (string, error) {
 	var FilesMustExists = [][]string{
 		[]string{path, "src", "main.go"},
